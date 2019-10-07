@@ -1,53 +1,83 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { createMaterialTopTabNavigator } from 'react-navigation-tabs'; 
-import { createAppContainer } from 'react-navigation';
+// App.js
+import React, {Component} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import CustomButton from './CustomButton';
+import Animation from 'lottie-react-native';
+import anim from './data.json';
 
-import ChatroomTab from './Components/AppTabNavigator/ChatroomTab'
-import InvitedTab from './Components/AppTabNavigator/InvitedTab'
-import SettingTab from './Components/AppTabNavigator/SettingTab'
 
-const AppTabNavigator = createMaterialTopTabNavigator({
-  Chatroom: { screen: ChatroomTab },
-  Invited: { screen: InvitedTab },
-  Setting: { screen: SettingTab }
-}, {
-  animationEnabled: true,
-  swipeEnabled: true,
-  tabBarPosition: "bottom",
-  tabBarOptions: {
-    style: {
-      backgroundColor: '#888',
-    }
-    ,
-    iconStyle: {height:25},
-    activeTintColor: '#222',
-    inactiveTintColor: '#fff',
-    upperCaseLabel: false,
-    showLabel: false,
-    showIcon: true,   // 하단바 아이콘으로 보이게 하기
+
+type Props = {};
+export default class lottieloader extends Component {
+  componentDidMount() {
+    this.animation.play();
   }
-});
 
-
-const AppTabContainet = createAppContainer(AppTabNavigator);
-
-export default class App extends Component {
+ 
   render() {
     return (
       <View style={styles.container}>
-        <Text>MainScreen</Text>
+     
+           <View>
+          <Animation
+            ref={animation => {
+              this.animation = animation;
+            }}
+            style={{
+             
+              width:  400,
+              height: 450,
+            }}
+            loop={true}
+            source={anim}
+          />
+        </View>
+        <View style={styles.content}></View>
+        <View style={styles.footer}>
+       <CustomButton
+            buttonColor={'#023e71'}
+            title={'회원가입'}
+            onPress={() => alert('회원가입 버튼')}/>
+          <CustomButton />
+        </View>
       </View>
     );
-  }  render() {
-    return <AppTabContainet/>; // AppTabContainet 컴포넌트를 리턴한다.
   }
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: 'grey',
+  },
+  header: {
+    width:'100%',
+    height:'9%',
+    justifyContent: 'center',
+    alignItems: 'center',
+   
+  },
+  title: {
+    width:'100%',
+    height:'18%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+   
+  },
+  footer: {
+    
+    width:'100%',
+    height:'20%',
+    
+    
   },
 });
