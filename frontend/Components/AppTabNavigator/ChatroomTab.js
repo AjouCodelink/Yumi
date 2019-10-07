@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import { Icon } from 'native-base';
 
 export default class ChatroomTab extends Component {
@@ -8,11 +8,23 @@ export default class ChatroomTab extends Component {
             <Icon name='md-chatboxes' style={{color: tintColor}} />
         )
     }
+
+    constructor(props) {
+        super(props);
+        this.state = { clicked: true };
+    }
+    _clicked = () => this.setState({ clicked: false });
+
     render() {
         return (
             <View style={style.container}>
                 <Text style={style.font_title}>ChatroomTab</Text>
                 <Text style={style.font_main}>You can see the kind of rooms you belong to.</Text>
+                {
+                    this.state.clicked
+                        ? <Button title="TEST BUTTON" onPress={this._clicked}/>
+                        : <Text style={style.font_main}>Pressed!</Text>
+                }
             </View>
         );
     }

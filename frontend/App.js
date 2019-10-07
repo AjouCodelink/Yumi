@@ -1,83 +1,21 @@
-// App.js
-import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import CustomButton from './CustomButton';
-import Animation from 'lottie-react-native';
-import anim from './data.json';
+import React, { Component } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { createStackNavigator } from 'react-navigation-stack'; 
+import { createAppContainer } from 'react-navigation';
+import MainScreen from './Components/MainScreen';
 
-
-
-type Props = {};
-export default class lottieloader extends Component {
-  componentDidMount() {
-    this.animation.play();
-  }
-
- 
-  render() {
-    return (
-      <View style={styles.container}>
-     
-           <View>
-          <Animation
-            ref={animation => {
-              this.animation = animation;
-            }}
-            style={{
-             
-              width:  400,
-              height: 450,
-            }}
-            loop={true}
-            source={anim}
-          />
-        </View>
-        <View style={styles.content}></View>
-        <View style={styles.footer}>
-       <CustomButton
-            buttonColor={'#023e71'}
-            title={'회원가입'}
-            onPress={() => alert('회원가입 버튼')}/>
-          <CustomButton />
-        </View>
-      </View>
-    );
-  }
+  
+const AppStackNavigator = createStackNavigator({
+  Main:{
+    screen: MainScreen // MainScreen 컴포넌트를 네비게이터에 등록
+  }, 
+  navigationOptions: ({AppStackNavigator}) => ({
+    headerMode: 'none',
+    navigationOptions: {
+      headerVisible: false,
+    }
+  })
 }
+);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: 'grey',
-  },
-  header: {
-    width:'100%',
-    height:'9%',
-    justifyContent: 'center',
-    alignItems: 'center',
-   
-  },
-  title: {
-    width:'100%',
-    height:'18%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-   
-  },
-  footer: {
-    
-    width:'100%',
-    height:'20%',
-    
-    
-  },
-});
+export default createAppContainer(AppStackNavigator);
