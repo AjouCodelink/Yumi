@@ -36,6 +36,10 @@ router.get('/test', function(req, res) {
     });
 });
 
+// (Test) RESTFul api POST 메소드
+router.post('/test', function(req, res){
+    console.log(req.body);
+});
 //var Client = require('mongodb').MongoClient;
 //var db;
 
