@@ -16,6 +16,12 @@ export default class ChatroomTab extends Component {
     _clicked = () => this.setState({ clicked: false });
 
     render() {
+        // (Test) RESTFul api GET 메소드 
+        fetch('http://101.101.160.185:3000/test')
+            .then(response => response.json())
+            .then(json => console.log(json))
+            .catch(err => console.log(err));
+
         return (
             <View style={style.container}>
                 <Text style={style.font_title}>ChatroomTab</Text>
