@@ -32,7 +32,7 @@ const AppTabNavigator = createMaterialTopTabNavigator({
 const AppTabContainet = createAppContainer(AppTabNavigator);
 
 export default class MainScreen extends Component {
-    static navigationOptions = {
+    static navigationOptions = {    // 상단바 안보이게 하기
         header: null
     }
     render() {
