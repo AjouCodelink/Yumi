@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ToastAndroid, BackHandler } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs'; 
 import { createAppContainer } from 'react-navigation';
 
@@ -32,10 +32,37 @@ const AppTabNavigator = createMaterialTopTabNavigator({
 const AppTabContainet = createAppContainer(AppTabNavigator);
 
 export default class MainScreen extends Component {
-    static navigationOptions = {
+    constructor (props) {
+        super(props);
+    }
+    static navigationOptions = {    // 상단바 안보이게 하기
         header: null
     }
     render() {
         return <AppTabContainet/>; // AppTabContainet 컴포넌트를 리턴한다.
+    }
+
+    componentDidMount() {   // 뒤로가기 눌렀을 때
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    }
+    componentWillUnmount() {    // 해제
+        this.exitApp = false;
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    }
+    handleBackButton = () => {  // 2000(2초) 안에 back 버튼을 한번 더 클릭 할 경우 앱 종료
+        if (this.exitApp == undefined || !this.exitApp) {
+            ToastAndroid.show('한번 더 누르시면 종료됩니다.', ToastAndroid.SHORT);
+            this.exitApp = true;
+            this.timeout = setTimeout(
+                () => {
+                    this.exitApp = false;
+                },
+                2000                // 2초
+            );
+        } else {
+            clearTimeout(this.timeout);
+            BackHandler.exitApp();  // 앱 종료
+        }
+        return true;
     }
 };
