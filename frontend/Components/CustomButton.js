@@ -7,10 +7,10 @@ import {
 
 export default class CustomButton extends Component{
   static defaultProps = {
-    title: 'Log in',
+    title: 'default',
     buttonColor: '#000',
     titleColor: '#fff',
-    onPress: () => alert('인증과정 거치고 메인화면으로'),
+    onPress: () => alert(),
   }
 
   constructor(props){
