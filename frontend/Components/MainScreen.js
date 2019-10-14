@@ -3,13 +3,15 @@ import { StyleSheet, Text, View, ToastAndroid, BackHandler } from 'react-native'
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs'; 
 import { createAppContainer } from 'react-navigation';
 
+import ChatManageTab from './AppTabNavigator/ChatManageTab'
 import ChatroomTab from './AppTabNavigator/ChatroomTab'
-import InvitedTab from './AppTabNavigator/InvitedTab'
+import ProfileTab from './AppTabNavigator/ProfileTab'
 import SettingTab from './AppTabNavigator/SettingTab'
 
 const AppTabNavigator = createMaterialTopTabNavigator({
+    Profile: { screen: ProfileTab },
     Chatroom: { screen: ChatroomTab },
-    Invited: { screen: InvitedTab },
+    ChatManage: { screen: ChatManageTab },
     Setting: { screen: SettingTab }
 }, {
     animationEnabled: true,

@@ -13,7 +13,7 @@ export default class TitleScreen extends Component {
     }
     render() {
         return (
-            <View style={styles.container}>
+            <View style={style.container}>
                 <View>
                 <Animation
                 resizeMode='cover'
@@ -28,37 +28,40 @@ export default class TitleScreen extends Component {
                 alignItems: 'center'
                 }}
                 loop={true}
-            />
+                />
+                </View>
+                <View style={style.content}></View>
+                <View style={style.footer}>
+                <CustomButton
+                    buttonColor={'#ddd'}
+                    titleColor={'#000'}
+                    title={'Sign up'}
+                    onPress={() => this.goSignUp1()}/>
+                <CustomButton
+                    buttonColor={'#000'}
+                    titleColor={'#fff'}
+                    title={'Log In'}
+                    //onPress={() => alert('이메일/비밀번호 입력 받아야함.')}/>
+                    onPress={ () => this.goMainScreen() }/>
+                </View>
             </View>
-            <View style={styles.content}></View>
-            <View style={styles.footer}>
-            <CustomButton
-                buttonColor={'#ddd'}
-                titleColor={'#000'}
-                title={'Sign up'}
-                onPress={() => alert('회원가입창 뜨고 정보입력 받고 이메일인증')}/>
-            <CustomButton
-                buttonColor={'#000'}
-                titleColor={'#fff'}
-                title={'Log In'}
-                //onPress={() => alert('이메일/비밀번호 입력 받아야함.')}/>
-                onPress={ () => this.goMainScreen() }/>
-            </View>
-        </View>
         );
     }
     goMainScreen(){
         this.props.navigation.navigate('Main');
     }
+    goSignUp1(){
+        this.props.navigation.navigate('SignUp1');
+    }
 }
 
-    const styles = StyleSheet.create({
+const style = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 10,
-        backgroundColor: 'grey',
+        backgroundColor: '#444',
     },
     header: {
         width:'100%',
@@ -79,10 +82,7 @@ export default class TitleScreen extends Component {
         alignItems: 'center',
     },
     footer: {
-        
         width:'100%',
         height:'20%',
-        
-        
     },
     });
