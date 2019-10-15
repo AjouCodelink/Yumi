@@ -2,17 +2,18 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Icon } from 'native-base';
 
-export default class InvitedTab extends Component {
+export default class ChatManageTab extends Component {
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
-            <Icon name='md-mail' style={{color: tintColor}} />
+            <Icon name='md-add-circle' size={300} style={{color: tintColor}} />
         )
     }
     render() {
         return (
             <View style={style.container}>
-                <Text style={style.font_title}>InvitedTab</Text>
-                <Text style={style.font_main}>You can see a list of the rooms you are invited to.</Text>
+                <Text style={style.font_title}>ChatManageTab</Text>
+                <Text style={style.font_main}>You can create, search, and receive</Text>
+                <Text style={style.font_main}>recommendations for chat rooms.</Text>
             </View>
         );
     }

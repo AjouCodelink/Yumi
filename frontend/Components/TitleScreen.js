@@ -1,64 +1,72 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
 
 import CustomButton from './CustomButton';
-import Animation from 'lottie-react-native';
 
 export default class TitleScreen extends Component {
     static navigationOptions = {    // 상단바 안보이게 하기
         header: null
     }
-    componentDidMount() {
-    this.animation.play();
+    constructor(props){
+        super(props);
+        this.state={email: '', password: ''}
     }
     render() {
         return (
-            <View style={styles.container}>
-                <View>
-                <Animation
-                resizeMode='cover'
-//                source={require('./LottieAnimation/title.json')}
-                ref={animation => {
-                this.animation = animation;
-                }}
-                style={{
-                width: '100%',
-                height: '50%',
-                justifyContent: 'center',
-                alignItems: 'center'
-                }}
-                loop={true}
-            />
+            <View style={style.container}>
+                <Image
+                    style={{height:'50%', width:'50%', resizeMode:'contain'}}
+                    source={require('../assets/Titleimage.png')}/>
+                <View style={style.content}>
+                    <TextInput
+                        style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
+                        placeholder="Email Address"
+                        value={this.state.email}
+                        onChangeText={(email) => this.setState({email})}
+                    />
+                    <Text style={{fontSize: 10}}>        </Text>
+                    <TextInput
+                        style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
+                        placeholder="Password"
+                        value={this.state.password}
+                        onChangeText={(password) => this.setState({password})}
+                    />
+                </View>
+                <View style={style.footer}>
+                    <View style={style.footer_backbutton}>
+                        <CustomButton
+                            title={'Sign up'}
+                            titleColor={'#ddd'}
+                            buttonColor={'#000'}
+                            onPress={() => this.goSignup_Welcome()}/>
+                    </View>
+                    <View style={style.footer_nextbutton}>
+                        <CustomButton
+                            title={'Log In'}
+                            titleColor={'#000'}
+                            buttonColor={'#ddd'}
+                            onPress={ () => this.goMain() }/>
+                    </View>
+                </View>
             </View>
-            <View style={styles.content}></View>
-            <View style={styles.footer}>
-            <CustomButton
-                buttonColor={'#ddd'}
-                titleColor={'#000'}
-                title={'Sign up'}
-                onPress={() => alert('회원가입창 뜨고 정보입력 받고 이메일인증')}/>
-            <CustomButton
-                buttonColor={'#000'}
-                titleColor={'#fff'}
-                title={'Log In'}
-                //onPress={() => alert('이메일/비밀번호 입력 받아야함.')}/>
-                onPress={ () => this.goMainScreen() }/>
-            </View>
-        </View>
         );
     }
-    goMainScreen(){
+    goSignup_Welcome(){
+        this.props.navigation.navigate('SignUp_Welcome');
+    }
+    goMain(){
         this.props.navigation.navigate('Main');
     }
 }
 
-    const styles = StyleSheet.create({
+const style = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
-        backgroundColor: 'grey',
+        paddingTop: 100,
+        paddingBottom: 200,
+        backgroundColor: '#444',
     },
     header: {
         width:'100%',
@@ -79,10 +87,25 @@ export default class TitleScreen extends Component {
         alignItems: 'center',
     },
     footer: {
-        
-        width:'100%',
-        height:'20%',
-        
-        
+        width:'75%',
+        height:'9%',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#444'
+    },
+    footer_backbutton: {
+        width:'75%',
+        height:'100%',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        paddingRight: '10%',
+    },
+    footer_nextbutton: {
+        width:'75%',
+        height:'100%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        paddingLeft: '10%',
     },
     });
