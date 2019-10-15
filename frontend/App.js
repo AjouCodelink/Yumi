@@ -5,25 +5,25 @@ import { createAppContainer } from 'react-navigation';
 
 import MainScreen from './Components/MainScreen';
 import TitleScreen from './Components/TitleScreen';
-import SignUp0 from './Components/SignUp/SignUp0';
-import SignUp1 from './Components/SignUp/SignUp1';
-import SignUp2 from './Components/SignUp/SignUp2';
+import SignUp_Welcome from './Components/SignUp/SignUp_Welcome';
+import SignUp_EmailAuth from './Components/SignUp/SignUp_EmailAuth';
+import SignUp_Detail from './Components/SignUp/SignUp_Detail';
 
 const AppStackNavigator = createStackNavigator({
   Title:{
     screen: TitleScreen
   },
   Main:{
-    screen: MainScreen // MainScreen 컴포넌트를 네비게이터에 등록
+    screen: MainScreen
   },
-  SignUp0:{
-    screen: SignUp0 // 인삿말
+  SignUp_Welcome:{
+    screen: SignUp_Welcome
   },
-  SignUp1:{
-    screen: SignUp1 // 이메일인증
+  SignUp_EmailAuth:{
+    screen: SignUp_EmailAuth
   },
-  SignUp2:{
-    screen: SignUp2 // 자세한 내용 입력
+  SignUp_Detail:{
+    screen: SignUp_Detail
   },
 }
 );

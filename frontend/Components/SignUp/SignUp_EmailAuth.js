@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import CustomButton from '../CustomButton';
 
-export default class signup1 extends Component {
+export default class SignUp_EmailAuth extends Component {
     static navigationOptions = {
         header: null
     }
@@ -39,7 +39,7 @@ export default class signup1 extends Component {
                             title={'Next'}
                             titleColor={'#000'}
                             buttonColor={'#ddd'}
-                            onPress={() => this.goSignUp2()}/>
+                            onPress={() => this.goSignUp_Detail()}/>
                     </View>
                 </View>
             </View>
@@ -48,8 +48,8 @@ export default class signup1 extends Component {
     goTitle(){
         this.props.navigation.navigate('Title');
     }
-    goSignUp2(){
-        this.props.navigation.navigate('SignUp2');
+    goSignUp_Detail(){
+        this.props.navigation.navigate('SignUp_Detail');
     }
 }
 
@@ -59,7 +59,7 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 50,
-        paddingBottom: 150,
+        paddingBottom: 100,
         backgroundColor: '#333',
     },
     header: {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import CustomButton from '../CustomButton';
 
-export default class signup2 extends Component {
+export default class SignUp_Detail extends Component {
     static navigationOptions = {
         header: null
     }
@@ -54,7 +54,7 @@ export default class signup2 extends Component {
                             title={'Back'}
                             titleColor={'#ddd'}
                             buttonColor={'#000'}
-                            onPress={() => this.goSignUp1()}/>
+                            onPress={() => this.goSignUp_EmailAuth()}/>
                     </View>
                     <View style={style.footer_nextbutton}>
                         <CustomButton
@@ -67,8 +67,8 @@ export default class signup2 extends Component {
             </View>
         )
     }
-    goSignUp1(){
-        this.props.navigation.navigate('SignUp1');
+    goSignUp_EmailAuth(){
+        this.props.navigation.navigate('SignUp_EmailAuth');
     }
     goMain(){
         this.props.navigation.navigate('Main');
@@ -81,7 +81,7 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 50,
-        paddingBottom: 150,
+        paddingBottom: 100,
         backgroundColor: '#333',
     },
     header: {
