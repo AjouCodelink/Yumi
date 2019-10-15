@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import CustomButton from '../CustomButton';
 
-export default class signup1 extends Component {
+export default class signup0 extends Component {
     static navigationOptions = {
         header: null
     }
@@ -10,21 +10,24 @@ export default class signup1 extends Component {
         super(props);
         this.state={email: ''}
     }
+    handleSummit = (e) => {
+        e.preventDeafult(); // 페이지 재시작 방지
+        this.props.onCreate(this.state);
+        this.setState({
+            email: ''
+        })
+    }
     render() {
         return (
             <View style={style.container}>
-                <View style={style.header}/>
                 <View style={style.title}>
-                    <Text style={style.font_title}>E-mail authentication</Text>
+                    <Text style={style.font_title}>Welcome!</Text>
                 </View>
                 <View style={style.content}>
-                        <TextInput
-                            style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                            placeholder="Email Address"
-                            value={this.state.email}
-                            onChangeText={(email) => this.setState({email})}
-                        />
-                    <Text style={style.font_main}>  You must use school e-mail.{"\n"}</Text>
+                <Text style={style.font_main}>Yumi is an open chatting application for{"\n"} students studying abroad.{"\n"}</Text>
+                <Text style={style.font_main}>{"\n"}{"\n"}{"\n"}{"\n"}(대충 그럴싸한 설명 하는 글)</Text>
+                <Text style={style.font_main}>{"\n"}{"\n"}{"\n"}{"\n"}{"\n"}(대충 지 잘난거 자랑 하는 글)</Text>
+                <Text style={style.font_main}>{"\n"}{"\n"}{"\n"}{"\n"}{"\n"}Now, press the next button.</Text>
                 </View>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
@@ -39,7 +42,7 @@ export default class signup1 extends Component {
                             title={'Next'}
                             titleColor={'#000'}
                             buttonColor={'#ddd'}
-                            onPress={() => this.goSignUp2()}/>
+                            onPress={() => this.goSignUp1()}/>
                     </View>
                 </View>
             </View>
@@ -48,8 +51,8 @@ export default class signup1 extends Component {
     goTitle(){
         this.props.navigation.navigate('Title');
     }
-    goSignUp2(){
-        this.props.navigation.navigate('SignUp2');
+    goSignUp1(){
+        this.props.navigation.navigate('SignUp1');
     }
 }
 
@@ -58,8 +61,8 @@ const style = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: 50,
-        paddingBottom: 150,
+        paddingTop: 100,
+        paddingBottom: 100,
         backgroundColor: '#333',
     },
     header: {
@@ -77,9 +80,8 @@ const style = StyleSheet.create({
     },
     content: {
         flex: 1,
-        width: '75%',
         justifyContent: 'center',
-        alignItems: 'flex-start',
+        alignItems: 'center',
     },
     footer: {
         width:'100%',
@@ -108,6 +110,6 @@ const style = StyleSheet.create({
     },
     font_main: {
         color: '#aaa',
-        fontSize: 14,
+        fontSize: 20,
     },
 });

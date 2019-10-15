@@ -5,7 +5,7 @@ import { Icon } from 'native-base';
 export default class ChatManageTab extends Component {
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
-            <Icon name='md-add-circle' style={{color: tintColor}} />
+            <Icon name='md-add-circle' size={300} style={{color: tintColor}} />
         )
     }
     render() {
