@@ -25,6 +25,11 @@ export default class SignUp_EmailAuth extends Component {
                             onChangeText={(email) => this.setState({email})}
                         />
                     <Text style={style.font_main}>  You must use school e-mail.{"\n"}</Text>
+		<CustomButton
+                            title={'Auth'}
+                            titleColor={'#000'}
+                            buttonColor={'#ddd'}
+                            onPress={() => {this.submit();}}/>
                 </View>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
@@ -50,6 +55,22 @@ export default class SignUp_EmailAuth extends Component {
     }
     goSignUp_Detail(){
         this.props.navigation.navigate('SignUp_Detail');
+    }
+    submit(){
+        var email= {}
+        email.email = this.state.email
+        console.log(email);
+        var url = 'http://101.101.160.185:3000/email';
+        fetch(url, {
+          method: 'POST',
+          body: JSON.stringify(email),
+          headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token'
+          })
+        }).then(res => res.json())
+        .catch(error=> console.error('Error:', error))
+        .then(response => console.log('Success:', response));
     }
 }
 
