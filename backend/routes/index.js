@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
+var nodemailer = require('nodemailer');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -40,6 +41,37 @@ router.get('/test', function(req, res) {
 router.post('/test', function(req, res){
     console.log(req.body);
 });
+
+router.post("/mail", function(req, res, next){
+
+  let email = req.body.email;
+  console.log(email);
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'codelink19@gmail.com',  // gmail 계정 아이디를 입력
+      pass: 'zhemfldzm'          // gmail 계정의 비밀번호를 입력
+    }
+  });
+
+  let mailOptions = {
+    from: 'codelink19@gmail.com',
+    to: email,
+    subject: '안녕하세요, CodeLink입니다. 이메일 인증을 해주세요.',
+    html: '<p>아래의 링크를 클릭해주세요 !</p>'
+  };
+
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+
+  res.redirect("/");
+})
 //var Client = require('mongodb').MongoClient;
 //var db;
 
