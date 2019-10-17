@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var login = require('./login/index');
-var email_auth = require('./signup/email');
+var signup = require('./signup/index');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.use('/login', login);
-router.use('/email', email_auth)
+router.use('/signup', signup);
 
 module.exports = router;
 
