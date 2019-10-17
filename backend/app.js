@@ -3,10 +3,22 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
 var indexRouter = require('./routes/index');
-
+var mongoose = require('mongoose');
 var app = express();
+
+// mongoose를 사용하여 mongoDB 연결
+mongoose.connect('mongodb://127.0.0.1:27017/codelink');
+var db = mongoose.connection;
+
+// 연결 실패 
+db.on('error', function() {
+    console.log('Connection Failed!');
+});
+// 연결 성공
+db.once('open', function() {
+    console.log('Connected!');
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

@@ -16,11 +16,6 @@ export default class ProfileTab extends Component {
     }
     _clicked = () => this.setState({clicked: false});
     render() {
-        // (Test) RESTFul api GET 메소드
-        fetch('http://101.101.160.185:3000/test')
-            .then(response => response.json())
-            .then(json => console.log(json))
-            .catch(err => console.log(err));
         return (
             <View style={style.container}>
                 <Text style={style.font_title}>ProfileTab</Text>
@@ -29,13 +24,13 @@ export default class ProfileTab extends Component {
                 {
                     this.state.clicked
                         ? <Button title="TEST BUTTON" onPress={this._clicked}/>
-                        : fetch('http://101.101.160.185:3000/test', { // (Test) RESTFul api POST 메소드
+                        : fetch('http://101.101.160.185:3000/signup/save-user', { // (Test) RESTFul api POST 메소드
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({name: 'kim', age: 24})
+                            body: JSON.stringify({email:"tkdgusl94@naver.com", password:"codelink", nickname:"jeong"})
                         })
                 }
             </View>
