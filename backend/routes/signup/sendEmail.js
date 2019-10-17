@@ -8,7 +8,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.post("/", function (req, res, next) {
-    let email = req.body.email;
+    let email = req.query.email;
 
     User.findOne({email: email}, function (err, user) {
         console.log(user);
@@ -30,7 +30,7 @@ router.post("/", function (req, res, next) {
             from: 'codelink19@gmail.com',
             to: email,
             subject: '안녕하세요, CodeLink입니다. 이메일 인증을 해주세요.',
-            html: '<p>아래의 링크를 클릭해주세요 !</p><br><p>' + random_number + '</p>'
+            html: '<p>아래의 번호를 입력해주세요 !</p><p>' + random_number + '</p>'
         };
 
         var result = {};
