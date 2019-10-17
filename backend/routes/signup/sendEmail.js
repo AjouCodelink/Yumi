@@ -8,7 +8,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.post("/", function (req, res, next) {
-    let email = req.query.email;
+    let email = req.body.email;
 
     User.findOne({email: email}, function (err, user) {
         console.log(user);
