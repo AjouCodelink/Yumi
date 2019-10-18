@@ -1,0 +1,199 @@
+[33mcommit b20f2fa9193a91f493fbedb62362f77033256794[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Merge: 86fb9c5 70648c4
+Author: danggai <donggi9313@naver.com>
+Date:   Fri Oct 18 14:00:25 2019 +0900
+
+    1
+
+[33mcommit 70648c42f0bcb99e7ccf2498b1983f88e0856058[m[33m ([m[1;31mupstream/master[m[33m)[m
+Author: tkdgusl94 <46221990+tkdgusl94@users.noreply.github.com>
+Date:   Fri Oct 18 01:15:18 2019 +0900
+
+    이메일 중복확인, 회원가입시 DB 저장 (#11)
+    
+    * 이메일 중복확인, 회원가입시 DB 저장
+    
+    * 이메일 오타 수정
+    
+    * 오타수정
+
+[33mcommit 86fb9c5d9f15a80a551ba8a2bfd9a79a65932d92[m
+Author: donggi9313 <48412823+donggi9313@users.noreply.github.com>
+Date:   Thu Oct 17 21:26:08 2019 +0900
+
+    두번 send해야 메일 보내지는거 수정해야함. 대답 올때까지 대기하는거 구현해야함. EmailAuth에서 받은 메일주소 Detail로 전달해야함.
+
+[33mcommit 63f52a49969379b8676c653a630102ce8e4b60a4[m
+Author: tkdgusl94 <46221990+tkdgusl94@users.noreply.github.com>
+Date:   Thu Oct 17 16:16:30 2019 +0900
+
+    이메일 인증번호 추가, 백엔드 모듈화 (#10)
+
+[33mcommit 54a96ad9bbc6703d856f26192e2d555442df33ed[m
+Merge: 904e013 b13aa81
+Author: donggi9313 <48412823+donggi9313@users.noreply.github.com>
+Date:   Thu Oct 17 12:29:50 2019 +0900
+
+    버튼 및 레이아웃 상대단위로 수정-2
+
+[33mcommit 904e01318b419d25df6b519b68f75647b43de7dc[m
+Author: donggi9313 <48412823+donggi9313@users.noreply.github.com>
+Date:   Thu Oct 17 12:25:54 2019 +0900
+
+    버튼 및 레이아웃 상대단위로 수정-1
+
+[33mcommit b13aa8110906fa0f3e6f2877a43d384d6d705ec2[m
+Author: tkdgusl94 <46221990+tkdgusl94@users.noreply.github.com>
+Date:   Thu Oct 17 12:23:29 2019 +0900
+
+    이메일 전송 API 작성 (#9)
+    
+    * 이메일 전송 API 작성
+    
+    * 이메일 인증, 로그인 모듈화
+    
+    * 프론트에서 이메일 전송 API fetch
+
+[33mcommit 8592c28a485ee4fce1b692a58c7ec40a1511fefc[m
+Author: donggi9313 <48412823+donggi9313@users.noreply.github.com>
+Date:   Wed Oct 16 01:11:08 2019 +0900
+
+    타이틀 화면 로그인창 생성 및 회원가입 구현 (#8)
+    
+    * 메인 화면 로그인창 구현 및 회원가입 창 초기 구현 완료(백엔드와 연동 필요)
+    * 회원가입 탭 이름 직관적으로 변경
+    
+    회원가입은 이후 백엔드와 연동해야함. 더 받아야하는 정보가 생길 수도 있음.
+    custombutton 기능 수정 (하단 공백, 좌측 공백 삭제)
+    타이틀화면 UI 수정 (로그인 바로 가능하도록)
+
+[33mcommit 02c1142f8b948622975c39613e4fcb3c17e250e7[m
+Author: danggai <donggi9313@naver.com>
+Date:   Wed Oct 16 01:08:32 2019 +0900
+
+    회원가입 탭 이름 직관적으로 변경
+
+[33mcommit bd09b503e368f1697d0b737b16ba15ca19915d8c[m
+Author: danggai <donggi9313@naver.com>
+Date:   Tue Oct 15 20:47:40 2019 +0900
+
+    메인 화면 로그인창 구현 및 회원가입 창 초기 구현 완료(백엔드와 연동 필요)
+
+[33mcommit 15351fa3fd38a0c48f0664d73cfa449e97f69270[m
+Author: donggi9313 <48412823+donggi9313@users.noreply.github.com>
+Date:   Mon Oct 14 20:58:50 2019 +0900
+
+    sign up 만드는 과정1
+
+[33mcommit 21abf7899ea3ff3e7443dfe3b640901d412af5b1[m
+Merge: 8c9f9f1 ad69c6d
+Author: donggi9313 <48412823+donggi9313@users.noreply.github.com>
+Date:   Thu Oct 10 17:11:29 2019 +0900
+
+    Merge pull request #7 from donggi9313/master
+    
+    타이틀 화면 버튼 작동.
+    로그인 버튼 누를 시 메인화면으로 이동 (추후 저장된 쿠키 있을 시 바로 메인화면으로 이동하도록 하는 개발 필요.)
+    메인화면에서 뒤로가기 2번 누르면 종료됨.
+
+[33mcommit ad69c6d95b4da392c0427112c341a48d550d366f[m
+Author: donggi9313 <48412823+donggi9313@users.noreply.github.com>
+Date:   Thu Oct 10 17:07:34 2019 +0900
+
+    버튼 기능 수정 및 login 누를 시 메인화면 +뒤로가기 2번 누르면 종료
+
+[33mcommit dfd580df10245b73f1dcaa6edd0c17ca5baca3a9[m
+Author: danggai <donggi9313@naver.com>
+Date:   Thu Oct 10 04:12:32 2019 +0900
+
+    메인화면 완성 및 버튼 수정
+
+[33mcommit 8c9f9f1ec0645e0eb87644af273bb7a1fb610e97[m
+Author: tkdgusl94 <46221990+tkdgusl94@users.noreply.github.com>
+Date:   Tue Oct 8 23:25:28 2019 +0900
+
+    프론트엔드에서 백엔드 데이터 전송 테스트 (#5)
+    
+    * 프론트엔드에서 백엔드 데이터 전송 테스트
+    
+    * 백엔드쪽 파일 업로드 안되서 다시 추가
+
+[33mcommit 888779aec794c0fda99749370cb3e9a1142b727e[m
+Author: tkdgusl94 <46221990+tkdgusl94@users.noreply.github.com>
+Date:   Tue Oct 8 13:06:42 2019 +0900
+
+    백엔드에서 프론트엔드 데이터 전송 테스트 (#4)
+    
+    * 백엔드에서 프론트엔드 데이터 전송 테스트
+    
+    * mongoose 설치
+
+[33mcommit 46b3a1db04e73c2aa2e0f45a8836b0c09b43a038[m
+Author: donggi9313 <48412823+donggi9313@users.noreply.github.com>
+Date:   Mon Oct 7 20:50:59 2019 +0900
+
+    mainscreen 분리 / test button 생성
+    
+    후에 test button 이용해서 백엔드와 연결 시도.
+
+[33mcommit 72b37a99cc0ad7ed30b1ba40c80e24d31d3ba8f5[m
+Author: LEEYOOONGU <44609477+LEEYOOONGU@users.noreply.github.com>
+Date:   Mon Oct 7 11:28:38 2019 +0900
+
+    Add files via upload
+
+[33mcommit 22e83074492f2a41edb483498c26d57f5ad43a69[m
+Author: LEEYOOONGU <44609477+LEEYOOONGU@users.noreply.github.com>
+Date:   Mon Oct 7 11:06:36 2019 +0900
+
+    Create readme.md
+
+[33mcommit 6873f61f86ad3891b2237addfd761b3e70814d4e[m
+Author: LEEYOOONGU <44609477+LEEYOOONGU@users.noreply.github.com>
+Date:   Mon Oct 7 10:44:39 2019 +0900
+
+    Create lottieanimation
+
+[33mcommit 4876704a178207b71447d0822bc0668c6a12b4c4[m
+Author: LEEYOOONGU <44609477+LEEYOOONGU@users.noreply.github.com>
+Date:   Mon Oct 7 09:14:04 2019 +0900
+
+    타이틀화면+애니매이션
+
+[33mcommit 54b1b9ec23474bb4f4adf5c5d9f6667e8fa0f145[m
+Author: donggi9313 <48412823+donggi9313@users.noreply.github.com>
+Date:   Fri Oct 4 00:54:28 2019 +0900
+
+    오탈자 수정
+
+[33mcommit 873b9141ee26b22b77b2d3514e55fc66d20655eb[m
+Author: donggi9313 <48412823+donggi9313@users.noreply.github.com>
+Date:   Fri Oct 4 00:53:36 2019 +0900
+
+    하단바 개선
+    
+    네비게이션바 애니메이션화 및 아이콘 등록
+
+[33mcommit a2a56cc53fe1951d15d4a87c0f762b07badd1e9a[m
+Author: sanghyun <tkdgusl94@naver.com>
+Date:   Thu Oct 3 00:51:52 2019 +0900
+
+    .DS_Store 파일 제거
+
+[33mcommit 694d03e76d38b3f581bab45e3a8943336a491146[m
+Author: sanghyun <tkdgusl94@naver.com>
+Date:   Thu Oct 3 00:50:16 2019 +0900
+
+    frontend init & UI 하단바 만들기
+
+[33mcommit 46117da9351613678fbdcde5037ab5d067a80ddd[m
+Author: sanghyun <tkdgusl94@naver.com>
+Date:   Thu Oct 3 00:47:07 2019 +0900
+
+    backend init
+
+[33mcommit 09a3614fe5ceadddebd4635a33f6977db705e659[m
+Author: donggi9313 <48412823+donggi9313@users.noreply.github.com>
+Date:   Mon Sep 9 16:46:29 2019 +0900
+
+    Initial commit

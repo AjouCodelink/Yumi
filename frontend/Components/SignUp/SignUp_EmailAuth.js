@@ -8,7 +8,8 @@ export default class SignUp_EmailAuth extends Component {
     }
     constructor(props){
         super(props);
-        this.state={email: ''}
+        this.state={email: '', clientAuthcode: '', serverAuthcode: 'admin',
+        emailHideness: 'flex', authHideness: 'none', nextHideness: 'none', authSuccess: 0, mailSendResult: -1}
     }
     render() {
         return (
@@ -17,38 +18,105 @@ export default class SignUp_EmailAuth extends Component {
                 <View style={style.title}>
                     <Text style={style.font_title}>E-mail authentication</Text>
                 </View>
-                <View style={style.content}>
-                        <TextInput
-                            style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                            placeholder="Email Address"
-                            value={this.state.email}
-                            onChangeText={(email) => this.setState({email})}
-                        />
-                    <Text style={style.font_main}>  You must use school e-mail.{"\n"}</Text>
-		<CustomButton
-                            title={'Auth'}
-                            titleColor={'#000'}
-                            buttonColor={'#ddd'}
-                            onPress={() => {this.submit();}}/>
+                <View style={[style.content, {display: this.state.emailHideness}]}>
+                    <View style={style.input_place}>
+                        <View style={style.input}>
+                            <TextInput
+                                style={{height: 40, width: '100%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
+                                placeholder="Email Address"
+                                value={this.state.email}
+                                onChangeText={(email) => this.setState({email})}
+                            />
+                        </View>
+                        <View style={style.auth_button}>
+                            <CustomButton
+                                title={'Send'}
+                                titleColor={'#000'}
+                                buttonColor={'#ddd'}
+                                onPress={() => {this.onPressEmail();}}/>
+                        </View>
+                    </View>
+                    <Text style={style.font_main}>  You must use school e-mail.</Text>
+                    <Text style={style.font_main}>    ex) example@ajou.ac.kr{"\n"}{"\n"}</Text>
                 </View>
-                <View style={style.footer}>
-                    <View style={style.footer_backbutton}>
-                        <CustomButton
-                            title={'Back'}
-                            titleColor={'#ddd'}
-                            buttonColor={'#000'}
-                            onPress={() => this.goTitle()}/>
+                <View style={[style.content, {display: this.state.authHideness}]}>
+                    <Text style={{fontSize: 17, color: '#aaa'}}> Your email address :</Text>
+                    <Text style={{fontSize: 20, color: '#ddd'}}>  {this.state.email}{"\n"}</Text>
+                    <View style={style.input_place}>
+                        <View style={style.input}>
+                            <TextInput
+                                style={{height: 40, width: '100%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
+                                placeholder="Authentication number"
+                                value={this.state.clientAuthcode}
+                                onChangeText={(clientAuthcode) => this.setState({clientAuthcode})}
+                            />
+                        </View>
+                        <View style={style.auth_button}>
+                            <CustomButton
+                                title={'Check'}
+                                titleColor={'#000'}
+                                buttonColor={'#ddd'}
+                                onPress={() => {this.onPressAuth();}}/>
+                        </View>
                     </View>
-                    <View style={style.footer_nextbutton}>
-                        <CustomButton
-                            title={'Next'}
-                            titleColor={'#000'}
-                            buttonColor={'#ddd'}
-                            onPress={() => this.goSignUp_Detail()}/>
-                    </View>
+                    <Text style={style.font_main}>  The authentication number is 6 digits.{"\n"}</Text>
+                    <Text style={style.font_main}>  현재 서버에 전송된 인증번호: {this.state.serverAuthcode}</Text>
+                </View>
+                <View style={[style.content, {display: this.state.nextHideness}]}>
+                    <Text style={{fontSize: 17, color: '#aaa'}}> Your email address :</Text>
+                    <Text style={{fontSize: 20, color: '#ddd'}}>  {this.state.email}{"\n"}</Text>
+                    <Text style={{fontSize: 20, color: '#ddd'}}>   Email authentication completed.{"\n"}   Please press Next.</Text>
+                </View>
+            <View style={style.footer}>
+                <View style={style.footer_backbutton}>
+                    <CustomButton
+                        title={'Back'}
+                        titleColor={'#ddd'}
+                        buttonColor={'#000'}
+                        onPress={() => this.goTitle()}/>
+                </View>
+                <View style={style.footer_nextbutton}>
+                    <CustomButton
+                        title={'Next'}
+                        titleColor={'#000'}
+                        buttonColor={'#ddd'}
+                        onPress={() => this.onPressNext()}/>
                 </View>
             </View>
+        </View>
         )
+    }
+    onPressEmail(){
+        if(this.state.email == '') {    // 메일주소 입력X
+            alert("Please enter your email address.")
+        } else if (this.state.email.indexOf('@') == -1 || this.state.email.indexOf('.ac.kr') == -1) {   // 메일주소 유효성검사
+            alert("Please enter a valid email address. The email address must include '@' and must end with 'ac.kr'")
+        } else {
+            alert("Sending email. It takes about 3 seconds to send.")
+            this.submit();
+            setTimeout(() => {this.checkMailResult();}, 3500);
+        }
+    }
+    onPressAuth(){
+        if(this.state.serverAuthcode == '') {                                  // 인증번호 입력X
+            alert("Please enter the authentication number.")
+        } else if(this.state.serverAuthcode == this.state.clientAuthcode) {    // 인증 완료
+            this.setState({
+                authSuccess: 1,
+                authHideness: 'none',
+                nextHideness: 'flex'
+            });
+            alert("Your email address is authenticated. Thank you.")
+        } else {                                                               // 인증 실패
+            alert("Invalid authentication number. Please check again.")
+        }
+    }
+    onPressNext(){
+        if(this.state.authSuccess == 1){      // 메일인증 완료
+            this.goSignUp_Detail();
+        } else {                              // 메일인증 아직 안했음
+            alert("Please proceed with email address authentication first.");
+        }
     }
     goTitle(){
         this.props.navigation.navigate('Title');
@@ -56,21 +124,37 @@ export default class SignUp_EmailAuth extends Component {
     goSignUp_Detail(){
         this.props.navigation.navigate('SignUp_Detail');
     }
+    checkMailResult(){
+        if (this.state.mailSendResult == 0) {           // 중복된 메일주소
+            alert("Duplicate email address.")
+        } else if (this.state.mailSendResult == 1) {    // 전송 성공
+            this.setState({
+                emailHideness: 'none',
+                authHideness: 'flex'
+            })
+            alert("We sent you an email. Please check your email and enter your authentication number.")
+        } else {                                    // 서버 내 전송 오류
+            alert("Failed to send email. Please try again.")
+        }
+    }
     submit(){
         var email= {}
         email.email = this.state.email
         console.log(email);
         var url = 'http://101.101.160.185:3000/signup/send-email';
         fetch(url, {
-          method: 'POST',
-          body: JSON.stringify(email),
-          headers: new Headers({
+            method: 'POST',
+            body: JSON.stringify(email),
+            headers: new Headers({
             'Content-Type' : 'application/json',
             'token': 'token'
-          })
-        }).then(res => res.json())
-        .catch(error=> console.error('Error:', error))
-        .then(response => console.log('Success:', response));
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => this.setState({
+            serverAuthcode: responseJson.number,    // 인증번호
+            mailSendResult: responseJson.result     // 실패시-1 중복시0 성공시1
+        }));
     }
 }
 
@@ -79,8 +163,8 @@ const style = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: 50,
-        paddingBottom: 100,
+        paddingTop: '12%',
+        paddingBottom: '6%',
         backgroundColor: '#333',
     },
     header: {
@@ -94,13 +178,32 @@ const style = StyleSheet.create({
         height:'15%',
         justifyContent: 'center',
         alignItems: 'center',
-        
     },
     content: {
         flex: 1,
-        width: '75%',
+        width: '85%',
         justifyContent: 'center',
         alignItems: 'flex-start',
+    },
+    input_place: {
+        width: '100%',
+        height: 40,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    input: {
+        width:'70%',
+        height:'100%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+    },
+    auth_button: {
+        width:'30%',
+        height:'100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: '5%'
     },
     footer: {
         width:'100%',
@@ -110,14 +213,14 @@ const style = StyleSheet.create({
         alignItems: 'center',
     },
     footer_backbutton: {
-        width:'70%',
+        width:'40%',
         height:'100%',
         justifyContent: 'center',
         alignItems: 'flex-end',
         paddingRight: '15%',
     },
     footer_nextbutton: {
-        width:'70%',
+        width:'40%',
         height:'100%',
         justifyContent: 'center',
         alignItems: 'flex-start',

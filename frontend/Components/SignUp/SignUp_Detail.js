@@ -32,7 +32,7 @@ export default class SignUp_Detail extends Component {
                         value={this.state.password}
                         onChangeText={(password) => this.setState({password})}
                     />
-                    <Text style={style.font_main}> Password must be at least 8 characters long.{"\n"}</Text>
+                    <Text style={style.font_main}> Password must be between 8 and 16 characters.{"\n"}</Text>
                     <TextInput
                         style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
                         placeholder="Confirm Password"
@@ -46,15 +46,15 @@ export default class SignUp_Detail extends Component {
                         value={this.state.name}
                         onChangeText={(name) => this.setState({name})}
                     />
-                    <Text style={style.font_main}> The nickname must be between 2 and 10 characters.{"\n"}</Text>
+                    <Text style={style.font_main}> The nickname must be between 2 and 20 characters.{"\n"}</Text>
                 </View>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
                         <CustomButton
-                            title={'Back'}
+                            title={'Title'}
                             titleColor={'#ddd'}
                             buttonColor={'#000'}
-                            onPress={() => this.goSignUp_EmailAuth()}/>
+                            onPress={() => this.goTitle()}/>
                     </View>
                     <View style={style.footer_nextbutton}>
                         <CustomButton
@@ -67,8 +67,8 @@ export default class SignUp_Detail extends Component {
             </View>
         )
     }
-    goSignUp_EmailAuth(){
-        this.props.navigation.navigate('SignUp_EmailAuth');
+    goTitle(){
+        this.props.navigation.navigate('Title');
     }
     goMain(){
         this.props.navigation.navigate('Main');
@@ -80,8 +80,8 @@ const style = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: 50,
-        paddingBottom: 100,
+        paddingTop: '12%',
+        paddingBottom: '5%',
         backgroundColor: '#333',
     },
     header: {
@@ -111,14 +111,14 @@ const style = StyleSheet.create({
         alignItems: 'center',
     },
     footer_backbutton: {
-        width:'70%',
+        width:'40%',
         height:'100%',
         justifyContent: 'center',
         alignItems: 'flex-end',
         paddingRight: '15%',
     },
     footer_nextbutton: {
-        width:'70%',
+        width:'40%',
         height:'100%',
         justifyContent: 'center',
         alignItems: 'flex-start',
