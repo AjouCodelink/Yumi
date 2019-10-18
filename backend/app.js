@@ -10,6 +10,16 @@ var passport = require('passport') // 로그인, 회원가입 시 필요한 모�
 var LocalStrategy = require('passport-local').Strategy
 var session = require('express-session')
 var flash = require('connect-flash')
+var bodyParser = require('body-parser');
+
+app.use(session({ // 로그인, 회원가입 시 필요한 미들웨어 설정
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(flash())
 
 // mongoose를 사용하여 mongoDB 연결
 mongoose.connect('mongodb://127.0.0.1:27017/codelink');
@@ -34,16 +44,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(bodyParser.json()) // body-parser를 json 형태로 받기 위함.
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/', indexRouter);
-
-app.use(session({ // 로그인, 회원가입 시 필요한 미들웨어 설정
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true
-}))
-app.use(passport.initialize())
-app.use(passport.session())
-app.use(flash())
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
