@@ -30,6 +30,7 @@ passport.use('local-join', new LocalStrategy({
         console.log('your email is already used');
         return done(null, false, {message:'existed user'});
       } else{
+        //console.log(req.body);
         var user = new User();
         user.email = req.body.email;
         user.password = req.body.password;
@@ -38,7 +39,7 @@ passport.use('local-join', new LocalStrategy({
 
         user.save(function(err){
           if(err) throw err
-          console.log(email);
+          //console.log(email);
           return done(null, {'email':email});
         }) 
       }
@@ -51,23 +52,4 @@ router.post('/', passport.authenticate('local-join', {
     failureFlash: true
 }));
 
-
-
-/*router.post('/', function(req, res){
-    var user = new User();
-    user.email = req.body.email;
-    user.password = req.body.password;
-    //user.nickname = req.body.nickname;
-    //user.interests = req.body.interests;
-    console.log(user);
-
-    user.save(function(err){
-      if(err){
-        console.error(err);
-        return res.json({result:0});
-      }
-      else res.json({result:1});
-    })
-});
-*/
 module.exports = router;
