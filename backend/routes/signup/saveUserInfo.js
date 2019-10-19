@@ -9,6 +9,14 @@ router.get('/', function(req, res, next) {
   res.render('test');
 });
 
+router.get('/failure', function(req, res, next) {
+  res.json({result:0});
+});
+
+router.get('/success', function(req, res, next) {
+  res.json({result:1});
+});
+
 passport.serializeUser(function(user, done) {
     console.log('passport session save : ', user.email)
     done(null, user.email);
@@ -47,8 +55,8 @@ passport.use('local-join', new LocalStrategy({
 }));
 
 router.post('/', passport.authenticate('local-join', {
-    successRedirect: '/',
-    failureRedirect: '/signup/save-user',
+    successRedirect: '/signup/save-user/success',
+    failureRedirect: '/signup/save-user/failure',
     failureFlash: true
 }));
 
