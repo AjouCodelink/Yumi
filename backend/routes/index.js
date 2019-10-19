@@ -2,14 +2,15 @@ var express = require('express');
 var router = express.Router();
 var login = require('./login/index');
 var signup = require('./signup/index');
+const passport = require('passport');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
 
 router.use('/login', login);
 router.use('/signup', signup);
 
-module.exports = router;
+/* GET home page. */
+router.get('/', function (req, res, next) {
+  res.render('index', {title: 'login'});
+});
 
+module.exports = router;
