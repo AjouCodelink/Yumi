@@ -46,8 +46,8 @@ passport.use('local-login', new LocalStrategy({
 }));
 
 router.post('/', passport.authenticate('local-login', {
-    successRedirect: '/login/auth/success_login',
-    failureRedirect: '/login/auth/no_email',
+    successRedirect: '/login/auth/success',
+    failureRedirect: '/login/auth/fail',
     failureFlash : true
 }));
 
