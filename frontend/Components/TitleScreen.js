@@ -62,10 +62,10 @@ export default class TitleScreen extends Component {
             this.goMain();
         } else {
             this.submit();
-            setTimeout(() => {this.checkloginResult();}, 3500);
+            setTimeout(() => {this.checkLoginResult();}, 100);
         }
     }
-    checkloginResult(){
+    checkLoginResult(){
         if (this.state.loginResult == 0) {           // 잘못된 사용자 정보
             alert("Email or password is incorrect.")
             this.state.loginResult = -1
