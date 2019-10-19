@@ -139,7 +139,7 @@ export default class SignUp_EmailAuth extends Component {
             alert("Failed to send email. Please try again.")
         }
     }
-        goTitle(){
+    goTitle(){
         this.props.navigation.navigate('Title');
     }
     goSignUp_Detail(){
