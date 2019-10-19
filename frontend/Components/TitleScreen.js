@@ -45,11 +45,20 @@ export default class TitleScreen extends Component {
                             title={'Log In'}
                             titleColor={'#000'}
                             buttonColor={'#ddd'}
-                            onPress={ () => this.goMain() }/>
+                            onPress={ () => this.onPressLogin()}/>
                     </View>
                 </View>
             </View>
         );
+    }
+    onPressLogin(){
+        if (this.state.email == ''){
+            alert('이메일 입력하셈ㅡㅡ');
+        } else if (this.state.password == ''){
+            alert('비번 입력하셈ㅡㅡ');
+        } else {    // 
+            this.goMain();
+        }
     }
     goSignup_Welcome(){
         this.props.navigation.navigate('SignUp_Welcome');
@@ -64,8 +73,8 @@ const style = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: 100,
-        paddingBottom: 200,
+        paddingTop: '30%',
+        paddingBottom: '10%',
         backgroundColor: '#444',
     },
     header: {
@@ -87,25 +96,25 @@ const style = StyleSheet.create({
         alignItems: 'center',
     },
     footer: {
-        width:'75%',
-        height:'9%',
+        width: '78%',
+        height: '9%',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#444'
     },
     footer_backbutton: {
-        width:'75%',
+        width:'43%',
         height:'100%',
         justifyContent: 'center',
         alignItems: 'flex-end',
-        paddingRight: '10%',
+        paddingRight: '13%',
     },
     footer_nextbutton: {
-        width:'75%',
+        width:'43%',
         height:'100%',
         justifyContent: 'center',
         alignItems: 'flex-start',
-        paddingLeft: '10%',
+        paddingLeft: '13%',
     },
     });

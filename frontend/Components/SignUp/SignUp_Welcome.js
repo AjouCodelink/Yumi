@@ -24,10 +24,16 @@ export default class SignUp_Welcome extends Component {
                     <Text style={style.font_title}>Welcome!</Text>
                 </View>
                 <View style={style.content}>
-                <Text style={style.font_main}>Yumi is an open chatting application for{"\n"} students studying abroad.{"\n"}</Text>
-                <Text style={style.font_main}>{"\n"}{"\n"}{"\n"}{"\n"}(대충 그럴싸한 설명 하는 글)</Text>
-                <Text style={style.font_main}>{"\n"}{"\n"}{"\n"}{"\n"}{"\n"}(대충 지 잘난거 자랑 하는 글)</Text>
-                <Text style={style.font_main}>{"\n"}{"\n"}{"\n"}{"\n"}{"\n"}Now, press the next button.</Text>
+                    <View style={style.content}>
+                        <Text style={style.font_main}>Yumi is an open chatting application for{"\n"} students studying abroad.</Text>
+                    </View>
+                    <View style={style.content}>
+                        <Text style={style.font_main}>(대충 그럴싸한 설명 하는 글1)</Text>
+                    </View>
+                    <View style={style.content}>
+                        <Text style={style.font_main}>(대충 지 잘난거 자랑 하는 글2)</Text>
+                    </View>
+                    <Text style={style.font_main}>Now, press the next button.</Text>
                 </View>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
@@ -61,8 +67,8 @@ const style = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: 100,
-        paddingBottom: 100,
+        paddingTop: '18%',
+        paddingBottom: '5%',
         backgroundColor: '#333',
     },
     header: {
@@ -80,7 +86,6 @@ const style = StyleSheet.create({
     },
     content: {
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
     },
     footer: {
@@ -91,14 +96,14 @@ const style = StyleSheet.create({
         alignItems: 'center',
     },
     footer_backbutton: {
-        width:'70%',
+        width:'40%',
         height:'100%',
         justifyContent: 'center',
         alignItems: 'flex-end',
         paddingRight: '15%',
     },
     footer_nextbutton: {
-        width:'70%',
+        width:'40%',
         height:'100%',
         justifyContent: 'center',
         alignItems: 'flex-start',
