@@ -9,7 +9,7 @@ export default class TitleScreen extends Component {
     }
     constructor(props){
         super(props);
-        this.state={email: '', password: ''}
+        this.state={email: '', password: '', loginResult: -1}
     }
     render() {
         return (
@@ -53,11 +53,26 @@ export default class TitleScreen extends Component {
     }
     onPressLogin(){
         if (this.state.email == ''){
-            alert('이메일 입력하셈ㅡㅡ');
+            alert('Please enter your email.');
+        } else if (this.state.email.indexOf('@') == -1 || this.state.email.indexOf('.ac.kr') == -1) {
+            alert("Please enter a valid email address. The email address must include '@' and must end with 'ac.kr'")
         } else if (this.state.password == ''){
-            alert('비번 입력하셈ㅡㅡ');
-        } else {    // 
+            alert('Please enter your password.');
+        } else if (this.state.email == 'admin'){    // 관리자코드 나중에 삭제필수!!
             this.goMain();
+        } else {
+            this.submit();
+            setTimeout(() => {this.checkloginResult();}, 3500);
+        }
+    }
+    checkloginResult(){
+        if (this.state.loginResult == 0) {           // 잘못된 사용자 정보
+            alert("Email or password is incorrect.")
+            this.state.loginResult = -1
+        } else if (this.state.loginResult == 1) {    // 로그인 성공
+            this.goMain();
+        } else {                                     // 서버 전송 오류
+            alert("Failed to login. Please try again.")
         }
     }
     goSignup_Welcome(){
@@ -65,6 +80,25 @@ export default class TitleScreen extends Component {
     }
     goMain(){
         this.props.navigation.navigate('Main');
+    }
+    submit(){
+        var user= {}
+        user.email = this.state.email
+        user.password = this.state.password
+        console.log(user);
+        var url = 'http://101.101.160.185:3000/login/login-user';
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(user),
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token'
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => this.setState({
+            loginResult: responseJson.result     // 실패시0 성공시1 
+        }));
     }
 }
 
