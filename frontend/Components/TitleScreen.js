@@ -86,7 +86,7 @@ export default class TitleScreen extends Component {
         user.email = this.state.email
         user.password = this.state.password
         console.log(user);
-        var url = 'http://101.101.160.185:3000/login/login-user';
+        var url = 'http://101.101.160.185:3000/login/auth';
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(user),
