@@ -9,11 +9,11 @@ router.get('/', function (req, res, next) {
     res.render('login');
 });
 
-router.get('/no_email', function (req, res, next) {
+router.get('/fail', function (req, res, next) {
     res.json({result: 0});
 });
 
-router.get('/success_login', function (req, res, next) {
+router.get('/success', function (req, res, next) {
     res.json({result: 1});
 });
 
@@ -46,8 +46,8 @@ passport.use('local-login', new LocalStrategy({
 }));
 
 router.post('/', passport.authenticate('local-login', {
-    successRedirect: '/login/login-user/success_login',
-    failureRedirect: '/login/login-user/no_email',
+    successRedirect: '/login/auth/success_login',
+    failureRedirect: '/login/auth/no_email',
     failureFlash : true
 }));
 
