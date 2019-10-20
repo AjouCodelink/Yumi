@@ -92,8 +92,11 @@ export default class SignUp_EmailAuth extends Component {
         } else if (this.state.email.indexOf('@') == -1 || this.state.email.indexOf('.ac.kr') == -1) {   // 메일주소 유효성검사
             alert("Please enter a valid email address. The email address must include '@' and must end with 'ac.kr'")
         } else {
-            alert("Sending email. It takes about 3 seconds to send.")
             this.submit();
+            this.setState({
+                emailHideness: 'none',
+                authHideness: 'flex'
+            })
             setTimeout(() => {this.checkMailResult();}, 3500);
         }
     }
@@ -118,24 +121,29 @@ export default class SignUp_EmailAuth extends Component {
             alert("Please proceed with email address authentication first.");
         }
     }
+    checkMailResult(){
+        if (this.state.mailSendResult == 0) {           // 중복된 메일주소
+            this.setState({
+                emailHideness: 'flex',
+                authHideness: 'none'
+            })
+            alert("Duplicate email address.")
+            this.state.mailSendResult = -1
+        } else if (this.state.mailSendResult == 1) {    // 전송 성공
+            alert("We sent you an email. Please check your email and enter your authentication number.")
+        } else {                                        // 서버 내 전송 오류
+            this.setState({
+                emailHideness: 'flex',
+                authHideness: 'none'
+            })
+            alert("Failed to send email. Please try again.")
+        }
+    }
     goTitle(){
         this.props.navigation.navigate('Title');
     }
     goSignUp_Detail(){
         this.props.navigation.navigate('SignUp_Detail');
-    }
-    checkMailResult(){
-        if (this.state.mailSendResult == 0) {           // 중복된 메일주소
-            alert("Duplicate email address.")
-        } else if (this.state.mailSendResult == 1) {    // 전송 성공
-            this.setState({
-                emailHideness: 'none',
-                authHideness: 'flex'
-            })
-            alert("We sent you an email. Please check your email and enter your authentication number.")
-        } else {                                    // 서버 내 전송 오류
-            alert("Failed to send email. Please try again.")
-        }
     }
     submit(){
         var email= {}
@@ -152,7 +160,7 @@ export default class SignUp_EmailAuth extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => this.setState({
-            serverAuthcode: responseJson.number,    // 인증번호
+            serverAuthcode: responseJson.number,
             mailSendResult: responseJson.result     // 실패시-1 중복시0 성공시1
         }));
     }
