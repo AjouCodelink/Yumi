@@ -41,11 +41,16 @@ export default class TitleScreen extends Component {
                             onPress={() => this.goSignup_Welcome()}/>
                     </View>
                     <View style={style.footer_nextbutton}>
-                        <CustomButton
+                    <CustomButton
                             title={'Log In'}
                             titleColor={'#000'}
                             buttonColor={'#ddd'}
                             onPress={ () => this.onPressLogin()}/>
+                    <CustomButton
+                            title={'go main'}
+                            titleColor={'#000'}
+                            buttonColor={'#393'}
+                            onPress={ () => this.goMain()}/>
                     </View>
                 </View>
             </View>
@@ -58,8 +63,6 @@ export default class TitleScreen extends Component {
             alert("Please enter a valid email address. The email address must include '@' and must end with 'ac.kr'")
         } else if (this.state.password == ''){
             alert('Please enter your password.');
-        } else if (this.state.email == 'admin'){    // 관리자코드 나중에 삭제필수!!
-            this.goMain();
         } else {
             this.submit();
             setTimeout(() => {this.checkLoginResult();}, 100);

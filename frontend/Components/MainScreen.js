@@ -39,9 +39,10 @@ export default class MainScreen extends Component {
     }
     static navigationOptions = {    // 상단바 안보이게 하기
         header: null
+        
     }
     render() {
-        return <AppTabContainet/>; // AppTabContainet 컴포넌트를 리턴한다.
+        return <AppTabContainet/>; 
     }
 
     componentDidMount() {   // 뒤로가기 눌렀을 때

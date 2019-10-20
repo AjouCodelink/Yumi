@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {List, ListItem} from 'react-native-elements';
 import {Icon} from 'native-base';
 
 export default class ChatroomTab extends Component {
@@ -15,8 +16,12 @@ export default class ChatroomTab extends Component {
     render() {
         return (
             <View style={style.container}>
-                <Text style={style.font_title}>ChatroomTab</Text>
-                <Text style={style.font_main}>You can see the kind of rooms you belong to.</Text>
+                <View style={style.header}>
+                    <Text style={style.font_header}>Chatrooms</Text>
+                </View>
+                <View style={style.content}>
+                    <Text style={style.font_main}>You can see the kind of rooms you belong to.</Text>
+                </View>
             </View>
         );
     }
@@ -29,14 +34,29 @@ const style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    font_title: {
+    header: {
+        width:'100%',
+        height:'12%',
+        justifyContent: 'flex-end',
+        paddingLeft: '4%',
+        paddingBottom: '1.1%',
+        backgroundColor: '#555',
+    },
+    font_header: {
         color: 'white',
-        fontSize: 30,
-        alignItems: 'center'
+        fontSize: 42,
+        alignItems: 'center',
+        fontWeight: 'bold',
+    },
+    content: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     font_main: {
         color: '#aaa',
-        fontSize: 15,
-        alignItems: 'center'
-    }
+        fontSize: 20,
+        alignItems: 'center',
+    },
 });
