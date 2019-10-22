@@ -9,6 +9,10 @@ router.get('/', function (req, res, next) {
     res.render('login');
 });
 
+router.get('/test', function (req, res, next) {
+    res.json({email:"test@ajou.ac.kr"});
+});
+
 router.get('/fail', function (req, res, next) {
     res.json({result: 0});
 });
