@@ -16,7 +16,10 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    interests: [String]
+    interests: [{
+        section: String,
+        grout: String
+    }]
 });
 
 userSchema.methods.comparePassword = function (inputPassword, cb) {
