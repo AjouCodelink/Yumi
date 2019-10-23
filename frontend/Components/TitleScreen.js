@@ -39,6 +39,11 @@ export default class TitleScreen extends Component {
                             titleColor={'#ddd'}
                             buttonColor={'#000'}
                             onPress={() => this.goSignup_Welcome()}/>
+                        <CustomButton
+                            title={'detail'}
+                            titleColor={'#ddd'}
+                            buttonColor={'#000'}
+                            onPress={() => this.goSignUp_Detail()}/>
                     </View>
                     <View style={style.footer_nextbutton}>
                     <CustomButton
@@ -80,6 +85,9 @@ export default class TitleScreen extends Component {
     }
     goSignup_Welcome(){
         this.props.navigation.navigate('SignUp_Welcome');
+    }
+    goSignUp_Detail(){
+        this.props.navigation.navigate('SignUp_Detail');
     }
     goMain(){
         this.props.navigation.navigate('Main');

@@ -50,8 +50,9 @@ export default class SettingTab extends Component {
                 <Text style={style.row}>
                     <Icon name={item.icon} style={{color: "#ddd", fontSize: 28}}/>  {item.name}
                 </Text>
-            </TouchableOpacity>)
+        </TouchableOpacity>)
     }
+
     render() {
         return (
             <View style={style.container}>
@@ -59,11 +60,10 @@ export default class SettingTab extends Component {
                     <Text style={style.font_header}>Settings</Text>
                 </View>
                 <View style={style.content}>
-
-                        <FlatList
-                            data={this.state.data}
-                            renderItem={this.renderItem}
-                            onEndReachedThreshold={1}/>
+                    <FlatList
+                        data={this.state.data}
+                        renderItem={this.renderItem}
+                        onEndReachedThreshold={1}/>
                 </View>
             </View>
         )

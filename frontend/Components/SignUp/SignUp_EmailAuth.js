@@ -92,7 +92,7 @@ export default class SignUp_EmailAuth extends Component {
         } else if (this.state.email.indexOf('@') == -1 || this.state.email.indexOf('.ac.kr') == -1) {   // 메일주소 유효성검사
             alert("Please enter a valid email address. The email address must include '@' and must end with 'ac.kr'")
         } else {
-            this.submit();
+            //this.submit();
             this.setState({
                 emailHideness: 'none',
                 authHideness: 'flex'
@@ -143,7 +143,9 @@ export default class SignUp_EmailAuth extends Component {
         this.props.navigation.navigate('Title');
     }
     goSignUp_Detail(){
-        this.props.navigation.navigate('SignUp_Detail');
+        this.props.navigation.navigate('SignUp_Detail', {
+            email: this.state.email,
+        });
     }
     submit(){
         var email= {}
