@@ -4,7 +4,7 @@ var saveUserInfo = require('./saveUserInfo');
 var sendEmail = require('./sendEmail');
 
 
-router.use('/save-user', saveUserInfo);
+router.use('/', saveUserInfo);
 router.use('/send-email', sendEmail);
 
 router.get('/', function(req, res, next) {
