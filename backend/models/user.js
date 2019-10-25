@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-const userSchema = mongoose.Schema({
+const UserSchema = mongoose.Schema({
     email: {
         type: String,
         required: true,
@@ -30,4 +30,4 @@ userSchema.methods.comparePassword = function (inputPassword, cb) {
     }
 };
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('user', UserSchema);
