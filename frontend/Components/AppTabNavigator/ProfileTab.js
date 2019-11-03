@@ -14,7 +14,6 @@ export default class ProfileTab extends Component {
             clicked: true
         };
     }
-    _clicked = () => this.setState({clicked: false});
     render() {
         return (
             <View style={style.container}>

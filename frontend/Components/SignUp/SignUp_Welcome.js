@@ -11,7 +11,6 @@ export default class SignUp_Welcome extends Component {
         this.state={email: ''}
     }
     handleSummit = (e) => {
-        e.preventDeafult(); // 페이지 재시작 방지
         this.props.onCreate(this.state);
         this.setState({
             email: ''

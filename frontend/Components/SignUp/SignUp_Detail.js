@@ -1,14 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, } from 'react-native';
-import { ListItem } from 'react-native-elements';
 import CustomButton from '../CustomButton';
-
-var interests = ({
-    interest: {
-        section: { type: String },
-        group: { type: String },
-    }
-});
 
 export default class SignUp_Detail extends Component {
     static navigationOptions = {
@@ -34,31 +26,29 @@ export default class SignUp_Detail extends Component {
                     <Text style={style.font_title}>Enter Details</Text>
                 </View>
                 <View style={style.content}>
-
-                        <Text style={{fontSize:18, color:'#999', textAlign:'left'}}>Your Email:</Text>
-                        <Text style={{fontSize:20, color:'white', textAlign:'left'}}> {this.state.email}{"\n"}</Text>
+                    <Text style={{fontSize:18, color:'#999', textAlign:'left'}}>Your Email:</Text>
+                    <Text style={{fontSize:20, color:'white', textAlign:'left'}}> {this.state.email}{"\n"}</Text>
                         <TextInput
-                            style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                            placeholder="Password"
-                            value={this.state.password}
-                            onChangeText={(password) => this.setState({password})}
-                        />
-                        <Text style={style.font_main}> Password must be between 8 and 16 characters.{"\n"}</Text>
-                        <TextInput
-                            style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                            placeholder="Confirm Password"
-                            value={this.state.password_check}
-                            onChangeText={(password_check) => this.setState({password_check})}
-                        />
-                        <Text style={style.font_main}> Please enter same as your password.{"\n"}</Text>
-                        <TextInput
-                            style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                            placeholder="Nickname"
-                            value={this.state.nickname}
-                            onChangeText={(nickname) => this.setState({nickname})}
-                        />
-                        <Text style={style.font_main}> The nickname must be between 2 and 20 characters.{"\n"}</Text>
-
+                        style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
+                        placeholder="Password"
+                        value={this.state.password}
+                        onChangeText={(password) => this.setState({password})}
+                    />
+                    <Text style={style.font_main}> Password must be between 8 and 16 characters.{"\n"}</Text>
+                    <TextInput
+                        style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
+                        placeholder="Confirm Password"
+                        value={this.state.password_check}
+                        onChangeText={(password_check) => this.setState({password_check})}
+                    />
+                    <Text style={style.font_main}> Please enter same as your password.{"\n"}</Text>
+                    <TextInput
+                        style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
+                        placeholder="Nickname"
+                        value={this.state.nickname}
+                        onChangeText={(nickname) => this.setState({nickname})}
+                    />
+                    <Text style={style.font_main}> The nickname must be between 2 and 20 characters.{"\n"}</Text>
                 </View>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
@@ -70,10 +60,10 @@ export default class SignUp_Detail extends Component {
                     </View>
                     <View style={style.footer_nextbutton}>
                         <CustomButton
-                            title={'Done'}
+                            title={'Next'}
                             titleColor={'#000'}
                             buttonColor={'#ddd'}
-                            onPress={() => this.pressDone()}/>
+                            onPress={() => this.pressNext()}/>
                     </View>
                 </View>
             </View>
@@ -82,17 +72,22 @@ export default class SignUp_Detail extends Component {
     goTitle(){
         this.props.navigation.navigate('Title');
     }
-    goMain(){
-        this.props.navigation.navigate('Main');
+    goSignUp_Interest(){
+        this.props.navigation.navigate('SignUp_Interest', {
+            email: this.state.email,
+            password: this.state.password,
+            nickname: this.state.nickname,
+        });
     }
-    pressDone(){
+    pressNext(){
+        this.setState({
+            passwordChecked: 0,
+            nicknameChecked: 0
+        })
         this.passwordCheck();
         this.nicknameCheck();
         if (this.state.passwordChecked == 1 && this.state.nicknameChecked == 1) {
-            this.goMain()
-        } else {
-            this.state.passwordChecked = 0
-            this.state.nicknameChecked = 0
+            this.goSignUp_Interest()
         }
     }
     passwordCheck(){
