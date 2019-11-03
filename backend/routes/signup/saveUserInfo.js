@@ -44,7 +44,6 @@ passport.use('local-join', new LocalStrategy({
         user.password = req.body.password;
         user.nickname = req.body.nickname;
         user.interests = req.body.interests;
-
         user.save(function(err){
           if(err) throw err
           //console.log(email);
@@ -55,8 +54,8 @@ passport.use('local-join', new LocalStrategy({
 }));
 
 router.post('/', passport.authenticate('local-join', {
-    successRedirect: '/signup/save-user/success',
-    failureRedirect: '/signup/save-user/failure',
+    successRedirect: '/signup/success',
+    failureRedirect: '/signup/failure',
     failureFlash: true
 }));
 
