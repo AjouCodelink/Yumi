@@ -2,62 +2,85 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CustomButton from '../CustomButton';
 
-export default class SignUp_Welcome extends Component {
+export default class SignUp_Done extends Component {
     static navigationOptions = {
         header: null
     }
     constructor(props){
         super(props);
-        this.state={email: ''}
-    }
-    handleSummit = (e) => {
-        this.props.onCreate(this.state);
-        this.setState({
-            email: ''
-        })
+        this.state = {
+            email: '',
+            password: '',
+            loginResult: -1
+        }
     }
     render() {
+        const {navigation} = this.props;
+        this.state.email = navigation.getParam('email', 'No Email');
+        this.state.password = navigation.getParam('password', 'No Password');
         return (
             <View style={style.container}>
                 <View style={style.title}>
-                    <Text style={style.font_title}>Welcome!</Text>
+                    <Text style={style.font_title}>Thank you!</Text>
                 </View>
                 <View style={style.content}>
                     <View style={style.content}>
-                        <Text style={style.font_main}>Yumi is an open chatting application for{"\n"} students studying abroad.</Text>
+                        <Text style={style.font_main}>All sign up procedures are complete!</Text>
                     </View>
                     <View style={style.content}>
-                        <Text style={style.font_main}>(대충 그럴싸한 설명 하는 글1)</Text>
+                        <Text style={style.font_main}>Your chosen interest is used only to{"\n"}recommend a suitable chat room for you.</Text>
                     </View>
-                    <View style={style.content}>
-                        <Text style={style.font_main}>(대충 지 잘난거 자랑 하는 글2)</Text>
-                    </View>
-                    <Text style={style.font_main}>Now, press the next button.</Text>
+                    <Text style={style.font_main}>Press the 'Done' button and experience Yumi.</Text>
                 </View>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
-                        <CustomButton
-                            title={'Back'}
-                            titleColor={'#ddd'}
-                            buttonColor={'#000'}
-                            onPress={() => this.goTitle()}/>
                     </View>
                     <View style={style.footer_nextbutton}>
                         <CustomButton
-                            title={'Next'}
+                            title={'Done'}
                             titleColor={'#000'}
                             buttonColor={'#ddd'}
-                            onPress={() => this.goSignUp_EmailAuth()}/>
+                            onPress={() => this.pressDone()}/>
                     </View>
                 </View>
             </View>
         )
     }
-    goTitle(){
-        this.props.navigation.navigate('Title');
+    pressDone(){
+        this.submit();
+        setTimeout(() => {this.checkLoginResult();}, 250);
     }
-    goSignUp_EmailAuth(){
-        this.props.navigation.navigate('SignUp_EmailAuth');
+    goMain(){
+        this.props.navigation.navigate('Main');
+    }
+    checkLoginResult(){
+        if (this.state.loginResult == 0) {           // 잘못된 사용자 정보
+            alert("Email or password is incorrect.")
+            this.state.loginResult = -1
+        } else if (this.state.loginResult == 1) {    // 로그인 성공
+            this.goMain();
+        } else {                                     // 서버 전송 오류
+            alert("Failed to login. Please try again.")
+        }
+    }
+    submit(){
+        var user= {}
+        user.email = this.state.email
+        user.password = this.state.password
+        console.log(user);
+        var url = 'http://101.101.160.185:3000/login/auth';
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(user),
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token'
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => this.setState({
+            loginResult: responseJson.result     // 실패시0 성공시1 
+        }));
     }
 }
 

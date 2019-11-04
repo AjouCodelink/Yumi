@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
-import {List, ListItem} from 'react-native-elements';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'native-base';
 
 export default class SettingTab extends Component {
@@ -50,7 +50,7 @@ export default class SettingTab extends Component {
                 <Text style={style.row}>
                     <Icon name={item.icon} style={{color: "#ddd", fontSize: 28}}/>  {item.name}
                 </Text>
-            </TouchableOpacity>)
+        </TouchableOpacity>)
     }
     render() {
         return (
@@ -59,11 +59,10 @@ export default class SettingTab extends Component {
                     <Text style={style.font_header}>Settings</Text>
                 </View>
                 <View style={style.content}>
-
-                        <FlatList
-                            data={this.state.data}
-                            renderItem={this.renderItem}
-                            onEndReachedThreshold={1}/>
+                    <FlatList
+                        data={this.state.data}
+                        renderItem={this.renderItem}
+                        onEndReachedThreshold={1}/>
                 </View>
             </View>
         )

@@ -60,7 +60,7 @@ export default class SignUp_EmailAuth extends Component {
                         </View>
                     </View>
                     <Text style={style.font_main}>  The authentication number is 6 digits.{"\n"}</Text>
-                    <Text style={style.font_main}>  현재 서버에 전송된 인증번호: {this.state.serverAuthcode}</Text>
+                    {/*<Text style={style.font_main}>  현재 서버에 전송된 인증번호: {this.state.serverAuthcode}</Text>*/}
                 </View>
                 <View style={[style.content, {display: this.state.nextHideness}]}>
                     <Text style={{fontSize: 17, color: '#aaa'}}> Your email address :</Text>
@@ -143,7 +143,9 @@ export default class SignUp_EmailAuth extends Component {
         this.props.navigation.navigate('Title');
     }
     goSignUp_Detail(){
-        this.props.navigation.navigate('SignUp_Detail');
+        this.props.navigation.navigate('SignUp_Detail', {
+            email: this.state.email,
+        });
     }
     submit(){
         var email= {}

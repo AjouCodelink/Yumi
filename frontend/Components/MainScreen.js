@@ -39,7 +39,6 @@ export default class MainScreen extends Component {
     }
     static navigationOptions = {    // 상단바 안보이게 하기
         header: null
-        
     }
     render() {
         return <AppTabContainet/>; 
@@ -54,7 +53,7 @@ export default class MainScreen extends Component {
     }
     handleBackButton = () => {  // 2000(2초) 안에 back 버튼을 한번 더 클릭 할 경우 앱 종료
         if (this.exitApp == undefined || !this.exitApp) {
-            ToastAndroid.show('한번 더 누르시면 종료됩니다.', ToastAndroid.SHORT);
+            ToastAndroid.show('Press once more to exit.', ToastAndroid.SHORT);
             this.exitApp = true;
             this.timeout = setTimeout(
                 () => {

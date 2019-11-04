@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, FlatList, } from 'react-native';
 import CustomButton from '../CustomButton';
 
 export default class SignUp_Detail extends Component {
@@ -8,15 +8,17 @@ export default class SignUp_Detail extends Component {
     }
     constructor(props){
         super(props);
-        this.state={
-            email: 'Sample_email@ajou.ac.kr', 
-            password: '', 
+        this.state = {
+            email: '',
+            password: '',
             password_check: '',
-            name: '',
-
-    }
+            nickname: '',
+            passwordChecked: 0, nicknameChecked: 0,
+        }
     }
     render() {
+        const {navigation} = this.props;
+        this.state.email = navigation.getParam('email', 'No Email');
         return (
             <View style={style.container}>
                 <View style={style.header}/>
@@ -24,27 +26,27 @@ export default class SignUp_Detail extends Component {
                     <Text style={style.font_title}>Enter Details</Text>
                 </View>
                 <View style={style.content}>
-                    <Text style={{fontSize:18, color:'#aaa', textAlign:'left'}}>Your Email:</Text>
-                    <Text style={{fontSize:18, color:'white', textAlign:'left'}}>  {this.state.email}{"\n"}</Text>
-                    <TextInput
-                        style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
+                    <Text style={{fontSize:18, color:'#999', textAlign:'left'}}>Your Email:</Text>
+                    <Text style={{fontSize:20, color:'white', textAlign:'left'}}> {this.state.email}{"\n"}</Text>
+                        <TextInput
+                        style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
                         placeholder="Password"
                         value={this.state.password}
                         onChangeText={(password) => this.setState({password})}
                     />
                     <Text style={style.font_main}> Password must be between 8 and 16 characters.{"\n"}</Text>
                     <TextInput
-                        style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
+                        style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
                         placeholder="Confirm Password"
                         value={this.state.password_check}
                         onChangeText={(password_check) => this.setState({password_check})}
                     />
-                    <Text style={style.font_main}> Please enter the same value as your password.{"\n"}</Text>
+                    <Text style={style.font_main}> Please enter same as your password.{"\n"}</Text>
                     <TextInput
-                        style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
+                        style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
                         placeholder="Nickname"
-                        value={this.state.name}
-                        onChangeText={(name) => this.setState({name})}
+                        value={this.state.nickname}
+                        onChangeText={(nickname) => this.setState({nickname})}
                     />
                     <Text style={style.font_main}> The nickname must be between 2 and 20 characters.{"\n"}</Text>
                 </View>
@@ -58,10 +60,10 @@ export default class SignUp_Detail extends Component {
                     </View>
                     <View style={style.footer_nextbutton}>
                         <CustomButton
-                            title={'Done'}
+                            title={'Next'}
                             titleColor={'#000'}
                             buttonColor={'#ddd'}
-                            onPress={() => this.goMain()}/>
+                            onPress={() => this.pressNext()}/>
                     </View>
                 </View>
             </View>
@@ -70,8 +72,45 @@ export default class SignUp_Detail extends Component {
     goTitle(){
         this.props.navigation.navigate('Title');
     }
-    goMain(){
-        this.props.navigation.navigate('Main');
+    goSignUp_Interest(){
+        this.props.navigation.navigate('SignUp_Interest', {
+            email: this.state.email,
+            password: this.state.password,
+            nickname: this.state.nickname,
+        });
+    }
+    pressNext(){
+        this.setState({
+            passwordChecked: 0,
+            nicknameChecked: 0
+        })
+        this.passwordCheck();
+        this.nicknameCheck();
+        if (this.state.passwordChecked == 1 && this.state.nicknameChecked == 1) {
+            this.goSignUp_Interest()
+        }
+    }
+    passwordCheck(){
+        if (this.state.password == '') {
+            alert("Please enter your password.")
+        } else if (this.state.password_check == '') {
+            alert("Please enter your confirm password.")
+        } else if (this.state.password != this.state.password_check) {
+            alert("The two passwords you entered are different.")
+        } else if (String(this.state.password).length > 16 || String(this.state.password).length < 8) {
+            alert("Password is too long or too short.")
+        } else {
+            this.state.passwordChecked = 1
+        }
+    }
+    nicknameCheck(){
+        if (this.state.nickname == '') {
+            alert("Please enter your nickname.")
+        } else if (String(this.state.nickname).length> 20 || String(this.state.nickname).length < 2) {
+            alert("Nickname is too long or too short.")
+        } else {
+            this.state.nicknameChecked = 1
+        }
     }
 }
 
@@ -100,7 +139,8 @@ const style = StyleSheet.create({
     content: {
         flex: 1,
         width: '75%',
-        justifyContent: 'center',
+        paddingTop: '13%',
+        justifyContent: 'flex-start',
         alignItems: 'flex-start',
     },
     footer: {
