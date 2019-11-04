@@ -21,6 +21,8 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+var io = require('../routes/chatroom/io')(server); // socket.io 연결을 위한 설정
+
 /**
  * Listen on provided port, on all network interfaces.
  */
