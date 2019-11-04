@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, } from 'react-native';
+import { Item, Label, Input } from 'native-base';
+
 import CustomButton from '../CustomButton';
 
 export default class SignUp_Detail extends Component {
@@ -28,27 +30,21 @@ export default class SignUp_Detail extends Component {
                 <View style={style.content}>
                     <Text style={{fontSize:18, color:'#999', textAlign:'left'}}>Your Email:</Text>
                     <Text style={{fontSize:20, color:'white', textAlign:'left'}}> {this.state.email}{"\n"}</Text>
-                        <TextInput
-                        style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                        placeholder="Password"
-                        value={this.state.password}
-                        onChangeText={(password) => this.setState({password})}
-                    />
-                    <Text style={style.font_main}> Password must be between 8 and 16 characters.{"\n"}</Text>
-                    <TextInput
-                        style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                        placeholder="Confirm Password"
-                        value={this.state.password_check}
-                        onChangeText={(password_check) => this.setState({password_check})}
-                    />
-                    <Text style={style.font_main}> Please enter same as your password.{"\n"}</Text>
-                    <TextInput
-                        style={{height: 40, width: '90%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                        placeholder="Nickname"
-                        value={this.state.nickname}
-                        onChangeText={(nickname) => this.setState({nickname})}
-                    />
-                    <Text style={style.font_main}> The nickname must be between 2 and 20 characters.{"\n"}</Text>
+                    <Item style={{height: 53}} floatingLabel>
+                        <Label style={{color: '#999'}}>Password</Label>
+                        <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(password) => this.setState({password})}/>
+                    </Item>
+                    <Text style={style.font_main}>  Password must be between 8 and 16 characters.{"\n"}</Text>
+                    <Item style={{height: 53}} floatingLabel>
+                        <Label style={{color: '#999'}}>Confirm Password</Label>
+                        <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(password_check) => this.setState({password_check})}/>
+                    </Item>
+                    <Text style={style.font_main}>  Please enter same as your password.{"\n"}</Text>
+                    <Item style={{height: 53}} floatingLabel>
+                        <Label style={{color: '#999'}}>Nickname</Label>
+                        <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(nickname) => this.setState({nickname})}/>
+                    </Item>
+                    <Text style={style.font_main}>  The nickname must be between 2 and 20 characters.{"\n"}</Text>
                 </View>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
@@ -139,8 +135,7 @@ const style = StyleSheet.create({
     content: {
         flex: 1,
         width: '75%',
-        paddingTop: '13%',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         alignItems: 'flex-start',
     },
     footer: {

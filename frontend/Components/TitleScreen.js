@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
+import { Form, Item, Label, Input } from 'native-base';
 
 import CustomButton from './CustomButton';
 
@@ -17,21 +18,16 @@ export default class TitleScreen extends Component {
                 <Image
                     style={{height:'50%', width:'50%', resizeMode:'contain'}}
                     source={require('../assets/Titleimage.png')}/>
-                <View style={style.content}>
-                    <TextInput
-                        style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                        placeholder="Email Address"
-                        value={this.state.email}
-                        onChangeText={(email) => this.setState({email})}
-                    />
-                    <Text style={{fontSize: 10}}>        </Text>
-                    <TextInput
-                        style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                        placeholder="Password"
-                        value={this.state.password}
-                        onChangeText={(password) => this.setState({password})}
-                    />
-                </View>
+                    <Form style={style.content}>
+                        <Item style={{height: 53}} floatingLabel>
+                            <Label style={{color: '#999'}}>Email Address</Label>
+                            <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(email) => this.setState({email})}/>
+                        </Item>
+                        <Item style={{magrinTop: 10, height: 53}} floatingLabel>
+                            <Label style={{color: '#999'}}>Password</Label>
+                            <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(password) => this.setState({password})}/>
+                        </Item>
+                    </Form>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
                         <CustomButton
@@ -65,7 +61,7 @@ export default class TitleScreen extends Component {
             alert('Please enter your password.');
         } else {
             this.submit();
-            setTimeout(() => {this.checkLoginResult();}, 100);
+            setTimeout(() => {this.checkLoginResult();}, 250);
         }
     }
     checkLoginResult(){
@@ -129,6 +125,7 @@ const style = StyleSheet.create({
     },
     content: {
         flex: 1,
+        width: '80%',
         justifyContent: 'center',
         alignItems: 'center',
     },

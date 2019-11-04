@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { Item, Label, Input } from 'native-base';
+
 import CustomButton from '../CustomButton';
 
 export default class SignUp_EmailAuth extends Component {
@@ -21,12 +23,10 @@ export default class SignUp_EmailAuth extends Component {
                 <View style={[style.content, {display: this.state.emailHideness}]}>
                     <View style={style.input_place}>
                         <View style={style.input}>
-                            <TextInput
-                                style={{height: 40, width: '100%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                                placeholder="Email Address"
-                                value={this.state.email}
-                                onChangeText={(email) => this.setState({email})}
-                            />
+                            <Item style={{height: 53, marginBottom: 10}} floatingLabel>
+                                <Label style={{color: '#999'}}>Email Address</Label>
+                                <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(email) => this.setState({email})}/>
+                            </Item>
                         </View>
                         <View style={style.auth_button}>
                             <CustomButton
@@ -44,12 +44,10 @@ export default class SignUp_EmailAuth extends Component {
                     <Text style={{fontSize: 20, color: '#ddd'}}>  {this.state.email}{"\n"}</Text>
                     <View style={style.input_place}>
                         <View style={style.input}>
-                            <TextInput
-                                style={{height: 40, width: '100%', backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                                placeholder="Authentication number"
-                                value={this.state.clientAuthcode}
-                                onChangeText={(clientAuthcode) => this.setState({clientAuthcode})}
-                            />
+                            <Item style={{height: 53, marginBottom: 10}} floatingLabel>
+                                <Label style={{color: '#999'}}>Authentication number</Label>
+                                <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(clientAuthcode) => this.setState({clientAuthcode})}/>
+                            </Item>
                         </View>
                         <View style={style.auth_button}>
                             <CustomButton
@@ -60,7 +58,7 @@ export default class SignUp_EmailAuth extends Component {
                         </View>
                     </View>
                     <Text style={style.font_main}>  The authentication number is 6 digits.{"\n"}</Text>
-                    {/*<Text style={style.font_main}>  현재 서버에 전송된 인증번호: {this.state.serverAuthcode}</Text>*/}
+                    <Text style={style.font_main}>  현재 서버에 전송된 인증번호: {this.state.serverAuthcode}</Text>
                 </View>
                 <View style={[style.content, {display: this.state.nextHideness}]}>
                     <Text style={{fontSize: 17, color: '#aaa'}}> Your email address :</Text>

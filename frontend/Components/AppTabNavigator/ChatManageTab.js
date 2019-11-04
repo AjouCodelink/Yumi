@@ -6,18 +6,17 @@ import { Animated, Easing } from 'react-native';
 import CustomButton from '../CustomButton';
 type Props = {};
 export default class ChatManageTab extends Component {
-      constructor(props) {
+    constructor(props) {
         super(props);
         this.state = {
         progress: new Animated.Value(0),
-    };
-  }
+        };
+    }
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
             <Icon name='md-add-circle' size={300} style={{color: tintColor}} />
         ),
     }
- 
     render() {
         return (
             <View style={style.container}>
@@ -29,60 +28,58 @@ export default class ChatManageTab extends Component {
                     <Text style={style.font_header}>searchTab</Text>
                 </View>
                     <View style ={style.buttongroup}>
-                     <LottieView  source={require('../LottieAnimation/8874-cat.json')} autoplay loop/>
-                        <View style = {style.group}>
-                                    <View style={style.button1}>
-                                        <CustomButton
-                                            title={'Sports'}
-                                            titleColor={'#ddd'}
-                                            buttonColor={'#000'}/>
-                                    </View>
-                                    <View style={style.button2}>
-                                          <CustomButton
-                                            title={'Movie'}
-                                            titleColor={'#000'}
-                                             buttonColor={'#ddd'}/>
-                                     </View>
-                        </View>
-                        <View style = {style.group}>
-                                 <View style={style.button3}>
-                                        <CustomButton
-                                            title={'Korea'}
-                                            titleColor={'#ddd'}
-                                            buttonColor={'red'}/>
-                                     </View>
+                        <LottieView  source={require('../LottieAnimation/8874-cat.json')} autoplay loop/>
+                            <View style = {style.group}>
+                                <View style={style.button1}>
+                                    <CustomButton
+                                        title={'Sports'}
+                                        titleColor={'#ddd'}
+                                        buttonColor={'#000'}/>
+                                </View>
+                                <View style={style.button2}>
+                                    <CustomButton
+                                    title={'Movie'}
+                                    titleColor={'#000'}
+                                    buttonColor={'#ddd'}/>
+                                </View>
+                            </View>
+                            <View style = {style.group}>
+                                <View style={style.button3}>
+                                    <CustomButton
+                                    title={'Korea'}
+                                    titleColor={'#ddd'}
+                                    buttonColor={'red'}/>
+                            </View>
                             <View style={style.button4}>
-                                        <CustomButton
-                                            title={'Food'}
-                                            titleColor={'#000'}
-                                            buttonColor={'green'}/>
-                                        </View>
+                                <CustomButton
+                                    title={'Food'}
+                                    titleColor={'#000'}
+                                    buttonColor={'green'}/>
+                            </View>
                         </View>
                         <View style = {style.group}>
-                                 <View style={style.button5}>
-                                        <CustomButton
-                                            title={'SNS'}
-                                            titleColor={'#ddd'}
-                                            buttonColor={'orange'}/>
-                                        </View>
-                                <View style={style.button6}>
-                                          <CustomButton
-                                            title={'Seoul'}
-                                            titleColor={'#000'}
-                                             buttonColor={'skyblue'}/>
-                                         </View>
+                            <View style={style.button5}>
+                                <CustomButton
+                                    title={'SNS'}
+                                    titleColor={'#ddd'}
+                                    buttonColor={'orange'}/>
+                            </View>
+                            <View style={style.button6}>
+                                <CustomButton
+                                    title={'Seoul'}
+                                    titleColor={'#000'}
+                                    buttonColor={'skyblue'}/>
+                            </View>
                         </View>
                     </View>
-              </View>
+                </View>
             </View>
-           
-
         );
     }
 }
 
 const style = StyleSheet.create({
-     header: {
+    header: {
         width:'100%',
         height:'12%',
         justifyContent: 'flex-end',
@@ -121,8 +118,7 @@ const style = StyleSheet.create({
         width: '100%',
         alignItems: 'center', 
         justifyContent: 'center',
-      
-      },
+    },
     group: {
         width: '100%',
         height: '33%',
@@ -137,7 +133,7 @@ const style = StyleSheet.create({
         marginRight: '15%',
         marginTop: '16%',
         paddingTop: '25%',
-      },
+    },
     button2: {
         width:'20%',
         height:'10%',

@@ -24,7 +24,7 @@ const AppTabNavigator = createMaterialTopTabNavigator({
     ,
     iconStyle: {height:25},
     activeTintColor: '#222',
-    inactiveTintColor: '#fff',
+    inactiveTintColor: '#ddd',
     upperCaseLabel: false,
     showLabel: false,
     showIcon: true,   // 하단바 아이콘으로 보이게 하기
