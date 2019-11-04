@@ -1,35 +1,47 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet,TouchableOpacity} from 'react-native';
-import { Icon } from 'native-base';
+import { View, StyleSheet,TouchableOpacity,Text} from 'react-native';
+import { Container, Header, Item, Input, Button, Icon } from 'native-base';
+import {SearchBar} from 'react-native-elements'
 import LottieView from 'lottie-react-native';
 import { Animated, Easing } from 'react-native';
 import CustomButton from '../CustomButton';
 type Props = {};
 export default class ChatManageTab extends Component {
-      constructor(props) {
+    state = {
+        search : '',
+    };
+    updateSearch = search =>{
+        this.setState({search});
+    };
+    constructor(props) {
         super(props);
         this.state = {
         progress: new Animated.Value(0),
     };
-  }
+}
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
             <Icon name='md-add-circle' size={300} style={{color: tintColor}} />
         ),
     }
- 
+
     render() {
+        const {search} = this.state;
         return (
             <View style={style.container}>
-                <View style={style.header}>
-                    <Text style={style.font_header}>ChatManage</Text>
+                {/*<View style={style.header}>
                 </View>
+                */}
                 <View style={style.content}>
                 <View style={style.search}>
-                    <Text style={style.font_header}>searchTab</Text>
+                <SearchBar
+                    placeholder="Type Here..."
+                    onChangeText={this.updateSearch}
+                    value={search}
+                    />
                 </View>
                     <View style ={style.buttongroup}>
-                     <LottieView  source={require('../LottieAnimation/8874-cat.json')} autoplay loop/>
+                    <LottieView  source={require('../LottieAnimation/8874-cat.json')} autoplay loop/>
                         <View style = {style.group}>
                                     <View style={style.button1}>
                                         <CustomButton
@@ -38,19 +50,19 @@ export default class ChatManageTab extends Component {
                                             buttonColor={'#000'}/>
                                     </View>
                                     <View style={style.button2}>
-                                          <CustomButton
+                                        <CustomButton
                                             title={'Movie'}
                                             titleColor={'#000'}
-                                             buttonColor={'#ddd'}/>
-                                     </View>
+                                            buttonColor={'#ddd'}/>
+                                    </View>
                         </View>
                         <View style = {style.group}>
-                                 <View style={style.button3}>
+                                <View style={style.button3}>
                                         <CustomButton
                                             title={'Korea'}
                                             titleColor={'#ddd'}
                                             buttonColor={'red'}/>
-                                     </View>
+                                    </View>
                             <View style={style.button4}>
                                         <CustomButton
                                             title={'Food'}
@@ -59,44 +71,44 @@ export default class ChatManageTab extends Component {
                                         </View>
                         </View>
                         <View style = {style.group}>
-                                 <View style={style.button5}>
+                                <View style={style.button5}>
                                         <CustomButton
                                             title={'SNS'}
                                             titleColor={'#ddd'}
                                             buttonColor={'orange'}/>
                                         </View>
                                 <View style={style.button6}>
-                                          <CustomButton
+                                        <CustomButton
                                             title={'Seoul'}
                                             titleColor={'#000'}
-                                             buttonColor={'skyblue'}/>
-                                         </View>
+                                            buttonColor={'skyblue'}/>
+                                        </View>
                         </View>
                     </View>
-              </View>
             </View>
-           
+            </View>
+        
 
         );
     }
 }
 
 const style = StyleSheet.create({
-     header: {
+    header: {
         width:'100%',
-        height:'12%',
+        height:'17%',
         justifyContent: 'flex-end',
         paddingLeft: '4%',
         paddingBottom: '1.1%',
-        backgroundColor: '#555',
+        backgroundColor: '#333',
     },
+    
     search: {
         width:'100%',
         height:'20%',
-        justifyContent: 'flex-end',
-        paddingLeft: '4%',
-        paddingBottom: '1.1%',
-        backgroundColor: '#666',
+        justifyContent: "center",
+        backgroundColor: '#333',
+        
     },
     container: {
         flex: 1,
@@ -117,12 +129,12 @@ const style = StyleSheet.create({
         justifyContent: 'center',    
     },
     buttongroup :{
-        height: '80%',
+        height: '70%',
         width: '100%',
         alignItems: 'center', 
         justifyContent: 'center',
-      
-      },
+
+    },
     group: {
         width: '100%',
         height: '33%',
@@ -133,16 +145,16 @@ const style = StyleSheet.create({
     },
     button1: {
         width:'20%',
-        height:'10%',
+        height:'15%',
         marginRight: '15%',
-        marginTop: '16%',
-        paddingTop: '25%',
-      },
+        marginTop: '10%',
+        paddingTop: '15%',
+    },
     button2: {
         width:'20%',
-        height:'10%',
-        marginTop: '16%',
-        paddingTop: '25%',
+        height:'15%',
+        marginTop: '10%',
+        paddingTop: '15%',
     },
     button3: {
         width:'20%',
@@ -157,14 +169,14 @@ const style = StyleSheet.create({
         width:'20%',
         height:'10%',
         marginRight: '15%',
-        marginBottom: '20%',
-        paddingBottom: '30%',
+        marginBottom: '15%',
+        paddingBottom: '20%',
     },
     button6: {
         width:'20%',
         height:'10%',
-        marginBottom: '20%',
-        paddingBottom: '30%',
+        marginBottom: '15%',
+        paddingBottom: '20%',
     },
     font_main: {
         color: '#aaa',
