@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import CustomButton from '../CustomButton';
 
-import Games from './Interest/Games';
-import Sports from './Interest/Sports';
-import Foods from './Interest/Foods';
-
-export default class SignUp_Interest extends Component {
+export default class SignUp_Done extends Component {
     static navigationOptions = {
         header: null
     }
@@ -15,40 +11,33 @@ export default class SignUp_Interest extends Component {
         this.state = {
             email: '',
             password: '',
-            nickname: '',
-            interests: [],
-            signUpResult: -1
+            loginResult: -1
         }
     }
     render() {
         const {navigation} = this.props;
         this.state.email = navigation.getParam('email', 'No Email');
         this.state.password = navigation.getParam('password', 'No Password');
-        this.state.nickname = navigation.getParam('nickname', 'No Nickname');
         return (
             <View style={style.container}>
-                <View style={style.header}/>
                 <View style={style.title}>
-                    <Text style={style.font_title}>Enter Interest</Text>
+                    <Text style={style.font_title}>Thank you!</Text>
                 </View>
                 <View style={style.content}>
-                    <ScrollView> 
-                        <Foods interAdd={this.interAdd} interRemove={this.interRemove}/>
-                        <Games interAdd={this.interAdd} interRemove={this.interRemove}/>
-                        <Sports interAdd={this.interAdd} interRemove={this.interRemove}/>
-                    </ScrollView>
+                    <View style={style.content}>
+                        <Text style={style.font_main}>All sign up procedures are complete!</Text>
+                    </View>
+                    <View style={style.content}>
+                        <Text style={style.font_main}>Your chosen interest is used only to{"\n"}recommend a suitable chat room for you.</Text>
+                    </View>
+                    <Text style={style.font_main}>Press the 'Done' button and experience Yumi.</Text>
                 </View>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
-                        <CustomButton
-                            title={'Back'}
-                            titleColor={'#ddd'}
-                            buttonColor={'#000'}
-                            onPress={() => this.goSignUp_Detail()}/>
                     </View>
                     <View style={style.footer_nextbutton}>
                         <CustomButton
-                            title={'Next'}
+                            title={'Done'}
                             titleColor={'#000'}
                             buttonColor={'#ddd'}
                             onPress={() => this.pressDone()}/>
@@ -57,47 +46,29 @@ export default class SignUp_Interest extends Component {
             </View>
         )
     }
-    goSignUp_Detail(){
-        this.props.navigation.navigate('SignUp_Detail');
-    }
-    goSignUp_Done(){
-        this.props.navigation.navigate('SignUp_Done', {
-            email: this.state.email,
-            password: this.state.password,
-        });
-    }
     pressDone(){
         this.submit();
-        alert("Sign Up is in progress. It takes about 3 seconds.")
-        setTimeout(() => {this.checkSignUpResult();}, 3000);
+        setTimeout(() => {this.checkLoginResult();}, 250);
     }
-    checkSignUpResult(){
-        if (this.state.signUpResult == 1) {    // 회원가입 성공
-            this.goSignUp_Done();
-        } else {                                      // 서버 전송 오류
-            alert("Failed to Sign up. Please try again.")
+    goMain(){
+        this.props.navigation.navigate('Main');
+    }
+    checkLoginResult(){
+        if (this.state.loginResult == 0) {           // 잘못된 사용자 정보
+            alert("Email or password is incorrect.")
+            this.state.loginResult = -1
+        } else if (this.state.loginResult == 1) {    // 로그인 성공
+            this.goMain();
+        } else {                                     // 서버 전송 오류
+            alert("Failed to login. Please try again.")
         }
     }
-    interAdd = (newSection, newGroup, newKey) => {
-        const pervInterests = this.state.interests;
-        this.setState({
-            interests: pervInterests.concat({section : newSection, group: newGroup, key: newKey})
-        });
-    }
-    interRemove = (remKey) => {
-        const pervInterests = this.state.interests;
-        this.setState({
-            interests: pervInterests.filter(inter => inter.key !== remKey)
-        });
-    }
     submit(){
-        var user = {}
+        var user= {}
         user.email = this.state.email
         user.password = this.state.password
-        user.nickname = this.state.nickname
-        user.interests = this.state.interests
         console.log(user);
-        var url = 'http://101.101.160.185:3000/signup';
+        var url = 'http://101.101.160.185:3000/login/auth';
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(user),
@@ -108,7 +79,7 @@ export default class SignUp_Interest extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => this.setState({
-            signUpResult: responseJson.result     // 실패시0 성공시1 
+            loginResult: responseJson.result     // 실패시0 성공시1 
         }));
     }
 }
@@ -118,7 +89,7 @@ const style = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: '12%',
+        paddingTop: '18%',
         paddingBottom: '5%',
         backgroundColor: '#333',
     },
@@ -137,8 +108,7 @@ const style = StyleSheet.create({
     },
     content: {
         flex: 1,
-        width: '75%',
-        paddingBottom: '3%',
+        alignItems: 'center',
     },
     footer: {
         width:'100%',
@@ -167,6 +137,6 @@ const style = StyleSheet.create({
     },
     font_main: {
         color: '#aaa',
-        fontSize: 14,
+        fontSize: 20,
     },
 });

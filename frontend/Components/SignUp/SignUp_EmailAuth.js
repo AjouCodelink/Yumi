@@ -60,7 +60,7 @@ export default class SignUp_EmailAuth extends Component {
                         </View>
                     </View>
                     <Text style={style.font_main}>  The authentication number is 6 digits.{"\n"}</Text>
-                    <Text style={style.font_main}>  현재 서버에 전송된 인증번호: {this.state.serverAuthcode}</Text>
+                    {/*<Text style={style.font_main}>  현재 서버에 전송된 인증번호: {this.state.serverAuthcode}</Text>*/}
                 </View>
                 <View style={[style.content, {display: this.state.nextHideness}]}>
                     <Text style={{fontSize: 17, color: '#aaa'}}> Your email address :</Text>
@@ -92,7 +92,7 @@ export default class SignUp_EmailAuth extends Component {
         } else if (this.state.email.indexOf('@') == -1 || this.state.email.indexOf('.ac.kr') == -1) {   // 메일주소 유효성검사
             alert("Please enter a valid email address. The email address must include '@' and must end with 'ac.kr'")
         } else {
-            //this.submit();
+            this.submit();
             this.setState({
                 emailHideness: 'none',
                 authHideness: 'flex'

@@ -112,28 +112,6 @@ export default class SignUp_Detail extends Component {
             this.state.nicknameChecked = 1
         }
     }
-    submit(){
-        var user = {}
-        user.email = this.state.email
-        user.password = this.state.password
-        user.nickname = this.state.nickname
-        user.interests = this.state.interests
-        console.log(user);
-        var url = 'http://101.101.160.185:3000/signup/save-user';
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(email),
-            headers: new Headers({
-            'Content-Type' : 'application/json',
-            'token': 'token'
-            })
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson => this.setState({
-            serverAuthcode: responseJson.number,
-            mailSendResult: responseJson.result     // 실패시-1 중복시0 성공시1
-        }));
-    }
 }
 
 const style = StyleSheet.create({

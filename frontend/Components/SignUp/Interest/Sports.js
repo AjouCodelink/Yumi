@@ -90,6 +90,11 @@ class Sports extends Component {
     _onPressGroup = (key) => {
         this.setState(prevState => {
             const [ data ] = prevState.contactData.filter(e => e.key === key);
+            if (data.selected == false) {
+                this.props.interAdd(this.state.section, data.name, data.key);
+            } else {
+                this.props.interRemove(data.key);
+            }
             data.selected = !data.selected;
             const contactData = [
                 ...prevState.contactData

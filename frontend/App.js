@@ -9,6 +9,7 @@ import SignUp_Welcome from './Components/SignUp/SignUp_Welcome';
 import SignUp_EmailAuth from './Components/SignUp/SignUp_EmailAuth';
 import SignUp_Detail from './Components/SignUp/SignUp_Detail';
 import SignUp_Interest from './Components/SignUp/SignUp_Interest';
+import SignUp_Done from './Components/SignUp/SignUp_Done';
 
 const AppStackNavigator = createStackNavigator({
   Title:{
@@ -29,8 +30,10 @@ const AppStackNavigator = createStackNavigator({
   SignUp_Interest:{
     screen: SignUp_Interest
   },
-}
-);
+  SignUp_Done:{
+    screen: SignUp_Done
+  },
+});
 
 export default createAppContainer(AppStackNavigator);
 
