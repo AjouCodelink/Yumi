@@ -1,25 +1,19 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-const userSchema = mongoose.Schema({
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    nickname: {
-        type: String,
-        required: true
-    },
-    interests: [String]
+const UserSchema = mongoose.Schema({
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true, trim: true },
+    nickname: { type: String, required: true },
+    interests: [{
+        section: { type: String },
+        group: { type: String }
+    }],
+    language: { type: String },
+    img_path: { type: String}
 });
 
-userSchema.methods.comparePassword = function (inputPassword, cb) {
+UserSchema.methods.comparePassword = function (inputPassword, cb) {
     if (inputPassword === this.password) {
         cb(null, true);
     } else {
@@ -27,4 +21,4 @@ userSchema.methods.comparePassword = function (inputPassword, cb) {
     }
 };
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('user', UserSchema);
