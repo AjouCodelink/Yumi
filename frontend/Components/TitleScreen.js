@@ -35,6 +35,11 @@ export default class TitleScreen extends Component {
                             titleColor={'#ddd'}
                             buttonColor={'#000'}
                             onPress={() => this.goSignup_Welcome()}/>
+                        <CustomButton
+                            title={'chatroom'}
+                            titleColor={'#ddd'}
+                            buttonColor={'#000'}
+                            onPress={() => this.goChatroom()}/>
                     </View>
                     <View style={style.footer_nextbutton}>
                     <CustomButton
@@ -73,6 +78,9 @@ export default class TitleScreen extends Component {
         } else {                                     // 서버 전송 오류
             alert("Failed to login. Please try again.")
         }
+    }
+    goChatroom(){
+        this.props.navigation.navigate('Chatroom');
     }
     goSignup_Welcome(){
         this.props.navigation.navigate('SignUp_Welcome');

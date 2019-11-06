@@ -1,23 +1,20 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Icon} from 'native-base';
 
-export default class Chatroom extends Component {
-
+export default class Sidebar extends Component {
     render() {
         return (
             <View style={style.container}>
-                <View style={style.header}>
-                    <Text style={style.font_main}>You can see the kind of rooms you belong to.</Text>
-                </View>
                 <View style={style.content}>
-                    <Text style={style.font_main}>You can see the kind of rooms you belong to.</Text>
+                    <Text style={style.font_main}>채팅 목록이 준내 올라올 예정임ㅎㅎ{"\n"}{this.state.message}</Text>
                 </View>
                 <View style={style.chatPlace}>
                 </View>
             </View>
         );
     }
+
 }
 
 const style = StyleSheet.create({
@@ -37,7 +34,7 @@ const style = StyleSheet.create({
     },
     font_header: {
         color: 'white',
-        fontSize: 42,
+        fontSize: 35,
         alignItems: 'center',
         fontWeight: 'bold',
     },
@@ -48,11 +45,13 @@ const style = StyleSheet.create({
         alignItems: 'center',
     },
     chatPlace: {
-        flex: 1,
-        height: 50,
+        height: 45,
         width: '100%',
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#888',
+        borderWidth: 0,
     },
     font_main: {
         color: '#aaa',

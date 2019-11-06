@@ -8,13 +8,13 @@ type Props = {};
 export default class ChatManageTab extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-        progress: new Animated.Value(0),
+            this.state = {
+            progress: new Animated.Value(0),
         };
     }
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
-            <Icon name='md-add-circle' size={300} style={{color: tintColor}} />
+            <Icon name='md-add-circle' style={{color: tintColor}} />
         ),
     }
     render() {
@@ -81,10 +81,10 @@ export default class ChatManageTab extends Component {
 const style = StyleSheet.create({
     header: {
         width:'100%',
-        height:'12%',
+        height: 88,
         justifyContent: 'flex-end',
         paddingLeft: '4%',
-        paddingBottom: '1.1%',
+        paddingBottom: 5,
         backgroundColor: '#555',
     },
     search: {

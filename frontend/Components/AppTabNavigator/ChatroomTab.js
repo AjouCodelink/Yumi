@@ -6,12 +6,8 @@ import {Icon} from 'native-base';
 export default class ChatroomTab extends Component {
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
-            <Icon
-                name='md-chatboxes'
-                style={{
-                    color: tintColor
-                }}/>
-        )
+            <Icon name='md-chatboxes' style={{ color: tintColor }} />
+        ),
     }
     render() {
         return (
@@ -36,10 +32,10 @@ const style = StyleSheet.create({
     },
     header: {
         width:'100%',
-        height:'12%',
+        height: 88,
         justifyContent: 'flex-end',
         paddingLeft: '4%',
-        paddingBottom: '1.1%',
+        paddingBottom: 5,
         backgroundColor: '#555',
     },
     font_header: {

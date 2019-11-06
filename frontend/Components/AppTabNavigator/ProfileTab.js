@@ -6,13 +6,7 @@ export default class ProfileTab extends Component {
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
             <Icon name='md-person' style={{color: tintColor}} />
-        )
-    }
-    constructor(props) {
-        super(props);
-        this.state = {
-            clicked: true
-        };
+        ),
     }
     render() {
         return (
@@ -37,10 +31,10 @@ const style = StyleSheet.create({
     },
     header: {
         width:'100%',
-        height:'12%',
+        height: 88,
         justifyContent: 'flex-end',
         paddingLeft: '4%',
-        paddingBottom: '1.1%',
+        paddingBottom: 5,
         backgroundColor: '#555',
     },
     font_header: {

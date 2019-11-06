@@ -20,8 +20,7 @@ const AppTabNavigator = createMaterialTopTabNavigator({
     tabBarOptions: {
     style: {
         backgroundColor: '#888',
-    }
-    ,
+    },
     iconStyle: {height:25},
     activeTintColor: '#222',
     inactiveTintColor: '#ddd',
@@ -43,7 +42,6 @@ export default class MainScreen extends Component {
     render() {
         return <AppTabContainet/>; 
     }
-
     componentDidMount() {   // 뒤로가기 눌렀을 때
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     }

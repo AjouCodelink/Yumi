@@ -5,6 +5,7 @@ import { createAppContainer } from 'react-navigation';
 
 import MainScreen from './Components/MainScreen';
 import TitleScreen from './Components/TitleScreen';
+import Chatroom from './Components/Chatroom';
 import SignUp_Welcome from './Components/SignUp/SignUp_Welcome';
 import SignUp_EmailAuth from './Components/SignUp/SignUp_EmailAuth';
 import SignUp_Detail from './Components/SignUp/SignUp_Detail';
@@ -32,6 +33,9 @@ const AppStackNavigator = createStackNavigator({
   },
   SignUp_Done:{
     screen: SignUp_Done
+  },
+  Chatroom:{
+    screen: Chatroom
   },
 });
 
