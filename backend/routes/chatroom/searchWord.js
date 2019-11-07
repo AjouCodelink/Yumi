@@ -11,6 +11,7 @@ router.get('/', function(req, res, next){
     var keyword = req.query.keyword;
     
     ChatRoom.findRoomByKeyword(keyword).then(function(data){
+        console.log(data[0]._id);
         res.json(data);
     })
 })
