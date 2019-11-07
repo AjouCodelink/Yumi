@@ -16,6 +16,7 @@ router.post('/', function(req, res, next){ // 프론트쪽에서 email이랑 int
 
     User.findOne({email:user_email}, function(err, data){
         if(err) res.send(err);
+        if(!data) res.json({result:0, message: "email not found!"});
         else{
             var user_data = {};
             user_data.email = data.email;
