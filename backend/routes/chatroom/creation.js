@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
   res.render('login', { title: 'creation' });
 });
 
-router.post('/', function(req, res, next){
+router.post('/', function(req, res, next){ // 프론트쪽에서 email이랑 interests 보내줘야함.
     var user_email = req.body.email;
     var interests_list = req.body.interests;
 
