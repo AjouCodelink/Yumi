@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
-import {List, ListItem} from 'react-native-elements';
-import {Icon} from 'native-base';
+import {Icon, Button} from 'native-base';
 
 export default class ChatroomTab extends Component {
     static navigationOptions = {
-        tabBarIcon: ({tintColor}) => (
-            <Icon name='md-chatboxes' style={{ color: tintColor }} />
-        ),
+        tabBarIcon: ({tintColor}) => ( <Icon name='md-person' style={{color: tintColor}} />
+    ),
+        header: null,
     }
     render() {
         return (
@@ -16,16 +15,21 @@ export default class ChatroomTab extends Component {
                     <Text style={style.font_header}>Chatrooms</Text>
                 </View>
                 <View style={style.content}>
-                    <Text style={style.font_main}>You can see the kind of rooms you belong to.</Text>
+                    <Button block bordered light onPress={this._onPressChatroom}><Text style={style.chatroom_name}> Chatroom1 </Text></Button>
+                    <Button block bordered light onPress={this._onPressChatroom}><Text style={style.chatroom_name}> Chatroom2 </Text></Button>
                 </View>
             </View>
         );
     }
+    _onPressChatroom = () => {
+        this.props.navigation.navigate('Chatroom');
+    }
+    
 }
 
 const style = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 2,
         backgroundColor: '#333',
         alignItems: 'center',
         justifyContent: 'center'
@@ -47,12 +51,14 @@ const style = StyleSheet.create({
     content: {
         flex: 1,
         width: '100%',
+        paddingLeft: 8,
+        paddingRight: 8,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'flex-start',
     },
-    font_main: {
-        color: '#aaa',
-        fontSize: 20,
+    chatroom_name: {
+        color: '#ddd',
+        fontSize: 18,
         alignItems: 'center',
     },
 });

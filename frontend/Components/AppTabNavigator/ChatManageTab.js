@@ -5,6 +5,7 @@ import LottieView from 'lottie-react-native';
 import { Animated, Easing } from 'react-native';
 import CustomButton from '../CustomButton';
 type Props = {};
+
 export default class ChatManageTab extends Component {
     constructor(props) {
         super(props);

@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Icon, Input} from 'native-base';
 
-import {Drawer} from './Drawer';
-
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
@@ -12,6 +10,9 @@ export default class Chatroom extends Component {
         }
     }
     static navigationOptions = {
+        tabBarIcon: ({tintColor}) => (
+            <Icon name='md-person' style={{color: tintColor}} />
+        ),
         headerTitle: () => (
             <Text style={style.font_header}>chatroom name
                 <Text style={{fontSize:15, color: '#ee0'}}>  20</Text>
@@ -24,7 +25,7 @@ export default class Chatroom extends Component {
     render() {
         return (
             <View style={style.container}>
-                <Drawer/>>
+                
                 <View style={style.content}>
                     <Text style={style.font_main}>채팅 목록이 준내 올라올 예정임ㅎㅎ{"\n"}{this.state.message}</Text>
                 </View>
@@ -37,7 +38,7 @@ export default class Chatroom extends Component {
                 </View>
             </View>
         );
-    }
+    }   
     onPressSend(){
         if (this.state.message == ''){
             
