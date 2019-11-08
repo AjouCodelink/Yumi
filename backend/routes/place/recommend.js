@@ -1,21 +1,38 @@
 var express = require('express');
 var router = express.Router();
 var ChatRoom = require('../../models/chatRoom');
+var request = require('request');
 
-// router.get('/', function(req, res, next) {
-//     res.render('index', { title: 'recommend' });
-// });
+var client_id = 'pn80bxdxtf';
+var client_secret = 'HBSc7VWidfQACtAmmWL9K7I6ebVMCmRYpUiSUlU9';
 
 router.get('/', function(req, res, next){ 
     var roomId = req.query.roomId; // query로 roomId = {id}를 받아야함.
 
     ChatRoom.findOne({_id:roomId}, function(err, room){
         var interestsAndLocation = getInterestsAndLocationByRoom(room); // [0]에는 interests, [1]에는 location
-        //console.log(interestsAndLocation);
+
         var keyword = getKeywordByInterests(["soccer", "soccer", "baseball"]) // TODO : 파라미터에 interestsAndLocation.interests 들어갈 예정
         var centerLocation = getCenterByLocations([{x:127.123, y:35.11}, {x:128.444, y:34.33}]); // TODO : locations의 정보를 DB에 넣은 뒤 interestsAndLocation.location 파라미터 바꿔주기
+        
         console.log(centerLocation);
-        res.json({result:1});
+        keyword = 'pc'; // TODO : getKeywordByInterests 함수 작성 후 삭제 예정
+
+        var api_url = 'https://naveropenapi.apigw.ntruss.com/map-place/v1/search?query='+keyword+
+        '&coordinate='+centerLocation.x+','+centerLocation.y;
+        var options = {
+            url: api_url,
+            headers: {'X-NCP-APIGW-API-KEY-ID':client_id, 'X-NCP-APIGW-API-KEY': client_secret}
+        };
+        request.get(options, function (error, response, body) { // 네이버 API에서 장소 정보 가져오는 코드.
+            if (!error && response.statusCode == 200) {
+                res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
+                res.end(body);
+            } else {
+                res.status(response.statusCode).end();
+                console.log('error = ' + response.statusCode);
+            }
+        });
     })
 })
 
@@ -55,5 +72,9 @@ function getCenterByLocations(location){ // location 배열 정보를 입력 받
 
     return {x:center_x, y:center_y};
 }
+
+// router.get('/', function(req, res, next) {
+//     res.render('index', { title: 'recommend' });
+// });
 
 module.exports = router;
