@@ -10,12 +10,11 @@ router.get('/', function(req, res, next){
     var roomId = req.query.roomId; // query로 roomId = {id}를 받아야함.
 
     ChatRoom.findOne({_id:roomId}, function(err, room){
-        var interestsAndLocation = getInterestsAndLocationByRoom(room); // [0]에는 interests, [1]에는 location
+        var interestsAndLocation = getInterestsAndLocationByRoom(room);
 
         var keyword = getKeywordByInterests(["soccer", "soccer", "baseball"]) // TODO : 파라미터에 interestsAndLocation.interests 들어갈 예정
         var centerLocation = getCenterByLocations([{x:127.123, y:35.11}, {x:128.444, y:34.33}]); // TODO : locations의 정보를 DB에 넣은 뒤 interestsAndLocation.location 파라미터 바꿔주기
         
-        console.log(centerLocation);
         keyword = 'pc'; // TODO : getKeywordByInterests 함수 작성 후 삭제 예정
 
         var api_url = 'https://naveropenapi.apigw.ntruss.com/map-place/v1/search?query='+keyword+

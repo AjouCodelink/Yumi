@@ -4,9 +4,9 @@ var recommend = require('./recommend');
 
 router.use('/recommend', recommend);
 
-router.get('/', function(req, res, next) {
-    res.render('index', { title: 'place' });
-});
+// router.get('/', function(req, res, next) {
+//     res.render('index', { title: 'place' });
+// });
 
 
 module.exports = router;
