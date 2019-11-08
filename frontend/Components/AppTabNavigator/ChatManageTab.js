@@ -36,13 +36,13 @@ export default class ChatManageTab extends Component {
             
                 <View style = {style.search}>
                 <TextInput
-                        style={{height: 40, width: 300, backgroundColor:'#666',  fontSize:18, borderRadius: 5,paddingLeft: 10}}
+                        style={{height: 40, width: "75%", backgroundColor:'#666',  fontSize:18, borderRadius: 5,paddingLeft: 10}}
                         placeholder="Search..."
                         value={this.state.search}
                         onChangeText={(search) => this.setState({search})}
                 />
                 <Button 
-                style={{backgroundColor: '#384850',width: 50, height: 40, marginLeft :15, backgroundColor:'#AAA',}} 
+                style={{backgroundColor: '#384850',width: 50, height: 40, marginLeft :15,marginRight: 15, backgroundColor:'#AAA'}} 
                 onPress={ this.ButtonClickCheckFunction}
                 >
                 <Icon name='ios-search' style={{color: '#FFF'}}/>
@@ -53,46 +53,48 @@ export default class ChatManageTab extends Component {
                     <View style ={style.buttongroup}>
                     <LottieView  source={require('../LottieAnimation/8874-cat.json')} autoplay loop/>
                         <View style = {style.group}>
-                                    <View style={style.button1}>
-                                        <CustomButton
-                                            title={'Sports'}
-                                            titleColor={'#ddd'}
-                                            buttonColor={'#000'}/>
-                                    </View>
-                                    <View style={style.button2}>
-                                        <CustomButton
-                                            title={'Movie'}
-                                            titleColor={'#000'}
-                                            buttonColor={'#ddd'}/>
-                                    </View>
+                                        <Button rounded 
+                                        onPress={ this.ButtonClickCheckFunction}
+                                        style={{width: "20%", height: 25, marginLeft: "25%", marginTop:"30%",justifyContent: "center",backgroundColor: "#FF0000"}}
+                                        >
+                                        <Text
+                                        fontColor ="#fff">Sports</Text>
+                                        </Button>
+                                    <Button rounded 
+                                        onPress={ this.ButtonClickCheckFunction}
+                                        style={{width: "20%", height: 25, marginRight :"25%", marginTop:"30%",justifyContent: "center",backgroundColor:"#E5D85C"}}
+                                        >
+                                        <Text>Movie</Text>
+                                        </Button>
                         </View>
                         <View style = {style.group}>
-                                <View style={style.button3}>
-                                        <CustomButton
-                                            title={'Korea'}
-                                            titleColor={'#ddd'}
-                                            buttonColor={'red'}/>
-                                    </View>
-                            <View style={style.button4}>
-                                        <CustomButton
-                                            title={'Food'}
-                                            titleColor={'#000'}
-                                            buttonColor={'green'}/>
-                                        </View>
+                                <Button rounded 
+                                        onPress={ this.ButtonClickCheckFunction}
+                                        style={{width: "20%", height: 25, marginLeft: "15%",justifyContent: "center", backgroundColor:"#5CD1E5"}}
+                                        >
+                                        <Text>Korea</Text>
+                                        </Button>
+                                    <Button rounded 
+                                        onPress={ this.ButtonClickCheckFunction}
+                                        style={{width: "20%", height: 25, marginRight :"15%",justifyContent: "center", backgroundColor:"#1DDB16"}}
+                                        >
+                                        <Text>Food</Text>
+                                        </Button>
+                                
                         </View>
                         <View style = {style.group}>
-                                <View style={style.button5}>
-                                        <CustomButton
-                                            title={'SNS'}
-                                            titleColor={'#ddd'}
-                                            buttonColor={'orange'}/>
-                                        </View>
-                                <View style={style.button6}>
-                                        <CustomButton
-                                            title={'Seoul'}
-                                            titleColor={'#000'}
-                                            buttonColor={'skyblue'}/>
-                                        </View>
+                        <Button rounded 
+                                        onPress={ this.ButtonClickCheckFunction}
+                                        style={{width: "20%", height: 25, marginLeft: "25%", marginBottom:"30%",justifyContent: "center"}}
+                                        >
+                                        <Text>SNS</Text>
+                                        </Button>
+                                    <Button rounded 
+                                        onPress={ this.ButtonClickCheckFunction}
+                                        style={{width: "20%", height: 25, marginRight :"25%", marginBottom:"30%",justifyContent: "center", backgroundColor:"#8041D9"}}
+                                        >
+                                        <Text>Seoul</Text>
+                                        </Button>
                         </View>
                     </View>
             </View>
@@ -109,6 +111,8 @@ const style = StyleSheet.create({
         backgroundColor: '#333',
     },
     search: {
+        justifyContent: 'center',
+        alignItems : "stretch",
         paddingTop: 50,
         paddingLeft : 20,
         flexDirection: 'row',
@@ -151,28 +155,30 @@ const style = StyleSheet.create({
         width: '100%',
         alignItems: 'center', 
         justifyContent: 'center',
+    
 
     },
     group: {
         width: '100%',
-        height: '33%',
+        height: "33%",
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-       // backgroundColor: "white",
+        justifyContent: 'space-between',
+    
     },
     button1: {
-        width:'20%',
-        height: 20,
+        width:'15%',
+        height: 5,
         marginRight: '15%',
-        marginTop: '10%',
-        paddingTop: '15%',
+        marginBottom: "30%",
+    
+    
     },
     button2: {
         width:'20%',
-        height: 20,
-        marginTop: '10%',
-        paddingTop: '15%',
+        height: 15,
+        marginBottom: "30%",
+    
     },
     button3: {
         width:'20%',
@@ -181,20 +187,20 @@ const style = StyleSheet.create({
     },
     button4: {
         width:'20%',
-        height: 25,
+        height: 15,
     },
     button5: {
         width:'20%',
         height: 15,
         marginRight: '15%',
         marginBottom: '15%',
-        paddingBottom: '20%',
+    
     },
     button6: {
         width:'20%',
-        height:     15,
+        height: 15,
         marginBottom: '15%',
-        paddingBottom: '20%',
+    
     },
     font_main: {
         color: '#aaa',
