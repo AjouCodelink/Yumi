@@ -15,8 +15,4 @@ ChatRoomSchema.statics.findRoomByKeyword = function(keyword) {
     return this.find({interests: keyword});
 };
 
-ChatRoomSchema.statics.makeRoomByKeyword = function(keyword){
-
-}
-
 module.exports = mongoose.model('chatroom', ChatRoomSchema);
