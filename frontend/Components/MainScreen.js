@@ -1,37 +1,17 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ToastAndroid, BackHandler } from 'react-native';
+import { StyleSheet, Text, View, ToastAndroid, BackHandler, StatusBar } from 'react-native';
 import { Icon } from 'native-base';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs'; 
-import { createStackNavigator } from 'react-navigation-stack'; 
 import { createAppContainer } from 'react-navigation';
 
 import ChatManageTab from './AppTabNavigator/ChatManageTab'
-import ChatroomTab from './AppTabNavigator/ChatroomTab'
+import ChatScreen from './AppTabNavigator/ChatScreen'
 import ProfileTab from './AppTabNavigator/ProfileTab'
 import SettingTab from './AppTabNavigator/SettingTab'
-import Chatroom from './Chat/Chatroom';
-
-const chatNavigator = createStackNavigator({
-    ChatroomTab: ChatroomTab,
-    Chatroom: Chatroom,
-});
-
-const ChatContainet = createAppContainer(chatNavigator)
-
-class chatScreen extends Component {
-    static navigationOptions = {
-        tabBarIcon: ({tintColor}) => (
-            <Icon name='md-chatboxes' style={{color: tintColor}} />
-        ),
-    }
-    render() {
-        return <ChatContainet/>; 
-    }
-}
 
 const AppTabNavigator = createMaterialTopTabNavigator({
     ProfileTab: ProfileTab,
-    ChatroomTab: chatScreen, 
+    ChatroomTab: ChatScreen, 
     ChatManageTab: ChatManageTab,
     SettingTab: SettingTab,
 }, {
@@ -61,6 +41,7 @@ export default class MainScreen extends Component {
         header: null
     }
     render() {
+        <StatusBar hidden='yes' />
         return <AppTabContainet/>; 
     }
     componentDidMount() {   // 뒤로가기 눌렀을 때

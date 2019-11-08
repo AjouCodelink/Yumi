@@ -4,8 +4,6 @@ import {Icon, Button} from 'native-base';
 
 export default class ChatroomTab extends Component {
     static navigationOptions = {
-        tabBarIcon: ({tintColor}) => ( <Icon name='md-person' style={{color: tintColor}} />
-    ),
         header: null,
     }
     render() {
@@ -29,7 +27,7 @@ export default class ChatroomTab extends Component {
 
 const style = StyleSheet.create({
     container: {
-        flex: 2,
+        flex: 1,
         backgroundColor: '#333',
         alignItems: 'center',
         justifyContent: 'center'

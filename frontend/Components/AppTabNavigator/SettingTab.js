@@ -78,7 +78,7 @@ export default class SettingTab extends Component {
         }
     }
     onPressLogout() {
-        alert("you press logout");
+        this.props.navigation.navigate('TitleScreen');
     }
     onPressContect() {
         alert("you press Contect");
