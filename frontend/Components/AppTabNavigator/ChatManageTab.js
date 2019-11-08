@@ -83,7 +83,7 @@ export default class ChatManageTab extends Component {
                                 
                         </View>
                         <View style = {style.group}>
-                        <Button rounded 
+                                    <Button rounded 
                                         onPress={ this.ButtonClickCheckFunction}
                                         style={{width: "20%", height: 25, marginLeft: "25%", marginBottom:"30%",justifyContent: "center"}}
                                         >
@@ -164,42 +164,6 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-    
-    },
-    button1: {
-        width:'15%',
-        height: 5,
-        marginRight: '15%',
-        marginBottom: "30%",
-    
-    
-    },
-    button2: {
-        width:'20%',
-        height: 15,
-        marginBottom: "30%",
-    
-    },
-    button3: {
-        width:'20%',
-        height: 25,
-        marginRight: '25%',
-    },
-    button4: {
-        width:'20%',
-        height: 15,
-    },
-    button5: {
-        width:'20%',
-        height: 15,
-        marginRight: '15%',
-        marginBottom: '15%',
-    
-    },
-    button6: {
-        width:'20%',
-        height: 15,
-        marginBottom: '15%',
     
     },
     font_main: {
