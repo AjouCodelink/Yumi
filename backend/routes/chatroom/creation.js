@@ -8,13 +8,13 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next){ // 프론트쪽에서 email이랑 interests 보내줘야함.
-    var user_email = req.body.email;
-    var interests_list = req.body.interests;
+    var userEmail = req.body.email;
+    var interestsList = req.body.interests;
 
     var chatRoom = new ChatRoom();
-    chatRoom.interests = interests_list;
+    chatRoom.interests = interestsList;
 
-    User.findOne({email:user_email}, function(err, data){
+    User.findOne({email:userEmail}, function(err, data){
         if(err) res.send(err);
         if(!data) res.json({result:0, message: "email not found!"});
         else{
@@ -24,7 +24,9 @@ router.post('/', function(req, res, next){ // 프론트쪽에서 email이랑 int
             user_data.interests = data.interests;
 
             chatRoom.participants.push(user_data);
-            
+            /*
+            이 부분에 socket.on('join room') 코드 작성 해야 됨.
+            */
             chatRoom.save((err)=>{
                 if(err){
                     console.log(err);
