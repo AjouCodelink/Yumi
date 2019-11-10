@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, } from 'react-native';
+import { View, Text, TextInput, StyleSheet, KeyboardAvoidingView } from 'react-native';
 import { Item, Label, Input } from 'native-base';
 
 import CustomButton from '../CustomButton';
@@ -27,7 +27,7 @@ export default class SignUp_Detail extends Component {
                 <View style={style.title}>
                     <Text style={style.font_title}>Enter Details</Text>
                 </View>
-                <View style={style.content}>
+                <KeyboardAvoidingView behavior='padding' style={style.content}>
                     <Text style={{fontSize:18, color:'#999', textAlign:'left'}}>Your Email:</Text>
                     <Text style={{fontSize:20, color:'white', textAlign:'left'}}> {this.state.email}{"\n"}</Text>
                     <Item style={{height: 53}} floatingLabel>
@@ -45,7 +45,7 @@ export default class SignUp_Detail extends Component {
                         <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(nickname) => this.setState({nickname})}/>
                     </Item>
                     <Text style={style.font_main}>  The nickname must be between 2 and 20 characters.{"\n"}</Text>
-                </View>
+                </KeyboardAvoidingView>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
                         <CustomButton

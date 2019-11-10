@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView } from 'react-native';
 import { Form, Item, Label, Input } from 'native-base';
 
 import CustomButton from './CustomButton';
@@ -18,16 +18,16 @@ export default class TitleScreen extends Component {
                 <Image
                     style={{height:'50%', width:'50%', resizeMode:'contain'}}
                     source={require('../assets/Titleimage.png')}/>
-                    <Form style={style.content}>
-                        <Item style={{height: 53}} floatingLabel>
-                            <Label style={{color: '#999'}}>Email Address</Label>
-                            <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(email) => this.setState({email})}/>
-                        </Item>
-                        <Item style={{magrinTop: 10, height: 53}} floatingLabel>
-                            <Label style={{color: '#999'}}>Password</Label>
-                            <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(password) => this.setState({password})}/>
-                        </Item>
-                    </Form>
+                <KeyboardAvoidingView behavior='padding' style={style.content}>
+                    <Item style={{height: 53}} floatingLabel>
+                        <Label style={{color: '#999'}}>Email Address</Label>
+                        <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(email) => this.setState({email})}/>
+                    </Item>
+                    <Item style={{height: 53, marginTop: 10}} floatingLabel>
+                        <Label style={{color: '#999'}}>Password</Label>
+                        <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(password) => this.setState({password})}/>
+                    </Item>
+                </KeyboardAvoidingView>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
                         <CustomButton

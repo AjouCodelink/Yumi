@@ -16,18 +16,21 @@ class ContactInfo extends Component {
     }
 }
 
+
 const style = StyleSheet.create({
     content: {
-        width: '75%',
+        width: '70%',
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
-        marginLeft: '25%',
+        marginLeft: '30%',
         paddingRight: 10,
-        paddingBottom: 10,
+        paddingTop: 5,
+        paddingBottom: 5,
     },
     messageBox: {
         backgroundColor: "#ee3",
+        borderRadius: 5,
     },
     text_time: {
         fontSize : 13,
