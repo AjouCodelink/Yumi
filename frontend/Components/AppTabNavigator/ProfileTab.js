@@ -11,11 +11,8 @@ export default class ProfileTab extends Component {
     render() {
         return (
             <View style={style.container}>
-                <View style={style.header}>
-                    <Text style={style.font_header}>Profile</Text>
-                </View>
-                <View style={style.title}></View>
                 <View style={style.content}>
+                    <Text style={style.font_header}>Profile</Text>
                     <Text style={style.font_main}>You can manage your profile.</Text>
                 </View>
             </View>
@@ -26,8 +23,8 @@ export default class ProfileTab extends Component {
 const style = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: 25,
         backgroundColor: '#333',
-        alignItems: 'center',
     },
     header: {
         width:'100%',

@@ -56,9 +56,6 @@ export default class SettingTab extends Component {
     render() {
         return (
             <View style={style.container}>
-                <View style={style.header}>
-                    <Text style={style.font_header}>Settings</Text>
-                </View>
                 <View style={style.content}>
                     <FlatList
                         data={this.state.data}
@@ -91,6 +88,7 @@ export default class SettingTab extends Component {
 const style = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: 25,
         backgroundColor: '#333',
         alignItems: 'center',
         justifyContent: 'center',

@@ -9,12 +9,10 @@ export default class ChatroomTab extends Component {
     render() {
         return (
             <View style={style.container}>
-                <View style={style.header}>
-                    <Text style={style.font_header}>Chatrooms</Text>
-                </View>
                 <View style={style.content}>
-                    <Button block bordered light onPress={this._onPressChatroom}><Text style={style.chatroom_name}> Chatroom1 </Text></Button>
-                    <Button block bordered light onPress={this._onPressChatroom}><Text style={style.chatroom_name}> Chatroom2 </Text></Button>
+                    <Text style={style.font_header}>Chatrooms</Text>
+                    <Button bordered light onPress={this._onPressChatroom}><Text style={style.chatroom_name}> Chatroom1 </Text></Button>
+                    <Button bordered light onPress={this._onPressChatroom}><Text style={style.chatroom_name}> Chatroom2 </Text></Button>
                 </View>
             </View>
         );
@@ -28,9 +26,8 @@ export default class ChatroomTab extends Component {
 const style = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: 25,
         backgroundColor: '#333',
-        alignItems: 'center',
-        justifyContent: 'center'
     },
     header: {
         width:'100%',
@@ -52,7 +49,7 @@ const style = StyleSheet.create({
         paddingLeft: 8,
         paddingRight: 8,
         justifyContent: 'center',
-        alignItems: 'flex-start',
+        alignItems: 'center',
     },
     chatroom_name: {
         color: '#ddd',

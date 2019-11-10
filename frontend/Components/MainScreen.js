@@ -10,10 +10,10 @@ import ProfileTab from './AppTabNavigator/ProfileTab'
 import SettingTab from './AppTabNavigator/SettingTab'
 
 const AppTabNavigator = createMaterialTopTabNavigator({
-    ProfileTab: ProfileTab,
-    ChatroomTab: ChatScreen, 
-    ChatManageTab: ChatManageTab,
-    SettingTab: SettingTab,
+    Profile: ProfileTab,
+    Chatroom: ChatScreen, 
+    ChatManage: ChatManageTab,
+    Setting: SettingTab,
 }, {
     animationEnabled: true,
     swipeEnabled: true,
@@ -21,12 +21,13 @@ const AppTabNavigator = createMaterialTopTabNavigator({
     tabBarOptions: {
     style: {
         backgroundColor: '#888',
+        height: 60
     },
-    iconStyle: {height:25},
+    iconStyle: {height:25, paddingTop: -5},
     activeTintColor: '#222',
     inactiveTintColor: '#ddd',
     upperCaseLabel: false,
-    showLabel: false,
+    showLabel: true,
     showIcon: true,   // 하단바 아이콘으로 보이게 하기
     }
 });
