@@ -41,6 +41,7 @@ export default class Chatroom extends Component {
         header: null
     }
     render() {
+        const { goBack } = this.props.navigation;
         return (
             <DrawerLayout
                 ref={ drawer => this.drawer = drawer }
@@ -51,7 +52,7 @@ export default class Chatroom extends Component {
                 renderNavigationView={this.renderDrawer}>
                 <View style={style.header}>
                     <Left>
-                        <TouchableOpacity onPress={() => this.goback()}>
+                        <TouchableOpacity onPress={() => goBack(null)}>
                             <Icon name='md-arrow-round-back' style={{color: '#999', fontSize: 30}}/>
                         </TouchableOpacity>
                     </Left>
