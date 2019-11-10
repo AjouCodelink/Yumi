@@ -25,7 +25,7 @@ module.exports = function (server) {
             console.log(data);
             io.emit('RECEIVE_MESSAGE', data); // TODO : RECEIVE_QUIZ로 나중에 수정 예정
         })
-    }, 2000); // 시간 주기 설정 (2000 -> 2초)
+    }, 20000); // 시간 주기 설정 (2000 -> 2초)
 
     return io;
 }
