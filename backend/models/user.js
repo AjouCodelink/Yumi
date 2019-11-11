@@ -16,13 +16,17 @@ const UserSchema = new Schema({
 });
 
 // create new User document
-UserSchema.statics.create = function(email, password) {
+UserSchema.statics.create = function(email, password, nickname, interests, language, img_path) {
     const encrypted = crypto.createHmac('sha1', config.secret)
                       .update(password)
                       .digest('base64');
     const user = new this({
         email,
-        password: encrypted
+        password: encrypted,
+        nickname,
+        interests,
+        language,
+        img_path
     })
     // return the Promise
     return user.save()

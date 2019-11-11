@@ -31,9 +31,8 @@ exports.sendEmail = (req, res) => {
             html: '<p>아래의 번호를 입력해주세요 !</p><p>' + random_number + '</p>'
         };
 
-        var result = {};
-
         transporter.sendMail(mailOptions, function (error, info) {
+            var result = {};
             if (error) { // 이메일을 보내지 못하면 result=-1 반환
                 console.log(error);
                 result.result = -1;
@@ -57,7 +56,8 @@ exports.sendEmail = (req, res) => {
     }
 */
 exports.signup = (req, res) => {
-    const { email, password } = req.body;
+    console.log(req.body);
+    const { email, password, nickname, interests, language, img_path } = req.body;
     let newUser = null
 
     // create a new user if does not exist
@@ -65,7 +65,7 @@ exports.signup = (req, res) => {
         if(user) {
             throw new Error('username exists')
         } else {
-            return User.create(email, password)
+            return User.create(email, password, nickname, interests, language, img_path);
         }
     }
 
