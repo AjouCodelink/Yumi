@@ -1,14 +1,12 @@
-var express = require('express');
-var router = express.Router();
+var router = require('express').Router();
 var ChatRoom = require('../../models/chatRoom');
 var request = require('request');
 
-var client_id = 'pn80bxdxtf';
-var client_secret = 'HBSc7VWidfQACtAmmWL9K7I6ebVMCmRYpUiSUlU9';
-
-router.get('/', function(req, res, next){ 
-    var roomId = req.query.roomId; // query로 roomId = {id}를 받아야함.
-
+exports.recommend = (req, res, next) => {
+    var roomId = req.params.roomId; // query로 roomId = {id}를 받아야함.
+    var client_id = 'pn80bxdxtf';
+    var client_secret = 'HBSc7VWidfQACtAmmWL9K7I6ebVMCmRYpUiSUlU9';
+    
     ChatRoom.findOne({_id:roomId}, function(err, room){
         var interestsAndLocation = getInterestsAndLocationByRoom(room);
 
@@ -33,7 +31,7 @@ router.get('/', function(req, res, next){
             }
         });
     })
-})
+}
 
 function getInterestsAndLocationByRoom(room){ // room 정보를 입력하여 방에 포함된 사용자들의 interests와 location을 반환
     var interestsOfRoomMembers=[];
@@ -71,9 +69,3 @@ function getCenterByLocations(location){ // location 배열 정보를 입력 받
 
     return {x:center_x, y:center_y};
 }
-
-// router.get('/', function(req, res, next) {
-//     res.render('index', { title: 'recommend' });
-// });
-
-module.exports = router;

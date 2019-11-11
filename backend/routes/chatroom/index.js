@@ -1,13 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var searchWord = require('./searchWord');
-var creation = require('./creation');
+var router = require('express').Router();
+var controller = require('./chatroom.controller');
 
-router.use('/search', searchWord);
-router.use('/creation', creation);
-
-// router.get('/', function(req, res, next) {
-//   res.render('index', { title: 'chatroom' });
-// });
+router.post('/creation', controller.creation);
+router.get('/search/:keyword', controller.searchWord);
 
 module.exports = router;

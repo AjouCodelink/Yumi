@@ -1,18 +1,21 @@
-var express = require('express');
-var router = express.Router();
+var router = require('express').Router();
 var ChatRoom = require('../../models/chatRoom');
 var User = require('../../models/user');
 
-router.get('/', function(req, res, next) {
-  res.render('login', { title: 'creation' });
-});
+exports.searchWord = (req, res) =>{
+    var keyword = req.params.keyword;
+    
+    ChatRoom.findRoomByKeyword(keyword).then(function(data){
+        console.log(data[0]._id);
+        res.json(data);
+    })
+}
 
-router.post('/', function(req, res, next){ // 프론트쪽에서 email이랑 interests 보내줘야함.
-    var userEmail = req.body.email;
-    var interestsList = req.body.interests;
-
+exports.creation = (req, res) => {
     var chatRoom = new ChatRoom();
-    chatRoom.interests = interestsList;
+    var userEmail = req.body.email;
+
+    chatRoom.interests = req.body.interests;
 
     User.findOne({email:userEmail}, function(err, data){
         if(err) res.send(err);
@@ -25,7 +28,7 @@ router.post('/', function(req, res, next){ // 프론트쪽에서 email이랑 int
 
             chatRoom.participants.push(user_data);
             /*
-            이 부분에 socket.on('join room') 코드 작성 해야 됨.
+            TODO : 이 부분에 socket.on('join room') 코드 작성 해야 됨.
             */
             chatRoom.save((err)=>{
                 if(err){
@@ -37,5 +40,4 @@ router.post('/', function(req, res, next){ // 프론트쪽에서 email이랑 int
             })
         }
     })
-})
-module.exports = router;
+}

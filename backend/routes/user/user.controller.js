@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken')
-const User = require('../../models/user')
+var jwt = require('jsonwebtoken')
+var User = require('../../models/user')
 
 /*
     POST /user/send-email/:email
- */
+*/
 exports.sendEmail = (req, res) => {
     var nodemailer = require('nodemailer');
     let email = req.params.email;
