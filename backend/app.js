@@ -39,6 +39,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
+
+const config = require('./config')
+
+// set the secret key variable for jwt
+app.set('jwt-secret', config.secret)
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
