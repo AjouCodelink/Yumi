@@ -1,18 +1,12 @@
-var express = require('express');
-var router = express.Router();
-var login = require('./login/index');
-var signup = require('./signup/index');
+var router = require('express').Router();
+var user = require('./user/index');
 var chatroom = require('./chatroom/index');
-const passport = require('passport');
+var place = require('./place/index');
+var authMiddleware = require('../middlewares/auth');
 
-
-router.use('/login', login);
-router.use('/signup', signup);
+router.use('/', authMiddleware);
+router.use('/user', user);
 router.use('/chatroom', chatroom);
-
-/* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index', {title: 'login'});
-});
+router.use('/place', place);
 
 module.exports = router;
