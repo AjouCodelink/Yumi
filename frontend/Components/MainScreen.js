@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ToastAndroid, BackHandler } from 'react-native';
+import { StyleSheet, Text, View, ToastAndroid, BackHandler, StatusBar } from 'react-native';
+import { Icon } from 'native-base';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs'; 
 import { createAppContainer } from 'react-navigation';
 
 import ChatManageTab from './AppTabNavigator/ChatManageTab'
-import ChatroomTab from './AppTabNavigator/ChatroomTab'
+import ChatScreen from './AppTabNavigator/ChatScreen'
 import ProfileTab from './AppTabNavigator/ProfileTab'
 import SettingTab from './AppTabNavigator/SettingTab'
 
 const AppTabNavigator = createMaterialTopTabNavigator({
-    Profile: { screen: ProfileTab },
-    Chatroom: { screen: ChatroomTab },
-    ChatManage: { screen: ChatManageTab },
-    Setting: { screen: SettingTab }
+    Profile: ProfileTab,
+    Chatroom: ChatScreen, 
+    ChatManage: ChatManageTab,
+    Setting: SettingTab,
 }, {
     animationEnabled: true,
     swipeEnabled: true,
@@ -20,13 +21,13 @@ const AppTabNavigator = createMaterialTopTabNavigator({
     tabBarOptions: {
     style: {
         backgroundColor: '#888',
-    }
-    ,
-    iconStyle: {height:25},
+        height: 60
+    },
+    iconStyle: {height:25, paddingTop: -5},
     activeTintColor: '#222',
-    inactiveTintColor: '#fff',
+    inactiveTintColor: '#ddd',
     upperCaseLabel: false,
-    showLabel: false,
+    showLabel: true,
     showIcon: true,   // 하단바 아이콘으로 보이게 하기
     }
 });
@@ -41,9 +42,9 @@ export default class MainScreen extends Component {
         header: null
     }
     render() {
+        <StatusBar hidden='yes' />
         return <AppTabContainet/>; 
     }
-
     componentDidMount() {   // 뒤로가기 눌렀을 때
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     }
