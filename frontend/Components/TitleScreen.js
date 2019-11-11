@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView } from 'react-native';
+import { Form, Item, Label, Input } from 'native-base';
 
 import CustomButton from './CustomButton';
 
@@ -17,21 +18,16 @@ export default class TitleScreen extends Component {
                 <Image
                     style={{height:'50%', width:'50%', resizeMode:'contain'}}
                     source={require('../assets/Titleimage.png')}/>
-                <View style={style.content}>
-                    <TextInput
-                        style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                        placeholder="Email Address"
-                        value={this.state.email}
-                        onChangeText={(email) => this.setState({email})}
-                    />
-                    <Text style={{fontSize: 10}}>        </Text>
-                    <TextInput
-                        style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
-                        placeholder="Password"
-                        value={this.state.password}
-                        onChangeText={(password) => this.setState({password})}
-                    />
-                </View>
+                <KeyboardAvoidingView behavior='padding' style={style.content}>
+                    <Item style={{height: 53}} floatingLabel>
+                        <Label style={{color: '#999'}}>Email Address</Label>
+                        <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(email) => this.setState({email})}/>
+                    </Item>
+                    <Item style={{height: 53, marginTop: 10}} floatingLabel>
+                        <Label style={{color: '#999'}}>Password</Label>
+                        <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(password) => this.setState({password})}/>
+                    </Item>
+                </KeyboardAvoidingView>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
                         <CustomButton
@@ -39,6 +35,11 @@ export default class TitleScreen extends Component {
                             titleColor={'#ddd'}
                             buttonColor={'#000'}
                             onPress={() => this.goSignup_Welcome()}/>
+                        <CustomButton
+                            title={'chatroom'}
+                            titleColor={'#ddd'}
+                            buttonColor={'#000'}
+                            onPress={() => this.goChatroom()}/>
                     </View>
                     <View style={style.footer_nextbutton}>
                     <CustomButton
@@ -65,7 +66,7 @@ export default class TitleScreen extends Component {
             alert('Please enter your password.');
         } else {
             this.submit();
-            setTimeout(() => {this.checkLoginResult();}, 100);
+            setTimeout(() => {this.checkLoginResult();}, 250);
         }
     }
     checkLoginResult(){
@@ -77,6 +78,9 @@ export default class TitleScreen extends Component {
         } else {                                     // 서버 전송 오류
             alert("Failed to login. Please try again.")
         }
+    }
+    goChatroom(){
+        this.props.navigation.navigate('Chatroom');
     }
     goSignup_Welcome(){
         this.props.navigation.navigate('SignUp_Welcome');
@@ -129,6 +133,7 @@ const style = StyleSheet.create({
     },
     content: {
         flex: 1,
+        width: '80%',
         justifyContent: 'center',
         alignItems: 'center',
     },

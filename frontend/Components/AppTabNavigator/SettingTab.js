@@ -7,7 +7,7 @@ export default class SettingTab extends Component {
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
             <Icon name='md-settings' style={{color: tintColor}} />
-        )
+        ),
     }
     constructor(props){
         super(props);
@@ -50,14 +50,12 @@ export default class SettingTab extends Component {
                 <Text style={style.row}>
                     <Icon name={item.icon} style={{color: "#ddd", fontSize: 28}}/>  {item.name}
                 </Text>
-        </TouchableOpacity>)
+            </TouchableOpacity>
+        )
     }
     render() {
         return (
             <View style={style.container}>
-                <View style={style.header}>
-                    <Text style={style.font_header}>Settings</Text>
-                </View>
                 <View style={style.content}>
                     <FlatList
                         data={this.state.data}
@@ -77,7 +75,7 @@ export default class SettingTab extends Component {
         }
     }
     onPressLogout() {
-        alert("you press logout");
+        this.props.navigation.navigate('TitleScreen');
     }
     onPressContect() {
         alert("you press Contect");
@@ -90,16 +88,17 @@ export default class SettingTab extends Component {
 const style = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: 25,
         backgroundColor: '#333',
         alignItems: 'center',
         justifyContent: 'center',
     },
     header: {
         width:'100%',
-        height:'12%',
+        height: 88,
         justifyContent: 'flex-end',
         paddingLeft: '4%',
-        paddingBottom: '1.1%',
+        paddingBottom: 5,
         backgroundColor: '#555',
     },
     font_header: {
