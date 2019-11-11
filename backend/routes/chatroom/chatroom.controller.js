@@ -1,6 +1,7 @@
 var router = require('express').Router();
 var ChatRoom = require('../../models/chatRoom');
 var User = require('../../models/user');
+var jwt = require('jsonwebtoken');
 
 /*
     GET /chatroom/search/:keyword
@@ -9,7 +10,6 @@ exports.searchWord = (req, res) =>{
     var keyword = req.params.keyword;
     
     ChatRoom.findRoomByKeyword(keyword).then(function(data){
-        console.log(data[0]._id);
         res.json(data);
     })
 }
@@ -17,13 +17,12 @@ exports.searchWord = (req, res) =>{
 /*
     POST /chatroom/creation
     {
-        email,
         interests
     }
 */
-exports.creation = (req, res) => {
+exports.creation = (req, res) => { // TODO : email 빼고 토큰 사용해서 구현하기
     var chatRoom = new ChatRoom();
-    var userEmail = req.body.email;
+    var userEmail = req.decoded.email;
 
     chatRoom.interests = req.body.interests;
 
