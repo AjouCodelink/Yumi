@@ -6,7 +6,7 @@ const config = require('../config')
 const UserSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, trim: true },
-    //nickname: { type: String, required: true },
+    nickname: { type: String, required: true },
     interests: [{
         section: { type: String },
         group: { type: String }
@@ -16,7 +16,8 @@ const UserSchema = new Schema({
 });
 
 // create new User document
-UserSchema.statics.create = function(email, password, nickname, interests, language, img_path) {
+UserSchema.statics.create = function(user_info) {
+    const {email, password, nickname, interests, language, img_path} = user_info;
     const encrypted = crypto.createHmac('sha1', config.secret)
                       .update(password)
                       .digest('base64');

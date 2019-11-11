@@ -56,8 +56,8 @@ exports.sendEmail = (req, res) => {
     }
 */
 exports.signup = (req, res) => {
-    console.log(req.body);
-    const { email, password, nickname, interests, language, img_path } = req.body;
+    const user_info = req.body;
+    const email = req.body.email;
     let newUser = null
 
     // create a new user if does not exist
@@ -65,20 +65,18 @@ exports.signup = (req, res) => {
         if(user) {
             throw new Error('username exists')
         } else {
-            return User.create(email, password, nickname, interests, language, img_path);
+            return User.create(user_info);
         }
     }
 
     // count the number of the user
     const count = (user) => {
         newUser = user
-        console.log(User.count({}).exec());
         return User.count({}).exec()
     }
 
     // assign admin if count is 1
     const assign = (count) => {
-        console.log(count);
         if(count === 1) {
             return newUser.assignAdmin()
         } else {
@@ -119,7 +117,6 @@ exports.signup = (req, res) => {
     }
 */
 exports.login = (req, res) => {
-    console.log(req.body);
     const {email, password} = req.body
     const secret = req.app.get('jwt-secret')
 
