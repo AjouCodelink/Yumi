@@ -180,6 +180,8 @@ exports.login = (req, res) => {
     GET /user/check
 */
 exports.check = (req, res) => {
+    console.log(req);
+
     res.json({
         success: true,
         info: req.decoded
