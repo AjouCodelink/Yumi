@@ -2,6 +2,9 @@ var router = require('express').Router();
 var ChatRoom = require('../../models/chatRoom');
 var User = require('../../models/user');
 
+/*
+    GET /chatroom/search/:keyword
+*/
 exports.searchWord = (req, res) =>{
     var keyword = req.params.keyword;
     
@@ -11,6 +14,13 @@ exports.searchWord = (req, res) =>{
     })
 }
 
+/*
+    POST /chatroom/creation
+    {
+        email,
+        interests
+    }
+*/
 exports.creation = (req, res) => {
     var chatRoom = new ChatRoom();
     var userEmail = req.body.email;

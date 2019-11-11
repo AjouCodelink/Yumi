@@ -2,6 +2,9 @@ var router = require('express').Router();
 var ChatRoom = require('../../models/chatRoom');
 var request = require('request');
 
+/*
+    GET /place/recommend/:roomId
+*/
 exports.recommend = (req, res, next) => {
     var roomId = req.params.roomId; // query로 roomId = {id}를 받아야함.
     var client_id = 'pn80bxdxtf';
