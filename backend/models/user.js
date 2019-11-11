@@ -15,14 +15,6 @@ const UserSchema = new Schema({
     img_path: { type: String}
 });
 
-UserSchema.methods.comparePassword = function (inputPassword, cb) {
-    if (inputPassword === this.password) {
-        cb(null, true);
-    } else {
-        cb('error');
-    }
-};
-
 // create new User document
 UserSchema.statics.create = function(email, password) {
     const encrypted = crypto.createHmac('sha1', config.secret)
@@ -41,6 +33,21 @@ UserSchema.statics.findOneByEmail = function(email) {
     return this.findOne({
         email
     }).exec()
+}
+
+// verify the password of the User documment
+UserSchema.methods.verify = function(password) {
+    const encrypted = crypto.createHmac('sha1', config.secret)
+                      .update(password)
+                      .digest('base64')
+    console.log(this.password === encrypted)
+
+    return this.password === encrypted
+}
+
+UserSchema.methods.assignAdmin = function() {
+    this.admin = true
+    return this.save()
 }
 
 module.exports = mongoose.model('user', UserSchema);
