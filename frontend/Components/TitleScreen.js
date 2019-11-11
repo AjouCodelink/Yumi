@@ -24,7 +24,7 @@ export default class TitleScreen extends Component {
                         value={this.state.email}
                         onChangeText={(email) => this.setState({email})}
                     />
-                    <Text style={{fontSize: 10}}>        </Text>
+                    <Text style={{fontSize: 10}}></Text>
                     <TextInput
                         style={{height: 40, width: 300, backgroundColor:'#888',  fontSize:18, borderRadius: 5, paddingLeft: 9}}
                         placeholder="Password"
