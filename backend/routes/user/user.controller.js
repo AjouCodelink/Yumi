@@ -112,7 +112,7 @@ exports.signup = (req, res) => {
 /*
     POST /user/login
     {
-        username,
+        email,
         password
     }
 */
