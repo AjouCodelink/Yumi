@@ -1,12 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var recommend = require('./recommend');
+var router = require('express').Router();
+var controller = require('./place.controller');
 
-router.use('/recommend', recommend);
-
-// router.get('/', function(req, res, next) {
-//     res.render('index', { title: 'place' });
-// });
-
+router.get('/recommend/:roomId', controller.recommend);
 
 module.exports = router;
