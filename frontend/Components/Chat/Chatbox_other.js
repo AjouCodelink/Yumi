@@ -6,16 +6,18 @@ export default class Chatbox_other extends Component {
     render() {
         const data = this.props.data;
         return (
-            <View style={style.content}>
-                <Thumbnail circular backgroundColor="#fff" style={style.thumbnail}
-                    source={require('../../assets/default_thumbnail.png')}/>
-                <View>
-                    <Text style={style.text_name}>{data.userID} </Text>
-                    <Button info style={style.messageBox}>
-                        <Text style={style.text_message}> {data.message} </Text>
-                    </Button>
+            <View>
+                <Text style={style.text_name}>{data.user_email} </Text>
+                <View style={style.content}>
+                    <Thumbnail circular backgroundColor="#fff" style={style.thumbnail}
+                        source={require('../../assets/default_thumbnail.png')}/>
+                    <View>
+                        <Button style={style.messageBox}>
+                            <Text style={style.text_message}> {data.message} </Text>
+                        </Button>
+                    </View>
+                    <Text style={style.text_time}>  {data.Time.toString().substr(16, 5)}</Text>
                 </View>
-                <Text style={style.text_time}>  {data.Time.getHours()}:{data.Time.getMinutes()}</Text>
             </View>
         );
     }
@@ -29,21 +31,24 @@ const style = StyleSheet.create({
         justifyContent: 'flex-start',
         marginRight: '30%',
         paddingLeft: 10,
-        paddingTop: 5,
         paddingBottom: 5,
     },
     thumbnail: {
-        height: 47,
-        width: 47,
+        height: 45,
+        width: 45,
         marginRight: 10
     },
     messageBox: {
         backgroundColor: "#bbb",
-        borderRadius: 5
+        borderRadius: 6
     },
     text_name: {
-        fontSize : 18,
+        alignItems: 'flex-end',
+        justifyContent: 'flex-end',
+        fontSize : 16,
         color: '#fff',
+        paddingLeft: 65,
+        paddingTop: 5,
         marginBottom: 5,
     },
     text_time: {

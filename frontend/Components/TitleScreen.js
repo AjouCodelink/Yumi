@@ -4,9 +4,6 @@ import { Item, Label, Input } from 'native-base';
 
 import CustomButton from './CustomButton';
 
-import * as SQLite from 'expo-sqlite';
-const db = SQLite.openDatabase('db.db');
-
 export default class TitleScreen extends Component {
     static navigationOptions = {    // 상단바 안보이게 하기
         header: null
@@ -14,17 +11,6 @@ export default class TitleScreen extends Component {
     constructor(props){
         super(props);
         this.state={email: '', password: '', loginResult: -1}
-    }
-    
-    componentDidMount() {  // table이 없으면 create
-        db.transaction(tx => {
-            tx.executeSql(
-                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, PRIMARY KEY("user_email","cr_id","Time"))',
-                [],
-                (_,success) => console.log(success),
-                (_,error) => console.error(error)
-            )
-        },(error) => console.error(error))
     }
 
     render() {

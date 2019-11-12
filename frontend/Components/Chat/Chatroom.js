@@ -25,6 +25,7 @@ export default class Chatroom extends Component {
             console.log(data);
             this.setState({chatlog:[...this.state.chatlog, data]});
         };
+        _this = this;
     };
 
     static navigationOptions = {
@@ -35,8 +36,8 @@ export default class Chatroom extends Component {
         cr_id: 0,
         cr_name: '',
         message: '',
-        myEmail: 'donggi9313@naver.com',
-        chatlog:[],
+        myEmail: 'default@ajou.ac.kr',
+        chatlog:[], // 채팅로그
         key: 0,
     }
 
@@ -47,8 +48,16 @@ export default class Chatroom extends Component {
             </View>
         );
     };
-
-    componentDidMount() {
+    
+    componentDidMount() {  // table이 없으면 create
+        db.transaction(tx => {
+            tx.executeSql(  //chatlog 저장하는 table 생성하기
+                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, PRIMARY KEY("user_email","cr_id","Time"))',
+                [],
+                (_,success) => console.log(success),
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
         this.dbUpdate();
     }
 
@@ -120,11 +129,11 @@ export default class Chatroom extends Component {
         );
     }
 
-    dbAdd() {
+    dbAdd(newchat) {
         db.transaction( tx => {
             tx.executeSql(
                 'INSERT INTO chatLog (user_email, cr_id, Time, message) values (?, ?, ?, ?);',
-                [this.state.myEmail, this.state.cr_id, Date(), '123123'],
+                [newchat.user_email, newchat.cr_id, newchat.Time, newchat.message],
                 null,
                 (_,error) => console.error(error)   // sql문 실패 에러
             );
@@ -140,8 +149,6 @@ export default class Chatroom extends Component {
                 (_, { rows: { _array }  }) => {this.setState({ chatlog: _array }); console.log(_array)},
                 (_,error) => console.error(error)
             );
-            //console.log('update success'),
-            //console.log('update fail')
         },(error) => console.error(error))
     };
 
@@ -150,7 +157,7 @@ export default class Chatroom extends Component {
             const newchat = {
                 user_email: this.state.myEmail,
                 cr_id: this.state.cr_id,
-                Time: new Date(),
+                Time: Date(),
                 message: this.state.message,
             }
             /*
@@ -161,7 +168,7 @@ export default class Chatroom extends Component {
                 ]
             }));
             */
-            this.dbAdd()
+            this.dbAdd(newchat)
             //this.socket.emit('SEND_MESSAGE', newchat);
             this.setState({message: null});    
         }
