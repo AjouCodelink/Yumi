@@ -8,28 +8,46 @@ import Chatbox_other from './Chatbox_other';
 import ChatroomSideMenu from './Chatroom-SideMenu';
 
 const screenHeight = Math.round(Dimensions.get('window').height);
+const io = require('socket.io-client');
 
 export default class Chatroom extends Component {
-    state = {
-        message: '',
-        chatlog: [{
-                time: new Date(),
+    constructor(props){
+        super(props);
+
+        this.state = {
+            message: '',
+            chatlog: [{
+                time: "09:13",
                 message: "ㅎㅇㅎㅇ용",
                 userID: 'Danggai',
             },{
-                time: new Date(),
+                time: "09:14",
                 message: "여기 저만있음???",
                 userID: 'Danggai',
             },{
-                time: new Date(),
+                time: "09:14",
                 message: "님들???",
                 userID: 'Danggai',
             },{
-                time: new Date(),
+                time: "09:14",
                 message: "ㅠ",
                 userID: 'Danggai',
-            }   ],
-    }
+            }],
+        }
+        this.socket = io('http://101.101.160.185:3000'); 
+
+        this.socket.on('RECEIVE_MESSAGE', function(data){
+            addMessage(data);
+            //console.log(this.state.chatlog);
+        });
+
+        const addMessage = data => {
+            console.log(data);
+            this.setState({chatlog:[...this.state.chatlog, data]});
+            
+        };
+    };
+    
     renderDrawer = () => {
         return (
             <View>
@@ -80,8 +98,8 @@ export default class Chatroom extends Component {
                         })}}
                         style={{width: '100%'}}>
                         {
-                            this.state.chatlog.map( chatlog => chatlog.userID == 0 ?(
-                                <View style={style.my_chat}>
+                            this.state.chatlog.map( chatlog => chatlog.userID == 0 ?( // 채팅 올라오는 곳. userID가 0이면 내 챗으로 됨
+                                <View style={style.my_chat}> 
                                     <Chatbox_my data={chatlog}/>
                                 </View>
                             ) : (
@@ -102,24 +120,19 @@ export default class Chatroom extends Component {
             </DrawerLayout>
         );
     }
+
     _onPressSend(){
-        if (this.state.message == ''){
-            
-        } else {
+        if (this.state.message != ''){
             const newchat = {
-                time: new Date(),
+                time: "09:14",
                 message: this.state.message,
                 userID: 0,
-            }   
-            this.setState(prevState => ({
-                chatlog: [
-                    ...prevState.chatlog, // 기존 메시지 목록
-                    newchat
-                ]
-            }));
-            this.setState({message: ''})
+            }
+            this.socket.emit('SEND_MESSAGE', newchat);
+            this.setState({message: ''});    
         }
     };
+
     handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
         goback()
     };
