@@ -7,47 +7,38 @@ import Chatbox_my from './Chatbox_my';
 import Chatbox_other from './Chatbox_other';
 import ChatroomSideMenu from './Chatroom-SideMenu';
 
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase("Sqlite/db.db");
+
 const screenHeight = Math.round(Dimensions.get('window').height);
 const io = require('socket.io-client');
 
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
-
-        this.state = {
-            message: '',
-            chatlog: [{
-                time: "09:13",
-                message: "ㅎㅇㅎㅇ용",
-                userID: 'Danggai',
-            },{
-                time: "09:14",
-                message: "여기 저만있음???",
-                userID: 'Danggai',
-            },{
-                time: "09:14",
-                message: "님들???",
-                userID: 'Danggai',
-            },{
-                time: "09:14",
-                message: "ㅠ",
-                userID: 'Danggai',
-            }],
-        }
         this.socket = io('http://101.101.160.185:3000'); 
-
         this.socket.on('RECEIVE_MESSAGE', function(data){
             addMessage(data);
             //console.log(this.state.chatlog);
         });
-
         const addMessage = data => {
             console.log(data);
             this.setState({chatlog:[...this.state.chatlog, data]});
             
         };
     };
-    
+
+    static navigationOptions = {
+        header: null
+    }
+
+    state = {
+        cr_id: 0,
+        message: '',
+        myEmail: 'donggi9313@naver.com',
+        chatlog:[],
+    }
+
     renderDrawer = () => {
         return (
             <View>
@@ -55,18 +46,27 @@ export default class Chatroom extends Component {
             </View>
         );
     };
-    static navigationOptions = {
-        header: null
+
+    componentDidMount() {
+        db.transaction(tx => {
+            tx.executeSql(
+                'SELECT * FROM chatLog;',[],
+                //'SELECT * FROM chatLog WHERE ch_id = ? LIMIT count(CASE WHEN ch_id = ? THEN 1 END)-30, 30;', [this.state.ch_id, this.state.ch_id],
+                (success) => console.log(success),
+                (error) => console.error(error)
+            );
+        });
     }
+
     render() {
         const { goBack } = this.props.navigation;
         return (
             <DrawerLayout
                 ref={ drawer => this.drawer = drawer }
-                drawerWidth={250}
+                drawerWidth={300}
                 drawerPosition={DrawerLayout.positions.Right}
                 drawerType='front'
-                drawerBackgroundColor="#ddd"
+                drawerBackgroundColor="#555"
                 renderNavigationView={this.renderDrawer}>
                 <View style={style.header}>
                     <Left>
@@ -86,20 +86,24 @@ export default class Chatroom extends Component {
                     </Right>
                 </View>
                 <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={80} style={style.container}>
+                        <TouchableOpacity onPress={() => this.componentDidMount()}>
+                            <Icon name='md-menu' style={{color: '#999', fontSize: 30}}/>
+                        </TouchableOpacity>
                     <ScrollView
                         ref={scrollView => {
                             this.scrollView = scrollView;
                         }}
-                        onContentSizeChange={(contentWidth, contentHeight) => {
+                        onContentSizeChange={(contentWidth, contentHeight) => {     // 자동 스크롤
                             this.scrollView.scrollTo({
                                 x: 0,
                                 y: contentHeight + contentHeight - screenHeight,
                                 animated: true,
-                        })}}
+                            })
+                        }}
                         style={{width: '100%'}}>
                         {
-                            this.state.chatlog.map( chatlog => chatlog.userID == 0 ?( // 채팅 올라오는 곳. userID가 0이면 내 챗으로 됨
-                                <View style={style.my_chat}> 
+                            this.state.chatlog.map( chatlog => chatlog.user_email == this.state.myEmail ?(   // 말풍선 만들기
+                                <View style={style.my_chat}>
                                     <Chatbox_my data={chatlog}/>
                                 </View>
                             ) : (
@@ -124,14 +128,22 @@ export default class Chatroom extends Component {
     _onPressSend(){
         if (this.state.message != ''){
             const newchat = {
-                time: "09:14",
+                user_email: this.state.myEmail,
+                cr_id: this.state.cr_id,
+                Time: new Date(),
                 message: this.state.message,
-                userID: 0,
             }
+            this.setState(prevState => ({
+                chatlog: [
+                    ...prevState.chatlog, // 기존 메시지 목록
+                    newchat
+                ]
+            }));
+            this.dbAdd()
             this.socket.emit('SEND_MESSAGE', newchat);
             this.setState({message: ''});    
         }
-    };
+    }
 
     handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
         goback()

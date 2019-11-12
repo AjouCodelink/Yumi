@@ -4,161 +4,139 @@ import DialogInput from 'react-native-dialog-input';
 import {Icon} from 'native-base';
 
 export default class Myproject extends Component {
-    
     static navigationOptions = {
         header: null,
     }
 
-constructor(props) {
-    
-    super(props);
+    constructor(props) {
+        super(props);
+        this.array = [{
+            title: 'Sports',
+            roomID: 'roomID:1'
+        },
+        {
+            title: 'Movie',
+            roomID: 'roomID:2'
+        },
+        {
+            title: 'Food',
+            roomID: 'roomID:3'
+        }
+        ],
 
-    this.array = [{
-        title: 'Sports',
-        roomID: 'roomID:1'
-    },
-    {
-        title: 'Movie',
-        roomID: 'roomID:2'
-    },
-    {
-        title: 'Food',
-        roomID: 'roomID:3'
-    }
-    ],
-
-    this.state = {
-
-        arrayHolder: [],
-        textInput_Holder_Theme: '',
-        textInput_Holder_ID: '',
-        isAlertVisible: false,
-        search: '',
-
-    }    
-}
-
-submit(inputText){
-    this.setState({isAlertVisible: false})
-}
-
-componentDidMount() {
-    this.setState({ arrayHolder: [...this.array] })
-}
-joinData = () => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
-        var interest = {};
-        interest.interests = this.state.textInput_Holder_Theme;
-        var url = 'http://101.101.160.185:3000/chatroom/creation';
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(interest),
-            headers: new Headers({
-            'Content-Type' : 'application/json',
-            'token': 'token',
-            'x-access-token':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGNhMzZjY2NmZGMyMzI2YTUxN2JiMTYiLCJlbWFpbCI6InRrZGd1c2w5NEBuYXZlci5jb20iLCJpYXQiOjE1NzM1MzMzOTksImV4cCI6MTU3NDEzODE5OSwiaXNzIjoiY29kZWxpbmsuY29tIiwic3ViIjoidXNlckluZm8ifQ.h3a81ID66obDjwWXnlsS0H9A3cUQesYVIMYXGWuUiW0'
-            })
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson => this.abc(responseJson.chatroom_id));
-        //.then(responseJson => console.log(responseJson.chatroom_id));
-        // .then(responseJson => this.setState({
-        //     textInput_Holder_ID: responseJson.chatroom_id
-        // }));
+        this.state = {
+            arrayHolder: [],
+            textInput_Holder_Theme: '',
+            textInput_Holder_ID: '',
+            isAlertVisible: false,
+            search: '',
+        }    
     }
 
-abc = (chatroom_id) => {
-// 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정 
-        this.array.push({title : this.state.textInput_Holder_Theme,
-                        roomID: chatroom_id});
-    
+    submit(inputText){
+        this.setState({isAlertVisible: false})
+    }
+
+    componentDidMount() {
         this.setState({ arrayHolder: [...this.array] })
-}
+    }
 
-FlatListItemSeparator = () => {
-    return (
-    <View
-        style={{
-            height: 1,
-            width: "100%",
-            backgroundColor: "#607D8B",
-        }}
-    />
-    );
-}
+    joinData = () => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
+            var interest = {};
+            interest.interests = this.state.textInput_Holder_Theme;
+            var url = 'http://101.101.160.185:3000/chatroom/creation';
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(interest),
+                headers: new Headers({
+                'Content-Type' : 'application/json',
+                'token': 'token',
+                'x-access-token':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGNhMzZjY2NmZGMyMzI2YTUxN2JiMTYiLCJlbWFpbCI6InRrZGd1c2w5NEBuYXZlci5jb20iLCJpYXQiOjE1NzM1MzMzOTksImV4cCI6MTU3NDEzODE5OSwiaXNzIjoiY29kZWxpbmsuY29tIiwic3ViIjoidXNlckluZm8ifQ.h3a81ID66obDjwWXnlsS0H9A3cUQesYVIMYXGWuUiW0'
+                })
+            }).then(response => response.json())
+            .catch(error => console.error('Error: ', error))
+            .then(responseJson => this.abc(responseJson.chatroom_id));
+            //.then(responseJson => console.log(responseJson.chatroom_id));
+            // .then(responseJson => this.setState({
+            //     textInput_Holder_ID: responseJson.chatroom_id
+            // }));
+        }
 
+    abc = (chatroom_id) => {
+    // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정 
+            this.array.push({title : this.state.textInput_Holder_Theme,
+                            roomID: chatroom_id});
+        
+            this.setState({ arrayHolder: [...this.array] })
+    }
 
-_onPressChatroom = () => {
+    FlatListItemSeparator = () => {
+        return (
+        <View
+            style={{
+                height: 1,
+                width: "100%",
+                backgroundColor: "#607D8B",
+            }}
+        />
+        );
+    }
+
+    _onPressChatroom = () => {
         this.props.navigation.navigate('Chatroom');
     }
 
-GetItem(item) {
+    GetItem(item) {
+        Alert.alert(item);
+    }
 
-    Alert.alert(item);
-
-}
-
-
-render() {
-    return (
-
-    <View style={styles.MainContainer}>
-        <View style = {styles.header}></View>
-        <TextInput
-            placeholder="Enter Theme Here"
-            onChangeText={data => this.setState({ textInput_Holder_Theme: data })}
-            style={styles.textInputStyle}
-            underlineColorAndroid='transparent'
-        />
-        <TextInput
-            placeholder="Enter ID Here"
-            onChangeText={data => this.setState({ textInput_Holder_ID: data })}
-            style={styles.textInputStyle}
-            underlineColorAndroid='transparent'
-        />
-        <DialogInput isDialogVisible = {this.state.isAlertVisible}
-                title={"Create Chatroom"}
-                message={"type title and roomID"}
-                hintInput ={"title"}
-                textInputProps
-                submitInput={ (inputText) => {this.submit(inputText)} }
-                closeDialog={ () =>this.setState({isAlertVisible:false})}>
-        </DialogInput>
-
-
-            <TouchableOpacity onPress={this.joinData} activeOpacity={0.7} style={styles.button} >
-            <Text style={styles.buttonText}> Create Room </Text>
-        </TouchableOpacity>
-
-        <FlatList
-
-            data={this.state.arrayHolder}
-
-            width='85%'
-
-            extraData={this.state.arrayHolder}
-
-            keyExtractor = {(item, index) => String(index)}
-
-            ItemSeparatorComponent={this.FlatListItemSeparator}
-
-            renderItem={({ item }) => <Text style={styles.item} onPress={this._onPressChatroom} >#{item.title}{'\n'}#{item.roomID} </Text>}
-        />
-        <TouchableOpacity onPress={()=> this.setState({isAlertVisible:true})} 
-        activeOpacity={0.7} 
-        style={{backgroundColor: '#47C83E',width: 60, height: 50,marginBottom:40,marginLeft:"70%",justifyContent: 'center',alignItems:'center', borderRadius:60,borderWidth:1 }} >
-        <Icon name='chatboxes' style={{color: '#FFF'}}/>
-        </TouchableOpacity>
-        
-    
-    </View>
-
-    );
-}
+    render() {
+        return (
+        <View style={styles.MainContainer}>
+            <View style = {styles.header}></View>
+            <TextInput
+                placeholder="Enter Theme Here"
+                onChangeText={data => this.setState({ textInput_Holder_Theme: data })}
+                style={styles.textInputStyle}
+                underlineColorAndroid='transparent'
+            />
+            <TextInput
+                placeholder="Enter ID Here"
+                onChangeText={data => this.setState({ textInput_Holder_ID: data })}
+                style={styles.textInputStyle}
+                underlineColorAndroid='transparent'
+            />
+            <DialogInput isDialogVisible = {this.state.isAlertVisible}
+                    title={"Create Chatroom"}
+                    message={"type title and roomID"}
+                    hintInput ={"title"}
+                    textInputProps
+                    submitInput={ (inputText) => {this.submit(inputText)} }
+                    closeDialog={ () =>this.setState({isAlertVisible:false})}>
+            </DialogInput>
+                <TouchableOpacity onPress={this.joinData} activeOpacity={0.7} style={styles.button} >
+                <Text style={styles.buttonText}> Create Room </Text>
+            </TouchableOpacity>
+            <FlatList
+                data={this.state.arrayHolder}
+                width='85%'
+                extraData={this.state.arrayHolder}
+                keyExtractor = {(item, index) => String(index)}
+                ItemSeparatorComponent={this.FlatListItemSeparator}
+                renderItem={({ item }) => <Text style={styles.item} onPress={this._onPressChatroom} >#{item.title}{'\n'}#{item.roomID} </Text>}
+            />
+            <TouchableOpacity onPress={()=> this.setState({isAlertVisible:true})} 
+            activeOpacity={0.7} 
+            style={{backgroundColor: '#47C83E',width: 60, height: 50,marginBottom:40,marginLeft:"70%",justifyContent: 'center',alignItems:'center', borderRadius:60,borderWidth:1 }} >
+            <Icon name='chatboxes' style={{color: '#FFF'}}/>
+            </TouchableOpacity>
+        </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-
-header: {
+    header: {
         flexDirection : "row",
         width:'100%',
         height:'8%',
@@ -167,7 +145,7 @@ header: {
         paddingBottom: '1.1%',
         backgroundColor: '#333',
     },
-search: {
+    search: {
         justifyContent: 'center',
         alignItems : "stretch",
         paddingTop: 50,
@@ -194,7 +172,6 @@ search: {
         height : 77,
     },
     textInputStyle:{
-
         textAlign : 'center',
         height: 40,
         width: '85%',
@@ -205,7 +182,6 @@ search: {
         color : '#fff',
     },
     button : {
-
         width : '85%',
         height: 40,
         padding : 10,

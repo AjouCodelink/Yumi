@@ -15,7 +15,7 @@ class ContactInfo extends Component {
                         <Text style={style.text_message}> {data.message} </Text>
                     </Button>
                 </View>
-                <Text style={style.text_time}>  {data.time}</Text>
+                <Text style={style.text_time}>  {data.Time.getHours()}:{data.Time.getMinutes()}</Text>
             </View>
         );
     }
