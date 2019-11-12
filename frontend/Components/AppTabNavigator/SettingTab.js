@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Linking, Alert } from 'react-native';
 import { Icon } from 'native-base';
+
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
 
 export default class SettingTab extends Component {
     static navigationOptions = {
@@ -8,62 +11,43 @@ export default class SettingTab extends Component {
             <Icon name='md-settings' style={{color: tintColor}} />
         ),
     }
+
     constructor(props){
         super(props);
         this.state = {
             data : [
                 {icon :"md-text", name: "Contect Us", key: "contect"},
+                {icon :"md-document", name: "Clear Chating Logs", key: "deleteChatLog"},
                 {icon :"md-exit", name: "Log Out", key: "logout"},
                 {icon :"md-log-out", name: "Close my account", key: "leave"},
-                {icon :"md-alarm", key: "a"},
-                {icon :"md-backspace", key: "b"},
-                {icon :"md-card", key: "c"},
-                {icon :"md-desktop", key: "d"},
-                {icon :"md-exit", key: "e"},
-                {icon :"md-finger-print", key: "f"},
-                {icon :"md-glasses", key: "g"},
-                {icon :"md-home", key: "h"},
-                {icon :"md-images", key: "i"},
-                {icon :"logo-javascript", key: "j"},
-                {icon :"md-key", key: "k"},
-                {icon :"md-lock", key: "l"},
-                {icon :"md-mail", key: "m"},
-                {icon :"md-notifications", key: "n"},
-                {icon :"md-options", key: "o"},
-                {icon :"md-paw", key: "p"},
-                {icon :"md-quote", key: "q"},
-                {icon :"md-rainy", key: "r"},
-                {icon :"md-search", key: "s"},
-                {icon :"md-text", key: "t"},
-                {icon :"md-unlock", key: "u"},
-                {icon :"md-volume-mute", key: "v"},
-                {icon :"ios-wifi", key: "w"},
-                {icon :"logo-xbox", key: "x"},
-                {icon :"logo-youtube", key: "y"},
             ]
         }
     }
-    renderItem = ({item}) => {
-        return (
-            <TouchableOpacity onPress={() => this._onPress(item.key)}>
-                <Text style={style.row}>
-                    <Icon name={item.icon} style={{color: "#ddd", fontSize: 28}}/>  {item.name}
-                </Text>
-            </TouchableOpacity>
-        )
-    }
+
     render() {
         return (
             <View style={style.container}>
                 <View style={style.content}>
                     <FlatList
                         data={this.state.data}
-                        renderItem={this.renderItem}
+                        renderItem={this._renderItem}
                         onEndReachedThreshold={1}/>
                 </View>
             </View>
         )
     }
+
+    _renderItem = ({item}) => {
+        return (
+            <TouchableOpacity onPress={() => this._onPress(item.key)}>
+                <View style={style.menu}>
+                    <Icon style={style.icon_menu} name={item.icon}/>
+                    <Text style={style.font_menu}>{item.name}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
     _onPress(key) {
         if (key == "logout") {
             this.onPressLogout()
@@ -71,16 +55,44 @@ export default class SettingTab extends Component {
             this.onPressContect()
         } else if (key == "leave") {
             this.onPressLeave()
+        } else if (key == "deleteChatLog") {
+            this.onPressDeleteChatLog()
         }
     }
+
     onPressLogout() {
         this.props.navigation.navigate('TitleScreen');
     }
     onPressContect() {
-        alert("you press Contect");
+        Linking.openURL('http://google.com');   // 이후 연락 가능한 페이지로 연동해야함
     }
     onPressLeave() {
         alert("you press Leave");
+    }
+    onPressDeleteChatLog() {
+        Alert.alert(
+            'Really?',
+            'If you press OK, all chat logs will be deleted.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {text: 'OK', onPress: () => {
+                    db.transaction(tx => {
+                        tx.executeSql(
+                            'DROP TABLE chatLog',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        )
+                    },(error) => console.error(error))
+                    alert('All chat logs have been removed.')
+                }},
+            ],
+            {cancelable: false},
+        );
+        
     }
 }
 
@@ -89,16 +101,6 @@ const style = StyleSheet.create({
         flex: 1,
         paddingTop: 25,
         backgroundColor: '#333',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    header: {
-        width:'100%',
-        height: 88,
-        justifyContent: 'flex-end',
-        paddingLeft: '4%',
-        paddingBottom: 5,
-        backgroundColor: '#555',
     },
     font_header: {
         color: 'white',
@@ -107,27 +109,28 @@ const style = StyleSheet.create({
         fontWeight: 'bold',
     },
     content: {
-        flex: 1,
         width: '100%',
         justifyContent: 'center',
         alignItems: 'flex-start',
     },
-    row: {
-        width: 700,
-        flex: 1,
-        fontSize: 25,
-        paddingLeft: '4%',
-        marginTop: '2%',
-        marginBottom: '1%',
+    menu: {
+        width: '100%',
+        flexDirection: 'row',
+        marginTop: 16,
+        marginBottom: 8,
         borderWidth: 1,
         borderColor: "#333",
-        color: "#eee",
         alignItems: 'center',
     },
-
-    font_main: {
-        color: '#aaa',
-        fontSize: 20,
-        alignItems: 'center',
+    icon_menu: {
+        width: 38,
+        marginLeft: 18,
+        fontSize: 28,
+        color: "#ddd",
+        justifyContent: 'center',
+    },
+    font_menu: {
+        fontSize: 25,
+        color: "#eee",
     },
 });

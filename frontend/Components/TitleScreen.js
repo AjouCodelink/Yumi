@@ -12,6 +12,7 @@ export default class TitleScreen extends Component {
         super(props);
         this.state={email: '', password: '', loginResult: -1}
     }
+
     render() {
         return (
             <View style={style.container}>

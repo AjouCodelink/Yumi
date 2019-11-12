@@ -20,6 +20,8 @@ const AppTabNavigator = createMaterialTopTabNavigator({
     tabBarOptions: {
     style: {
         backgroundColor: '#888',
+        borderTopColor: '#333',
+        borderTopWidth: 1.5,
     },
     iconStyle: {height:25, paddingTop: -5},
     activeTintColor: '#222',
