@@ -97,7 +97,7 @@ export default class SignUp_Interest extends Component {
         user.nickname = this.state.nickname
         user.interests = this.state.interests
         console.log(user);
-        var url = 'http://101.101.160.185:3000/signup';
+        var url = 'http://101.101.160.185:3000/user/signup';
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(user),
