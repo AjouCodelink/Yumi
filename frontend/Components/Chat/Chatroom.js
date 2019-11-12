@@ -14,6 +14,7 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 const io = require('socket.io-client');
 
 export default class Chatroom extends Component {
+    
     constructor(props){
         super(props);
         this.socket = io('http://101.101.160.185:3000'); 
@@ -34,6 +35,7 @@ export default class Chatroom extends Component {
 
     state = {
         cr_id: 0,
+        cr_name: '',
         message: '',
         myEmail: 'donggi9313@naver.com',
         chatlog:[],
@@ -60,6 +62,9 @@ export default class Chatroom extends Component {
 
     render() {
         const { goBack } = this.props.navigation;
+        const { navigation } = this.props;
+        this.state.cr_id = navigation.getParam('cr_id', 'No cr_id');
+        this.state.cr_name = navigation.getParam('title', 'No cr_name');
         return (
             <DrawerLayout
                 ref={ drawer => this.drawer = drawer }
@@ -75,8 +80,8 @@ export default class Chatroom extends Component {
                         </TouchableOpacity>
                     </Left>
                     <View style={{justifyContent: 'flex-start'}}>
-                        <Text style={[style.font_header]}>chatroom
-                            <Text style={{fontSize:15, color: '#ee0'}}>  20</Text>
+                        <Text style={[style.font_header]}>{this.state.cr_name}
+                            <Text style={{fontSize:15, color: '#ee0'}}>  인원수</Text>
                         </Text>
                     </View>
                     <Right>
@@ -148,7 +153,7 @@ export default class Chatroom extends Component {
                 ]
             }));
             this.dbAdd()
-            this.socket.emit('SEND_MESSAGE', newchat);
+            //this.socket.emit('SEND_MESSAGE', newchat);
             this.setState({message: ''});    
         }
     }

@@ -12,13 +12,13 @@ export default class ChatroomTab extends Component {
         super(props);
         this.array = [{
             title: 'Sports',
-            roomID: 'roomID:1'
+            roomID: '1'
         },{
             title: 'Movie',
-            roomID: 'roomID:2'
+            roomID: '2'
         },{
             title: 'Food',
-            roomID: 'roomID:3'
+            roomID: '3'
         }],
         this.state = {
             arrayHolder: [],
@@ -66,19 +66,20 @@ export default class ChatroomTab extends Component {
         this.setState({ arrayHolder: [...this.array] })
     }
 
-    _onPressChatroom = () => {
-        this.props.navigation.navigate('Chatroom');
+    _onPressChatroom = (item) => {
+        this.props.navigation.navigate('Chatroom', {
+            title: item.title,
+            cr_id: item.roomID,
+        });
     }
 
     FlatListItemSeparator = () => {
         return (
-            <View
-                style={{
-                    height: 1,
-                    width: "100%",
-                    backgroundColor: "#607D8B",
-                }}
-            />
+            <View style={{
+                height: 1,
+                width: "100%",
+                backgroundColor: "#607D8B",
+            }}/>
         );
     }
 
@@ -89,7 +90,7 @@ export default class ChatroomTab extends Component {
     render() {
         return (
         <View style={styles.MainContainer}>
-            <View style = {styles.header}/>
+            <View style={styles.header}/>
             <TextInput
                 placeholder="Enter Theme Here"
                 onChangeText={data => this.setState({ textInput_Holder_Theme: data })}
@@ -102,13 +103,14 @@ export default class ChatroomTab extends Component {
                 style={styles.textInputStyle}
                 underlineColorAndroid='transparent'
             />
-            <DialogInput isDialogVisible = {this.state.isAlertVisible}
-                    title={"Create Chatroom"}
-                    message={"type title and roomID"}
-                    hintInput ={"title"}
-                    textInputProps
-                    submitInput={ (inputText) => {this.submit(inputText)} }
-                    closeDialog={ () =>this.setState({isAlertVisible:false})}/>
+            <DialogInput
+                isDialogVisible = {this.state.isAlertVisible}
+                title={"Create Chatroom"}
+                message={"type title and roomID"}
+                hintInput ={"title"}
+                textInputProps
+                submitInput={ (inputText) => {this.submit(inputText)} }
+                closeDialog={ () =>this.setState({isAlertVisible:false})}/>
             <TouchableOpacity onPress={this.createRoom} activeOpacity={0.7} style={styles.button}>
                 <Text style={styles.buttonText}> Create Room </Text>
             </TouchableOpacity>
@@ -118,11 +120,17 @@ export default class ChatroomTab extends Component {
                 extraData={this.state.arrayHolder}
                 keyExtractor = {(item, index) => String(index)}
                 ItemSeparatorComponent={this.FlatListItemSeparator}
-                renderItem={({ item }) => <Text style={styles.item} onPress={this._onPressChatroom} >#{item.title}{'\n'}#{item.roomID} </Text>}
+                renderItem={({ item }) =>
+                    <TouchableOpacity onPress={() => this._onPressChatroom(item)}>
+                        <Text style={styles.item}>
+                            # {item.title}{'\n'}# roomID: {item.roomID}
+                        </Text>
+                    </TouchableOpacity>}
             />
-            <TouchableOpacity onPress={()=> this.setState({isAlertVisible:true})} 
+            <TouchableOpacity
+                onPress={()=> this.setState({isAlertVisible:true})} 
                 activeOpacity={0.7} 
-                style={{backgroundColor: '#47C83E',width: 60, height: 50,marginBottom:40,marginLeft:"70%",justifyContent: 'center',alignItems:'center', borderRadius:60,borderWidth:1 }} >
+                style={styles.feb} >
                 <Icon name='chatboxes' style={{color: '#FFF'}}/>
             </TouchableOpacity>
         </View>
@@ -176,6 +184,17 @@ const styles = StyleSheet.create({
         marginTop : 12,
         color : '#fff',
     },
+    feb: {
+        backgroundColor: '#47C83E',
+        width: 50,
+        height: 50,
+        marginBottom: 40,
+        marginLeft: '75%',
+        justifyContent: 'center',
+        alignItems:'center',
+        borderRadius:60,
+        borderWidth:1
+    }, 
     button : {
         width : '85%',
         height: 40,
