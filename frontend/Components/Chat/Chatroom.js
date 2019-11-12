@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Dimensions } from 'react-native';
-import {Icon, Input, Left, Right, Body} from 'native-base';
+import {Icon, Input, Left, Right} from 'native-base';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 
 import Chatbox_my from './Chatbox_my';
@@ -86,9 +86,6 @@ export default class Chatroom extends Component {
                     </Right>
                 </View>
                 <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={80} style={style.container}>
-                        <TouchableOpacity onPress={() => this.componentDidMount()}>
-                            <Icon name='md-menu' style={{color: '#999', fontSize: 30}}/>
-                        </TouchableOpacity>
                     <ScrollView
                         ref={scrollView => {
                             this.scrollView = scrollView;
@@ -123,6 +120,17 @@ export default class Chatroom extends Component {
                 </KeyboardAvoidingView>
             </DrawerLayout>
         );
+    }
+
+    dbAdd() {
+        db.transaction( tx => {
+            tx.executeSql(
+                'INSERT INTO chatLog (user_email, cr_id, Time, message) values (?, ?, ?, ?)',
+                [this.state.user_email, this.state.cr_id, this.state.Time, this.state.message],
+                (success) => console.log(success),
+                (error) => console.error(error)
+            );
+        })
     }
 
     _onPressSend(){

@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
-import {Icon, Input} from 'native-base';
+import React, { Component } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { Icon, } from 'native-base';
 
-export default class ChatroomSideMenu extends Component {
+export default class Chatroom_SideMenu extends Component {
     constructor(props){
         super(props);
         this.state={
@@ -149,5 +149,3 @@ const style = StyleSheet.create({
         alignItems: 'center',
     },
 })
-
-module.exports = ChatroomSideMenu;

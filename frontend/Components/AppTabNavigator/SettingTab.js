@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'native-base';
 
 export default class SettingTab extends Component {

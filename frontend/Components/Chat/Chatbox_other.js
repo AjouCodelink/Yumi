@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Icon, Button, Thumbnail } from 'native-base';
+import { View, Text, StyleSheet } from 'react-native';
+import { Button, Thumbnail } from 'native-base';
 
-class ContactInfo extends Component {
+export default class Chatbox_other extends Component {
     render() {
         const data = this.props.data;
         return (
@@ -55,4 +55,3 @@ const style = StyleSheet.create({
     },
 })
 
-export default ContactInfo;

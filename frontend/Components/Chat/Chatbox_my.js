@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Icon, Button } from 'native-base';
+import { View, Text, StyleSheet } from 'react-native';
+import { Button } from 'native-base';
 
-class ContactInfo extends Component {
+export default class Chatbox_my extends Component {
     render() {
         const data = this.props.data;
         return (
             <View style={style.content}>
-                <Text style={style.text_time}>  {data.Time.getHours()}:{data.Time.getMinutes()}</Text>
+                <Text style={style.text_time}>{data.Time.getHours()}:{data.Time.getMinutes()}  </Text>
                 <Button info style={style.messageBox}>
                     <Text style={style.text_message}> {data.message} </Text>
                 </Button>
@@ -15,7 +15,6 @@ class ContactInfo extends Component {
         );
     }
 }
-
 
 const style = StyleSheet.create({
     content: {
@@ -40,5 +39,3 @@ const style = StyleSheet.create({
         fontSize: 15,
     },
 })
-
-export default ContactInfo;

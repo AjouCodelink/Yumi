@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView } from 'react-native';
 import { Item, Label, Input } from 'native-base';
 
 import CustomButton from '../CustomButton';
