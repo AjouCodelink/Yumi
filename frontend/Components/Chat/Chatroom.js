@@ -54,7 +54,7 @@ export default class Chatroom extends Component {
             tx.executeSql(  //chatlog 저장하는 table 생성하기
                 'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, PRIMARY KEY("user_email","cr_id","Time"))',
                 [],
-                (_,success) => console.log(success),
+                null,
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
@@ -91,7 +91,7 @@ export default class Chatroom extends Component {
                         </TouchableOpacity>
                     </Right>
                 </View>
-                <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={80} style={style.container}>
+                <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={0} style={style.container}>
                     <ScrollView
                         ref={scrollView => {
                             this.scrollView = scrollView;
@@ -146,7 +146,7 @@ export default class Chatroom extends Component {
             tx.executeSql(
                 'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
                 [this.state.cr_id],
-                (_, { rows: { _array }  }) => {this.setState({ chatlog: _array }); console.log(_array)},
+                (_, { rows: { _array }  }) => this.setState({ chatlog: _array }),
                 (_,error) => console.error(error)
             );
         },(error) => console.error(error))

@@ -83,7 +83,7 @@ export default class SettingTab extends Component {
                         tx.executeSql(
                             'DROP TABLE chatLog',
                             [],
-                            (_,success) => console.log(success),
+                            null,
                             (_,error) => console.error(error)
                         )
                     },(error) => console.error(error))
