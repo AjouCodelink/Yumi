@@ -45,7 +45,7 @@ submit(inputText){
 componentDidMount() {
     this.setState({ arrayHolder: [...this.array] })
 }
-abc(){ // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
+joinData = () => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
         var interest = {};
         interest.interests = this.state.textInput_Holder_Theme;
         var url = 'http://101.101.160.185:3000/chatroom/creation';
@@ -59,17 +59,17 @@ abc(){ // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들�
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => console.log(responseJson.chatroom_id));
+        .then(responseJson => this.abc(responseJson.chatroom_id));
+        //.then(responseJson => console.log(responseJson.chatroom_id));
         // .then(responseJson => this.setState({
         //     textInput_Holder_ID: responseJson.chatroom_id
         // }));
     }
 
-joinData = () => {
+abc = (chatroom_id) => {
 // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정 
-        this.abc()
         this.array.push({title : this.state.textInput_Holder_Theme,
-                        roomID: this.state.textInput_Holder_ID});
+                        roomID: chatroom_id});
     
         this.setState({ arrayHolder: [...this.array] })
 }
