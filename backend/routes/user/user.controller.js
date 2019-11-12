@@ -88,6 +88,7 @@ exports.signup = (req, res) => {
     // respond to the client
     const respond = (isAdmin) => {
         res.json({
+            result:1,
             message: 'registered successfully',
             admin: isAdmin ? true : false
         })
@@ -156,6 +157,7 @@ exports.login = (req, res) => {
     // respond the token 
     const respond = (token) => {
         res.json({
+            result:1,
             message: 'logged in successfully',
             token
         })

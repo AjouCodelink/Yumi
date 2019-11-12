@@ -68,7 +68,7 @@ export default class SignUp_Done extends Component {
         user.email = this.state.email
         user.password = this.state.password
         console.log(user);
-        var url = 'http://101.101.160.185:3000/login/auth';
+        var url = 'http://101.101.160.185:3000/user/login';
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(user),
