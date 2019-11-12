@@ -1,54 +1,43 @@
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput,Button } from 'react-native';
+import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import {Icon} from 'native-base';
 
-export default class Myproject extends Component {
-    
+export default class ChatroomTab extends Component {
     static navigationOptions = {
         header: null,
     }
-
-constructor(props) {
     
-    super(props);
-
-    this.array = [{
-        title: 'Sports',
-        roomID: 'roomID:1'
-    },
-
-    {
-        title: 'Movie',
-        roomID: 'roomID:2'
-    },
-
-    {
-        title: 'Food',
-        roomID: 'roomID:3'
+    constructor(props) {
+        super(props);
+        this.array = [{
+            title: 'Sports',
+            roomID: 'roomID:1'
+        },{
+            title: 'Movie',
+            roomID: 'roomID:2'
+        },{
+            title: 'Food',
+            roomID: 'roomID:3'
+        }],
+        this.state = {
+            arrayHolder: [],
+            textInput_Holder_Theme: '',
+            textInput_Holder_ID: '',
+            isAlertVisible: false,
+            search: '',
+        }    
     }
 
-    ],
+    submit(inputText){
+        this.setState({isAlertVisible: false})
+    }
 
-    this.state = {
+    componentDidMount() {
+        this.setState({ arrayHolder: [...this.array] })
+    }
 
-        arrayHolder: [],
-        textInput_Holder_Theme: '',
-        textInput_Holder_ID: '',
-        isAlertVisible: false,
-        search: '',
-
-    }    
-}
-
-submit(inputText){
-    this.setState({isAlertVisible: false})
-}
-
-componentDidMount() {
-    this.setState({ arrayHolder: [...this.array] })
-}
-createRoom = () => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
+    createRoom = () => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
         var interest = {};
         interest.interests = this.state.textInput_Holder_Theme;
         var url = 'http://101.101.160.185:3000/chatroom/creation';
@@ -63,109 +52,86 @@ createRoom = () => { // 키워드를 입력하여 버튼을 누르면 서버에 
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => this.insertChatRoom(responseJson.chatroom_id));
-        
         //.then(responseJson => console.log(responseJson.chatroom_id));
         // .then(responseJson => this.setState({
         //     textInput_Holder_ID: responseJson.chatroom_id
         // }));
     }
 
-insertChatRoom = (chatroom_id) => {
-// 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정 
-        this.array.push({title : this.state.textInput_Holder_Theme,
-                        roomID: chatroom_id});
+    insertChatRoom = (chatroom_id) => { // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정 
+        this.array.push({
+            title : this.state.textInput_Holder_Theme,
+            roomID: chatroom_id});
         //console.log(chatroom_id)
-    
         this.setState({ arrayHolder: [...this.array] })
-}
+    }
 
-_onPressChatroom = () => {
-    this.props.navigation.navigate('Chatroom');
-}
+    _onPressChatroom = () => {
+        this.props.navigation.navigate('Chatroom');
+    }
 
+    FlatListItemSeparator = () => {
+        return (
+            <View
+                style={{
+                    height: 1,
+                    width: "100%",
+                    backgroundColor: "#607D8B",
+                }}
+            />
+        );
+    }
 
-FlatListItemSeparator = () => {
-    return (
-    <View
-        style={{
-            height: 1,
-            width: "100%",
-            backgroundColor: "#607D8B",
-        }}
-    />
-    );
-}
+    GetItem(item) {
+        Alert.alert(item);
+    }
 
-
-
-GetItem(item) {
-
-    Alert.alert(item);
-
-}
-
-
-render() {
-    return (
-
-    <View style={styles.MainContainer}>
-        <View style = {styles.header}></View>
-        <TextInput
-            placeholder="Enter Theme Here"
-            onChangeText={data => this.setState({ textInput_Holder_Theme: data })}
-            style={styles.textInputStyle}
-            underlineColorAndroid='transparent'
-        />
-        <TextInput
-            placeholder="Enter ID Here"
-            onChangeText={data => this.setState({ textInput_Holder_ID: data })}
-            style={styles.textInputStyle}
-            underlineColorAndroid='transparent'
-        />
-        <DialogInput isDialogVisible = {this.state.isAlertVisible}
-                title={"Create Chatroom"}
-                message={"type title and roomID"}
-                hintInput ={"title"}
-                textInputProps
-                submitInput={ (inputText) => {this.submit(inputText)} }
-                closeDialog={ () =>this.setState({isAlertVisible:false})}>
-        </DialogInput>
-
-
-            <TouchableOpacity onPress={this.createRoom} activeOpacity={0.7} style={styles.button} >
-            <Text style={styles.buttonText}> Create Room </Text>
-        </TouchableOpacity>
-
-        <FlatList
-
-            data={this.state.arrayHolder}
-
-            width='85%'
-
-            extraData={this.state.arrayHolder}
-
-            keyExtractor = {(item, index) => String(index)}
-
-            ItemSeparatorComponent={this.FlatListItemSeparator}
-
-            renderItem={({ item }) => <Text style={styles.item} onPress={this._onPressChatroom} >#{item.title}{'\n'}#{item.roomID} </Text>}
-        />
-        <TouchableOpacity onPress={()=> this.setState({isAlertVisible:true})} 
-        activeOpacity={0.7} 
-        style={{backgroundColor: '#47C83E',width: 60, height: 50,marginBottom:40,marginLeft:"70%",justifyContent: 'center',alignItems:'center', borderRadius:60,borderWidth:1 }} >
-        <Icon name='chatboxes' style={{color: '#FFF'}}/>
-        </TouchableOpacity>
-        
-    
-    </View>
-
-    );
-}
+    render() {
+        return (
+        <View style={styles.MainContainer}>
+            <View style = {styles.header}/>
+            <TextInput
+                placeholder="Enter Theme Here"
+                onChangeText={data => this.setState({ textInput_Holder_Theme: data })}
+                style={styles.textInputStyle}
+                underlineColorAndroid='transparent'
+            />
+            <TextInput
+                placeholder="Enter ID Here"
+                onChangeText={data => this.setState({ textInput_Holder_ID: data })}
+                style={styles.textInputStyle}
+                underlineColorAndroid='transparent'
+            />
+            <DialogInput isDialogVisible = {this.state.isAlertVisible}
+                    title={"Create Chatroom"}
+                    message={"type title and roomID"}
+                    hintInput ={"title"}
+                    textInputProps
+                    submitInput={ (inputText) => {this.submit(inputText)} }
+                    closeDialog={ () =>this.setState({isAlertVisible:false})}/>
+            <TouchableOpacity onPress={this.createRoom} activeOpacity={0.7} style={styles.button}>
+                <Text style={styles.buttonText}> Create Room </Text>
+            </TouchableOpacity>
+            <FlatList
+                data={this.state.arrayHolder}
+                width='85%'
+                extraData={this.state.arrayHolder}
+                keyExtractor = {(item, index) => String(index)}
+                ItemSeparatorComponent={this.FlatListItemSeparator}
+                renderItem={({ item }) => <Text style={styles.item} onPress={this._onPressChatroom} >#{item.title}{'\n'}#{item.roomID} </Text>}
+            />
+            <TouchableOpacity onPress={()=> this.setState({isAlertVisible:true})} 
+                activeOpacity={0.7} 
+                style={{backgroundColor: '#47C83E',width: 60, height: 50,marginBottom:40,marginLeft:"70%",justifyContent: 'center',alignItems:'center', borderRadius:60,borderWidth:1 }} >
+                <Icon name='chatboxes' style={{color: '#FFF'}}/>
+            </TouchableOpacity>
+        </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-
-header: {
+    header: {
         flexDirection : "row",
         width:'100%',
         height:'8%',
@@ -174,7 +140,7 @@ header: {
         paddingBottom: '1.1%',
         backgroundColor: '#333',
     },
-search: {
+    search: {
         justifyContent: 'center',
         alignItems : "stretch",
         paddingTop: 50,
@@ -201,7 +167,6 @@ search: {
         height : 77,
     },
     textInputStyle:{
-
         textAlign : 'center',
         height: 40,
         width: '85%',
@@ -212,7 +177,6 @@ search: {
         color : '#fff',
     },
     button : {
-
         width : '85%',
         height: 40,
         padding : 10,

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView } from 'react-native';
-import { Form, Item, Label, Input } from 'native-base';
+import { StyleSheet, View, Image, KeyboardAvoidingView } from 'react-native';
+import { Item, Label, Input } from 'native-base';
 
 import CustomButton from './CustomButton';
 
