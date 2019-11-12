@@ -7,7 +7,7 @@ class ContactInfo extends Component {
         const data = this.props.data;
         return (
             <View style={style.content}>
-                <Text style={style.text_time}>{data.time.getHours()}:{data.time.getMinutes()}  </Text>
+                <Text style={style.text_time}>{data.time}  </Text>
                 <Button info style={style.messageBox}>
                     <Text style={style.text_message}> {data.message} </Text>
                 </Button>
