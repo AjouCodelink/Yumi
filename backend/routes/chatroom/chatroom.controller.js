@@ -45,7 +45,7 @@ exports.creation = (req, res) => { // TODO : email 빼고 토큰 사용해서 �
                     res.json({result:0});
                     return;
                 }
-                res.json({result:1});
+                res.json({result:1, chatroom_id : chatRoom._id});
             })
         }
     })
