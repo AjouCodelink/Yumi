@@ -17,14 +17,17 @@ constructor(props) {
         title: 'Sports',
         roomID: 'roomID:1'
     },
+
     {
         title: 'Movie',
         roomID: 'roomID:2'
     },
+
     {
         title: 'Food',
         roomID: 'roomID:3'
     }
+
     ],
 
     this.state = {
@@ -45,7 +48,7 @@ submit(inputText){
 componentDidMount() {
     this.setState({ arrayHolder: [...this.array] })
 }
-joinData = () => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
+createRoom = () => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
         var interest = {};
         interest.interests = this.state.textInput_Holder_Theme;
         var url = 'http://101.101.160.185:3000/chatroom/creation';
@@ -59,20 +62,27 @@ joinData = () => { // 키워드를 입력하여 버튼을 누르면 서버에 �
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => this.abc(responseJson.chatroom_id));
+        .then(responseJson => this.insertChatRoom(responseJson.chatroom_id));
+        
         //.then(responseJson => console.log(responseJson.chatroom_id));
         // .then(responseJson => this.setState({
         //     textInput_Holder_ID: responseJson.chatroom_id
         // }));
     }
 
-abc = (chatroom_id) => {
+insertChatRoom = (chatroom_id) => {
 // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정 
         this.array.push({title : this.state.textInput_Holder_Theme,
                         roomID: chatroom_id});
+        //console.log(chatroom_id)
     
         this.setState({ arrayHolder: [...this.array] })
 }
+
+_onPressChatroom = () => {
+    this.props.navigation.navigate('Chatroom');
+}
+
 
 FlatListItemSeparator = () => {
     return (
@@ -87,9 +97,6 @@ FlatListItemSeparator = () => {
 }
 
 
-_onPressChatroom = () => {
-        this.props.navigation.navigate('Chatroom');
-    }
 
 GetItem(item) {
 
@@ -125,7 +132,7 @@ render() {
         </DialogInput>
 
 
-            <TouchableOpacity onPress={this.joinData} activeOpacity={0.7} style={styles.button} >
+            <TouchableOpacity onPress={this.createRoom} activeOpacity={0.7} style={styles.button} >
             <Text style={styles.buttonText}> Create Room </Text>
         </TouchableOpacity>
 

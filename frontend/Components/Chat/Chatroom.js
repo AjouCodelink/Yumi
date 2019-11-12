@@ -127,6 +127,8 @@ export default class Chatroom extends Component {
                 time: "09:14",
                 message: this.state.message,
                 userID: 0,
+               //roomID: 
+               //TODO : 내장디비를 통해서 roomID를 받아와야함 -> 채팅룸 구분하여 채팅 가능
             }
             this.socket.emit('SEND_MESSAGE', newchat);
             this.setState({message: ''});    
