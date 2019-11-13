@@ -169,7 +169,7 @@ export default class Chatroom extends Component {
             }));
             */
             this.dbAdd(newchat)
-            //this.socket.emit('SEND_MESSAGE', newchat);
+            this.socket.emit('SEND_MESSAGE', newchat);
             this.setState({message: null});    
         }
     }

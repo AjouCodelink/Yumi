@@ -4,15 +4,40 @@ import { Item, Label, Input } from 'native-base';
 
 import CustomButton from './CustomButton';
 
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
+
 export default class TitleScreen extends Component {
     static navigationOptions = {    // 상단바 안보이게 하기
         header: null
     }
     constructor(props){
         super(props);
-        this.state={email: '', password: '', loginResult: -1}
+        this.state={email: '', password: '', loginResult: -1, token:''}
     }
 
+    componentDidMount() {  // table이 없으면 create
+        db.transaction(tx => {
+            tx.executeSql(  //chatlog 저장하는 table 생성하기
+                'CREATE TABLE if not exists token (access_token TEXT NOT NULL, user_email TEXT NOT NULL, PRIMARY KEY("access_token"))',
+                [],
+                null,
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
+
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM token',
+                [],
+                (_, { rows: { _array }  }) => {    // TODO : 이 과정이 1초정도 걸리기 때문에 토큰이 있는 경우 타이틀 화면 갔다가 메인 페이지로 넘어가짐. 중간에 새로운 화면을 만들던지 해야할 듯.
+                    if(_array.length) this.goMain();  // db에 토큰이 있는지 검사
+                },
+                (_,error) => console.error(error)
+            );
+        },(error) => console.error(error))
+    }
+    
     render() {
         return (
             <View style={style.container}>
@@ -58,16 +83,27 @@ export default class TitleScreen extends Component {
             </View>
         );
     }
+
+
+    dbSaveToken(token){
+        db.transaction( tx => {
+            tx.executeSql(
+                'INSERT INTO token (access_token, user_email) values (?,?);',
+                [token, this.state.email],
+                null,
+                (_,error) => console.error(error)   // sql문 실패 에러
+            );
+        },(error) => console.error(error))   // 트랜젝션 에러
+    }
     onPressLogin(){
         if (this.state.email == ''){
             alert('Please enter your email.');
-        } else if (this.state.email.indexOf('@') == -1 || this.state.email.indexOf('.ac.kr') == -1) {
-            alert("Please enter a valid email address. The email address must include '@' and must end with 'ac.kr'")
-        } else if (this.state.password == ''){
+        }
+        else if (this.state.password == ''){
             alert('Please enter your password.');
         } else {
             this.submit();
-            setTimeout(() => {this.checkLoginResult();}, 250);
+            setTimeout(() => {this.checkLoginResult();}, 500);
         }
     }
     checkLoginResult(){
@@ -75,6 +111,7 @@ export default class TitleScreen extends Component {
             alert("Email or password is incorrect.")
             this.state.loginResult = -1
         } else if (this.state.loginResult == 1) {    // 로그인 성공
+            this.dbSaveToken(this.state.token);
             this.goMain();
         } else {                                     // 서버 전송 오류
             alert("Failed to login. Please try again.")
@@ -94,7 +131,7 @@ export default class TitleScreen extends Component {
         user.email = this.state.email
         user.password = this.state.password
         console.log(user);
-        var url = 'http://101.101.160.185:3000/login/auth';
+        var url = 'http://101.101.160.185:3000/user/login';
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(user),
@@ -105,7 +142,8 @@ export default class TitleScreen extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => this.setState({
-            loginResult: responseJson.result     // 실패시0 성공시1 
+            loginResult: responseJson.result,       // 실패시0 성공시1 
+            token: responseJson.token
         }));
     }
 }

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import {Icon} from 'native-base';
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
 
 export default class ChatroomTab extends Component {
     static navigationOptions = {
@@ -10,16 +12,9 @@ export default class ChatroomTab extends Component {
     
     constructor(props) {
         super(props);
-        this.array = [{
-            title: 'Sports',
-            roomID: '1'
-        },{
-            title: 'Movie',
-            roomID: '2'
-        },{
-            title: 'Food',
-            roomID: '3'
-        }],
+        this.token = '',
+        this.email = '',
+        this.array = [],
         this.state = {
             arrayHolder: [],
             textInput_Holder_Theme: '',
@@ -34,6 +29,44 @@ export default class ChatroomTab extends Component {
 
     componentDidMount() {
         this.setState({ arrayHolder: [...this.array] })
+
+        db.transaction(tx => {
+            tx.executeSql(  //chatlog 저장하는 table 생성하기
+                'CREATE TABLE if not exists chatroom (cr_id TEXT NOT NULL, email TEXT NOT NULL, Theme TEXT NOL NULL, PRIMARY KEY("cr_id", "email"))',
+                [],
+                null,
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
+
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM token',
+                [],
+                (_, { rows: { _array }  }) => { 
+                    this.token = _array[0].access_token;
+                    this.email = _array[0].user_email;
+                },
+                (_,error) => console.error(error)
+            );
+        },(error) => console.error(error))
+        
+        db.transaction(tx => {
+            tx.executeSql(
+                'SELECT * from chatroom where email = ?',
+                [this.email],
+                (_, { rows: { _array }  }) => {    
+                    for(var i=0; i<_array.length; i++){
+                        this.array.push({
+                            title: _array[i].Theme,
+                            roomID: _array[i].cr_id
+                        });
+                    }
+                    this.setState({ arrayHolder: [...this.array] })
+                },
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
     }
 
     createRoom = () => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
@@ -46,25 +79,30 @@ export default class ChatroomTab extends Component {
             headers: new Headers({
             'Content-Type' : 'application/json',
             'token': 'token',
-            'x-access-token':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGNhMzZjY2NmZGMyMzI2YTUxN2JiMTYiLCJlbWFpbCI6InRrZGd1c2w5NEBuYXZlci5jb20iLCJpYXQiOjE1NzM1MzMzOTksImV4cCI6MTU3NDEzODE5OSwiaXNzIjoiY29kZWxpbmsuY29tIiwic3ViIjoidXNlckluZm8ifQ.h3a81ID66obDjwWXnlsS0H9A3cUQesYVIMYXGWuUiW0'
+            'x-access-token': this.token
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => this.insertChatRoom(responseJson.chatroom_id));
-        //.then(responseJson => console.log(responseJson.chatroom_id));
-        // .then(responseJson => this.setState({
-        //     textInput_Holder_ID: responseJson.chatroom_id
-        // }));
     }
 
     insertChatRoom = (chatroom_id) => { // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정 
         this.array.push({
             title : this.state.textInput_Holder_Theme,
             roomID: chatroom_id});
-        //console.log(chatroom_id)
         this.setState({ arrayHolder: [...this.array] })
+        db.transaction(tx => {
+            tx.executeSql(
+                'INSERT INTO chatroom (cr_id, email, Theme) values (?,?,?)',
+                [chatroom_id, this.email, this.state.textInput_Holder_Theme],
+                null,
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
     }
-
+    a = ()=>{
+        
+    }
     _onPressChatroom = (item) => {
         this.props.navigation.navigate('Chatroom', {
             title: item.title,
