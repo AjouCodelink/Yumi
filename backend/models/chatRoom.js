@@ -5,7 +5,7 @@ const ChatRoomSchema = mongoose.Schema({
     name: { type: String }, // 이거 없어도 되는거 아니냐
     interests: [{ type: String }],
     participants: [{
-        email: { type: String, required: true, unique: true },
+        email: { type: String},
         nickname: { type: String},
         interests: [{ type: String }]
     }]
