@@ -16,7 +16,7 @@ export default class TitleScreen extends Component {
         this.state={email: '', password: '', loginResult: -1, token:''}
     }
 
-    componentDidMount() {  // table이 없으면 create
+    componentWillMount() {  // table이 없으면 create
         db.transaction(tx => {
             tx.executeSql(  //chatlog 저장하는 table 생성하기
                 'CREATE TABLE if not exists token (access_token TEXT NOT NULL, user_email TEXT NOT NULL, PRIMARY KEY("access_token"))',
@@ -31,6 +31,7 @@ export default class TitleScreen extends Component {
                 'SELECT * FROM token',
                 [],
                 (_, { rows: { _array }  }) => {    // TODO : 이 과정이 1초정도 걸리기 때문에 토큰이 있는 경우 타이틀 화면 갔다가 메인 페이지로 넘어가짐. 중간에 새로운 화면을 만들던지 해야할 듯.
+                    console.log(_array);
                     if(_array.length) this.goMain();  // db에 토큰이 있는지 검사
                 },
                 (_,error) => console.error(error)
@@ -130,7 +131,7 @@ export default class TitleScreen extends Component {
         var user= {}
         user.email = this.state.email
         user.password = this.state.password
-        console.log(user);
+
         var url = 'http://101.101.160.185:3000/user/login';
         fetch(url, {
             method: 'POST',
