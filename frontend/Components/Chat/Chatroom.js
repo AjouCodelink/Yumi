@@ -17,15 +17,15 @@ export default class Chatroom extends Component {
     constructor(props){
         super(props);
         this.socket = io('http://101.101.160.185:3000'); 
+
         this.socket.on('RECEIVE_MESSAGE', function(data){
             addMessage(data);
-            //console.log(this.state.chatlog);
+            //this.dbAdd(data);
         });
         const addMessage = data => {
             console.log(data);
             this.setState({chatlog:[...this.state.chatlog, data]});
         };
-        _this = this;
     };
 
     static navigationOptions = {
@@ -165,8 +165,6 @@ export default class Chatroom extends Component {
 
     _onPressSend(){
         if (this.state.message != ''){
-            console.log(this.state.myEmail);
-
             const newchat = {
                 user_email: this.state.myEmail,
                 cr_id: this.state.cr_id,
@@ -175,6 +173,7 @@ export default class Chatroom extends Component {
             }
             
             this.dbAdd(newchat)
+            
             this.socket.emit('SEND_MESSAGE', newchat);
             this.setState({message: null});    
         }
