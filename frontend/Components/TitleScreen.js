@@ -30,16 +30,17 @@ export default class TitleScreen extends Component {
             tx.executeSql(
                 'SELECT * FROM token',
                 [],
-                (_, { rows: { _array }  }) => this.setState({ token: _array[1].access_token }, this.check(_array)),
+                (_, { rows: { _array }  }) => this.checkToken(_array),// db에 토큰이 있는지 검사
                 (_,error) => console.error(error)
             );
         },(error) => console.error(error))
+    }
 
-//        if(this.state.token=='') this.goMain();
+    // TODO : 이 과정이 1초정도 걸리기 때문에 토큰이 있는 경우 타이틀 화면 갔다가 메인 페이지로 넘어가짐. 중간에 새로운 화면을 만들던지 해야할 듯.
+    checkToken(_array){ // db에 토큰이 있으면 메인 화면으로 보냄
+        if(_array.length) this.goMain(); // 원래 이거 서버에 가서 유효한 토큰인지 검사 해야 하는데 귀찮으니 일단 그냥 이렇게 적어둠.
     }
-    check(_array){
-        if(_array.length) this.goMain();
-    }
+    
     render() {
         return (
             <View style={style.container}>
