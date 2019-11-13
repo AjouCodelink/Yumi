@@ -16,7 +16,7 @@ const ChatRoomSchema = mongoose.Schema({
 });
 
 ChatRoomSchema.statics.findRoomByKeyword = function(keyword) {
-    return this.find({interests: keyword});
+    return this.find({interest: keyword});
 };
 
 module.exports = mongoose.model('chatroom', ChatRoomSchema);
