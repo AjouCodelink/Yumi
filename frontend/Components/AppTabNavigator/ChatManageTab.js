@@ -17,10 +17,11 @@ export default class ChatManageTab extends Component {
         updateSearch = search =>{
             this.setState({search});
         };
-        ButtonClickCheckFunction = () =>{
+    
+    }
+    ButtonClickCheckFunction = () =>{
             alert("Button Clicked");
         }
-    }
 
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
