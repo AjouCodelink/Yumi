@@ -77,7 +77,7 @@ export default class ChatroomTab extends Component {
 
     createRoom = () => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
         var interest = {};
-        interest.interests = this.state.textInput_Holder_Theme;
+        interest.interest = this.state.textInput_Holder_Theme;
         var url = 'http://101.101.160.185:3000/chatroom/creation';
         fetch(url, {
             method: 'POST',

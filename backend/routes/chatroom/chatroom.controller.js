@@ -42,6 +42,7 @@ exports.creation = (req, res) => {
             /*
             TODO : 이 부분에 socket.on('join room') 코드 작성 해야 됨.
             */
+            
             chatRoom.save((err)=>{
                 if(err){
                     console.log(err);
