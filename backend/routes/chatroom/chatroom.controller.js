@@ -59,7 +59,19 @@ exports.creation = (req, res) => {
 */
 exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반환
     var userEmail = req.decoded.email;
+
     User.findOne({email:userEmail}, function(err, data){
         res.send(data.chatroom);
+    })
+}
+
+/*
+    GET /chatroom/log/:cr_id
+*/
+exports.getLog = (req, res) => {
+    var cr_id = req.params.cr_id;
+    
+    ChatRoom.findOne({_id : cr_id}, function(err, chatroom){
+        res.json(chatroom.chatlog);
     })
 }
