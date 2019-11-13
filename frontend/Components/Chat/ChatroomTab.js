@@ -74,7 +74,6 @@ export default class ChatroomTab extends Component {
             'Content-Type' : 'application/json',
             'token': 'token',
             'x-access-token': this.token
-            //다른 search에서만 쓰면 안된다. 
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
