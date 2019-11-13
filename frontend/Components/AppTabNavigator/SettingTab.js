@@ -61,6 +61,14 @@ export default class SettingTab extends Component {
     }
 
     onPressLogout() {
+        db.transaction(tx => {
+            tx.executeSql(
+                'DROP TABLE token',
+                [],
+                null,
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
         this.props.navigation.navigate('TitleScreen');
     }
     onPressContect() {
