@@ -36,7 +36,7 @@ export default class Chatroom extends Component {
         cr_id: 0,
         cr_name: '',
         message: '',
-        myEmail: 'default@ajou.ac.kr',
+        myEmail:'',
         chatlog:[], // 채팅로그
         key: 0,
     }
@@ -55,6 +55,17 @@ export default class Chatroom extends Component {
                 'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, PRIMARY KEY("user_email","cr_id","Time"))',
                 [],
                 null,
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
+
+        db.transaction(tx => {
+            tx.executeSql(  //chatlog 저장하는 table 생성하기
+                'SELECT user_email FROM token',
+                [],
+                (_, { rows: { _array }  }) => {    
+                    this.state.myEmail = _array[0].user_email;
+                },
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
@@ -154,20 +165,15 @@ export default class Chatroom extends Component {
 
     _onPressSend(){
         if (this.state.message != ''){
+            console.log(this.state.myEmail);
+
             const newchat = {
                 user_email: this.state.myEmail,
                 cr_id: this.state.cr_id,
                 Time: Date(),
                 message: this.state.message,
             }
-            /*
-            this.setState(prevState => ({
-                chatlog: [
-                    ...prevState.chatlog, // 기존 메시지 목록
-                    newchat
-                ]
-            }));
-            */
+            
             this.dbAdd(newchat)
             this.socket.emit('SEND_MESSAGE', newchat);
             this.setState({message: null});    
