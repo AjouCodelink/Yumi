@@ -12,7 +12,11 @@ const UserSchema = new Schema({
         group: { type: String }
     }],
     language: { type: String },
-    img_path: { type: String}
+    img_path: { type: String},
+    chatroom:[{
+        cr_id: { type: String},
+        interest: { type: String }
+    }]
 });
 
 // create new User document
