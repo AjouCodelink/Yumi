@@ -4,7 +4,6 @@ var authMiddleware = require('../../middlewares/auth');
 
 router.use('/creation', authMiddleware);
 router.use('/list', authMiddleware);
-router.use('/log/:cr_id', authMiddleware);
 
 router.get('/search/:keyword', controller.searchWord);
 router.post('/creation', controller.creation);
