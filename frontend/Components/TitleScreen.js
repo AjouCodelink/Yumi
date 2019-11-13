@@ -19,7 +19,7 @@ export default class TitleScreen extends Component {
     componentDidMount() {  // table이 없으면 create
         db.transaction(tx => {
             tx.executeSql(  //chatlog 저장하는 table 생성하기
-                'CREATE TABLE if not exists token (access_token TEXT NOT NULL, PRIMARY KEY("access_token"))',
+                'CREATE TABLE if not exists token (access_token TEXT NOT NULL, user_email TEXT NOT NULL, PRIMARY KEY("access_token"))',
                 [],
                 null,
                 (_,error) => console.error(error)
@@ -88,8 +88,8 @@ export default class TitleScreen extends Component {
     dbSaveToken(token){
         db.transaction( tx => {
             tx.executeSql(
-                'INSERT INTO token (access_token) values (?);',
-                [token],
+                'INSERT INTO token (access_token, user_email) values (?,?);',
+                [token, this.state.email],
                 null,
                 (_,error) => console.error(error)   // sql문 실패 에러
             );
@@ -103,7 +103,7 @@ export default class TitleScreen extends Component {
             alert('Please enter your password.');
         } else {
             this.submit();
-            setTimeout(() => {this.checkLoginResult();}, 250);
+            setTimeout(() => {this.checkLoginResult();}, 500);
         }
     }
     checkLoginResult(){

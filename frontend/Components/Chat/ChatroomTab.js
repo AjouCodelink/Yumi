@@ -13,6 +13,7 @@ export default class ChatroomTab extends Component {
     constructor(props) {
         super(props);
         this.token = '',
+        this.email = '',
         this.array = [],
         this.state = {
             arrayHolder: [],
@@ -31,7 +32,7 @@ export default class ChatroomTab extends Component {
 
         db.transaction(tx => {
             tx.executeSql(  //chatlog 저장하는 table 생성하기
-                'CREATE TABLE if not exists chatroom (cr_id TEXT NOT NULL, token TEXT NOT NULL, Theme TEXT NOL NULL, PRIMARY KEY("cr_id", "token"))',
+                'CREATE TABLE if not exists chatroom (cr_id TEXT NOT NULL, email TEXT NOT NULL, Theme TEXT NOL NULL, PRIMARY KEY("cr_id", "email"))',
                 [],
                 null,
                 (_,error) => console.error(error)
@@ -44,6 +45,7 @@ export default class ChatroomTab extends Component {
                 [],
                 (_, { rows: { _array }  }) => { 
                     this.token = _array[0].access_token;
+                    this.email = _array[0].user_email;
                 },
                 (_,error) => console.error(error)
             );
@@ -51,8 +53,8 @@ export default class ChatroomTab extends Component {
         
         db.transaction(tx => {
             tx.executeSql(
-                'SELECT * from chatroom where token = ?',
-                [this.token],
+                'SELECT * from chatroom where email = ?',
+                [this.email],
                 (_, { rows: { _array }  }) => {    
                     for(var i=0; i<_array.length; i++){
                         this.array.push({
@@ -91,8 +93,8 @@ export default class ChatroomTab extends Component {
         this.setState({ arrayHolder: [...this.array] })
         db.transaction(tx => {
             tx.executeSql(
-                'INSERT INTO chatroom (cr_id, token, Theme) values (?,?,?)',
-                [chatroom_id, this.token, this.state.textInput_Holder_Theme],
+                'INSERT INTO chatroom (cr_id, email, Theme) values (?,?,?)',
+                [chatroom_id, this.email, this.state.textInput_Holder_Theme],
                 null,
                 (_,error) => console.error(error)
             )
