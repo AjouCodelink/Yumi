@@ -82,9 +82,6 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => this.insertChatRoom(responseJson.chatroom_id));
-        // .then(responseJson => this.setState({
-        //     textInput_Holder_ID: responseJson.chatroom_id
-        // }));
     }
 
     insertChatRoom = (chatroom_id) => { // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정 
