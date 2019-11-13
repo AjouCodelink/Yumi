@@ -25,6 +25,12 @@ export default class ChatroomTab extends Component {
 
     submit(inputText){
         this.setState({isAlertVisible: false})
+        this.setState({textInput_Holder_Theme:inputText})
+        console.log(this.state.textInput_Holder_Theme)
+        this.createRoom()
+    }
+    ddd(){
+        console.log("function called!");
     }
 
     componentDidMount() {
@@ -80,17 +86,23 @@ export default class ChatroomTab extends Component {
             'Content-Type' : 'application/json',
             'token': 'token',
             'x-access-token': this.token
+            //다른 search에서만 쓰면 안된다. 
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => this.insertChatRoom(responseJson.chatroom_id));
-    }
+        .then(responseJson => {
+            
+            this.insertChatRoom(responseJson.chatroom_id);
+            console.log(responseJson);
+        })
+    };
 
     insertChatRoom = (chatroom_id) => { // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정 
         this.array.push({
             title : this.state.textInput_Holder_Theme,
             roomID: chatroom_id});
         this.setState({ arrayHolder: [...this.array] })
+
         db.transaction(tx => {
             tx.executeSql(
                 'INSERT INTO chatroom (cr_id, email, Theme) values (?,?,?)',
@@ -128,32 +140,13 @@ export default class ChatroomTab extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.header}/>
-                <TextInput
-                    placeholder="Enter Theme Here"
-                    onChangeText={data => this.setState({ textInput_Holder_Theme: data })}
-                    style={styles.textInputStyle}
-                    underlineColorAndroid='transparent'
-                />
-                <TextInput
-                    placeholder="Enter ID Here"
-                    onChangeText={data => this.setState({ textInput_Holder_ID: data })}
-                    style={styles.textInputStyle}
-                    underlineColorAndroid='transparent'
-                />
                 <DialogInput
                     isDialogVisible = {this.state.isAlertVisible}
                     title={"Create Chatroom"}
-                    message={"type title and roomID"}
-                    hintInput ={"title"}
-                    textInputProps
-                    submitInput={ (inputText) => {this.submit(inputText)} }
-                    closeDialog={ () =>this.setState({isAlertVisible:false})}/>
-                <TouchableOpacity
-                    onPress={this.createRoom}
-                    activeOpacity={0.7}
-                    style={styles.button}>
-                    <Text style={styles.buttonText}>Create Room</Text>
-                </TouchableOpacity>
+                    message={"Type Theme"}
+                    hintInput ={"Theme"}
+                    submitInput={ (inputText) => { this.submit(inputText)}}
+                    closeDialog={ (inputText) => {this.setState({isAlertVisible:false})}}/>
                 <FlatList
                     data={this.state.arrayHolder}
                     width='85%'
