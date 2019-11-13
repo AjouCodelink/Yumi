@@ -25,8 +25,21 @@ export default class TitleScreen extends Component {
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
-    }
 
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM token',
+                [],
+                (_, { rows: { _array }  }) => this.setState({ token: _array[1].access_token }, this.check(_array)),
+                (_,error) => console.error(error)
+            );
+        },(error) => console.error(error))
+
+//        if(this.state.token=='') this.goMain();
+    }
+    check(_array){
+        if(_array.length) this.goMain();
+    }
     render() {
         return (
             <View style={style.container}>
@@ -72,6 +85,8 @@ export default class TitleScreen extends Component {
             </View>
         );
     }
+
+
     dbSaveToken(token){
         db.transaction( tx => {
             tx.executeSql(
@@ -85,9 +100,8 @@ export default class TitleScreen extends Component {
     onPressLogin(){
         if (this.state.email == ''){
             alert('Please enter your email.');
-        } else if (this.state.email.indexOf('@') == -1 || this.state.email.indexOf('.ac.kr') == -1) {
-            alert("Please enter a valid email address. The email address must include '@' and must end with 'ac.kr'")
-        } else if (this.state.password == ''){
+        }
+        else if (this.state.password == ''){
             alert('Please enter your password.');
         } else {
             this.submit();
