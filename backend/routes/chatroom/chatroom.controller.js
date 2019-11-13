@@ -15,16 +15,13 @@ exports.searchWord = (req, res) =>{
 }
 
 /*
-    POST /chatroom/creation
-    {
-        interest
-    }
+    POST /chatroom/creation/:interest
 */
 exports.creation = (req, res) => {
     var chatRoom = new ChatRoom();
     var userEmail = req.decoded.email;
 
-    chatRoom.interest = req.body.interest;
+    chatRoom.interest = req.params.interest;
 
     User.findOne({email:userEmail}, function(err, data){
         if(err) res.send(err);
@@ -49,7 +46,7 @@ exports.creation = (req, res) => {
                     res.json({result:0});
                     return;
                 }
-                res.json({result:1, chatroom_id : chatRoom._id});
+                res.json({result:1, chatroom_id : chatRoom._id, interest : chatRoom.interest});
             })
         }
     })

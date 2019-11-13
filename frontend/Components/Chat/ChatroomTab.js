@@ -18,32 +18,17 @@ export default class ChatroomTab extends Component {
         this.state = {
             arrayHolder: [],
             textInput_Holder_Theme: '',
-            textInput_Holder_ID: '',
             isAlertVisible: false,
         }    
     }
 
     submit(inputText){
         this.setState({isAlertVisible: false})
-        this.setState({textInput_Holder_Theme:inputText})
-        console.log(this.state.textInput_Holder_Theme)
-        this.createRoom()
-    }
-    ddd(){
-        console.log("function called!");
+        this.createRoom(inputText);
     }
 
     componentDidMount() {
         this.setState({ arrayHolder: [...this.array] })
-
-        db.transaction(tx => {
-            tx.executeSql(  //chatlog 저장하는 table 생성하기
-                'CREATE TABLE if not exists chatroom (cr_id TEXT NOT NULL, email TEXT NOT NULL, Theme TEXT NOL NULL, PRIMARY KEY("cr_id", "email"))',
-                [],
-                null,
-                (_,error) => console.error(error)
-            )
-        },(error) => console.error(error))
 
         db.transaction( tx => {
             tx.executeSql(
@@ -52,69 +37,67 @@ export default class ChatroomTab extends Component {
                 (_, { rows: { _array }  }) => { 
                     this.token = _array[0].access_token;
                     this.email = _array[0].user_email;
+                    this.getChatRoomList();
                 },
                 (_,error) => console.error(error)
             );
         },(error) => console.error(error))
-        
-        db.transaction(tx => {
-            tx.executeSql(
-                'SELECT * from chatroom where email = ?',
-                [this.email],
-                (_, { rows: { _array }  }) => {    
-                    for(var i=0; i<_array.length; i++){
-                        this.array.push({
-                            title: _array[i].Theme,
-                            roomID: _array[i].cr_id
-                        });
-                    }
-                    this.setState({ arrayHolder: [...this.array] })
-                },
-                (_,error) => console.error(error)
-            )
-        },(error) => console.error(error))
     }
 
-    createRoom = () => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
-        var interest = {};
-        interest.interest = this.state.textInput_Holder_Theme;
-        var url = 'http://101.101.160.185:3000/chatroom/creation';
+    getChatRoomList(){
+        var url = 'http://101.101.160.185:3000/chatroom/list';
         fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(interest),
+            method: 'GET',
             headers: new Headers({
             'Content-Type' : 'application/json',
             'token': 'token',
             'x-access-token': this.token
-            //다른 search에서만 쓰면 안된다. 
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            
-            this.insertChatRoom(responseJson.chatroom_id);
-            console.log(responseJson);
+            for(var i=0; i<responseJson.length; i++){ // TODO : 이거 포문으로 했는데 혹시 map으로 할 수 있으면 수정 좀 해주셈
+                this.array.push({
+                    title: responseJson[i].interest,
+                    roomID: responseJson[i].cr_id
+                })
+                this.setState({arrayHolder: [...this.array]})
+            }
+        })
+    }
+
+    createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
+        var url = 'http://101.101.160.185:3000/chatroom/creation/'+inputText;
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token',
+            'x-access-token': this.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            this.insertChatRoom(responseJson.chatroom_id, responseJson.interest);
         })
     };
 
-    insertChatRoom = (chatroom_id) => { // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정 
+    insertChatRoom = (chatroom_id, interest) => { // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정
         this.array.push({
-            title : this.state.textInput_Holder_Theme,
+            title : interest,
             roomID: chatroom_id});
         this.setState({ arrayHolder: [...this.array] })
 
-        db.transaction(tx => {
-            tx.executeSql(
-                'INSERT INTO chatroom (cr_id, email, Theme) values (?,?,?)',
-                [chatroom_id, this.email, this.state.textInput_Holder_Theme],
-                null,
-                (_,error) => console.error(error)
-            )
-        },(error) => console.error(error))
+        // db.transaction(tx => {
+        //     tx.executeSql(
+        //         'INSERT INTO chatroom (cr_id, email, Theme) values (?,?,?)',
+        //         [chatroom_id, this.email, this.state.textInput_Holder_Theme],
+        //         null,
+        //         (_,error) => console.error(error)
+        //     )
+        // },(error) => console.error(error))
     }
-    a = ()=>{
-        
-    }
+
     _onPressChatroom = (item) => {
         this.props.navigation.navigate('Chatroom', {
             title: item.title,
