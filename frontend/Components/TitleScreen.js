@@ -4,13 +4,27 @@ import { Item, Label, Input } from 'native-base';
 
 import CustomButton from './CustomButton';
 
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
+
 export default class TitleScreen extends Component {
     static navigationOptions = {    // 상단바 안보이게 하기
         header: null
     }
     constructor(props){
         super(props);
-        this.state={email: '', password: '', loginResult: -1}
+        this.state={email: '', password: '', loginResult: -1, token:''}
+    }
+
+    componentDidMount() {  // table이 없으면 create
+        db.transaction(tx => {
+            tx.executeSql(  //chatlog 저장하는 table 생성하기
+                'CREATE TABLE if not exists token (access_token TEXT NOT NULL, PRIMARY KEY("access_token"))',
+                [],
+                null,
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
     }
 
     render() {
@@ -58,6 +72,16 @@ export default class TitleScreen extends Component {
             </View>
         );
     }
+    dbSaveToken(token){
+        db.transaction( tx => {
+            tx.executeSql(
+                'INSERT INTO token (access_token) values (?);',
+                [token],
+                null,
+                (_,error) => console.error(error)   // sql문 실패 에러
+            );
+        },(error) => console.error(error))   // 트랜젝션 에러
+    }
     onPressLogin(){
         if (this.state.email == ''){
             alert('Please enter your email.');
@@ -75,6 +99,7 @@ export default class TitleScreen extends Component {
             alert("Email or password is incorrect.")
             this.state.loginResult = -1
         } else if (this.state.loginResult == 1) {    // 로그인 성공
+            this.dbSaveToken(this.state.token);
             this.goMain();
         } else {                                     // 서버 전송 오류
             alert("Failed to login. Please try again.")
@@ -94,7 +119,7 @@ export default class TitleScreen extends Component {
         user.email = this.state.email
         user.password = this.state.password
         console.log(user);
-        var url = 'http://101.101.160.185:3000/login/auth';
+        var url = 'http://101.101.160.185:3000/user/login';
         fetch(url, {
             method: 'POST',
             body: JSON.stringify(user),
@@ -105,7 +130,8 @@ export default class TitleScreen extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => this.setState({
-            loginResult: responseJson.result     // 실패시0 성공시1 
+            loginResult: responseJson.result,       // 실패시0 성공시1 
+            token: responseJson.token
         }));
     }
 }

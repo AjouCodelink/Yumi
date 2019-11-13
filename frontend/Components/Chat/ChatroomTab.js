@@ -10,16 +10,7 @@ export default class ChatroomTab extends Component {
     
     constructor(props) {
         super(props);
-        this.array = [{
-            title: 'Sports',
-            roomID: '1'
-        },{
-            title: 'Movie',
-            roomID: '2'
-        },{
-            title: 'Food',
-            roomID: '3'
-        }],
+        this.array = [],
         this.state = {
             arrayHolder: [],
             textInput_Holder_Theme: '',
