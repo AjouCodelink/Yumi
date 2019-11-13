@@ -56,14 +56,18 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-//            this.insertChatRoom(responseJson.chatroom_id);
-            console.log(responseJson);
+            for(var i=0; i<responseJson.length; i++){ // TODO : 이거 포문으로 했는데 혹시 map으로 할 수 있으면 수정 좀 해주셈
+                this.array.push({
+                    title: responseJson[i].interest,
+                    roomID: responseJson[i].cr_id
+                })
+                this.setState({arrayHolder: [...this.array]})
+            }
         })
     }
 
     createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
         var url = 'http://101.101.160.185:3000/chatroom/creation/'+inputText;
-        console.log(url);
         fetch(url, {
             method: 'POST',
             headers: new Headers({
@@ -76,12 +80,10 @@ export default class ChatroomTab extends Component {
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             this.insertChatRoom(responseJson.chatroom_id, responseJson.interest);
-            console.log(responseJson);
         })
     };
 
     insertChatRoom = (chatroom_id, interest) => { // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정
-        console.log(1);
         this.array.push({
             title : interest,
             roomID: chatroom_id});
