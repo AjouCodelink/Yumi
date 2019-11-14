@@ -17,17 +17,34 @@ export default class ChatManageTab extends Component {
         updateSearch = search =>{
             this.setState({search});
         };
+<<<<<<< HEAD
         
     }
 ButtonClickCheckFunction = () =>{
             alert("Button Clicked");
         }
+=======
+    }
+
+>>>>>>> bb0ddcf1fe91cc4a6599251e604b968f2fbe26c8
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
             <Icon name='md-search' size={300} style={{color: tintColor}} />
         ),
     }
-    
+    searchRoomByKeyword(){
+        console.log(1);
+        var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token',
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => console.log(responseJson));
+    }
     render() {
         const {search} = this.state;
         return (
@@ -41,7 +58,7 @@ ButtonClickCheckFunction = () =>{
                     />
                     <Button 
                         style={{backgroundColor: '#384850',width: 50, height: 40, marginLeft :15,marginRight: 15, backgroundColor:'#AAA'}} 
-                        onPress={ this.ButtonClickCheckFunction}
+                        onPress={()=>this.searchRoomByKeyword()}
                     >
                         <Icon name='ios-search' style={{color: '#FFF'}}/>
                     </Button>     
