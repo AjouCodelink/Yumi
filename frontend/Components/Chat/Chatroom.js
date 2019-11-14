@@ -16,15 +16,12 @@ const io = require('socket.io-client');
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
-    };
-
-    componentWillMount() {
         this.socket = io('http://101.101.160.185:3000');     
         this.socket.on('RECEIVE_MESSAGE', function(data){
             console.log(RECEIVE_MESSAGE)
             this.dbAdd(data);
         });
-    }
+    };
 
     static navigationOptions = {
         header: null
@@ -39,7 +36,7 @@ export default class Chatroom extends Component {
         key: 0,
     }
     
-    componentDidMount() {  // table이 없으면 create
+    componentDidMount() {
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
                 'SELECT user_email FROM token',

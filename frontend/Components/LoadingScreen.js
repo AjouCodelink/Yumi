@@ -9,17 +9,22 @@ export default class LoadingScreen extends Component {
         header: null
     }
 
-    componentWillMount() {
+    constructor(props){
+        super(props);
         db.transaction(tx => {
-            tx.executeSql(              //chatlog 저장하는 table 생성하기
+            tx.executeSql(          // token 저장하는 table 생성하기
                 'CREATE TABLE if not exists token (access_token TEXT NOT NULL, user_email TEXT NOT NULL, PRIMARY KEY("access_token"))',
                 [],
                 null,
                 (_,error) => console.error(error)
             )
-        },(error) => console.error(error))
-        db.transaction( tx => {
-            tx.executeSql(
+            tx.executeSql(          // chatlog 저장하는 table 생성하기
+                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, PRIMARY KEY("user_email","cr_id","Time"))',
+                [],
+                null,
+                (_,error) => console.error(error)
+            )
+            tx.executeSql(          // token 확인
                 'SELECT * FROM token',
                 [],
                 (_, { rows: { _array }  }) => {

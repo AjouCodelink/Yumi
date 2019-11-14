@@ -3,6 +3,9 @@ import { View, Text, StyleSheet, Linking, Alert  } from 'react-native';
 import { Button, Thumbnail } from 'native-base';
 
 export default class Chatbox_other extends Component {
+    constructor() {
+        super();
+    }
     render() {
         const data = this.props.data;
         return (
@@ -12,7 +15,7 @@ export default class Chatbox_other extends Component {
                     <Thumbnail circular backgroundColor="#fff" style={style.thumbnail}
                         source={require('../../assets/default_thumbnail.png')}/>
                     <View>
-                        <Button style={style.messageBox} onPress={onPressTextBox(data.message)}>
+                        <Button style={style.messageBox} onLongPress={() => this.papagoAlert(data.message)}>
                             <Text style={style.text_message}> {data.message} </Text>
                         </Button>
                     </View>
@@ -22,10 +25,10 @@ export default class Chatbox_other extends Component {
         );
     }
 
-    onPressTextBox(message) {
+    papagoAlert = (message) => {
         Alert.alert(
             'Translate?',
-            'If you press OK button, you will be redirected to Papago translator.',
+            'Press OK to redirect the message to the papago translator.',
             [
                 {
                     text: 'Cancel',

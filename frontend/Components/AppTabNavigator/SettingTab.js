@@ -61,15 +61,28 @@ export default class SettingTab extends Component {
     }
 
     onPressLogout() {
-        db.transaction(tx => {
-            tx.executeSql(
-                'DELETE FROM token',
-                [],
-                null,
-                (_,error) => console.error(error)
-            )
-        },(error) => console.error(error))
-        RootNavigator('Title')
+        Alert.alert(
+            'Really?',
+            'Press the Logout button to log out.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {text: 'LogOut', onPress: () => {
+                    db.transaction(tx => {
+                        tx.executeSql(
+                            'DELETE FROM token',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        )
+                    },(error) => console.error(error))
+                    RootNavigator('Title')
+                }},
+            ],
+            {cancelable: false},
+        );
     }
     onPressContect() {
         Linking.openURL('http://google.com');   // 이후 연락 가능한 페이지로 연동해야함
@@ -80,7 +93,7 @@ export default class SettingTab extends Component {
     onPressDeleteChatLog() {
         Alert.alert(
             'Really?',
-            'If you press OK, all chat logs will be deleted.',
+            'Press OK to delete all chat logs.',
             [
                 {
                     text: 'Cancel',

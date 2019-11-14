@@ -56,12 +56,7 @@ export default class MainScreen extends Component {
         if (this.exitApp == undefined || !this.exitApp) {
             ToastAndroid.show('Press once more to exit.', ToastAndroid.SHORT);
             this.exitApp = true;
-            this.timeout = setTimeout(
-                () => {
-                    this.exitApp = false;
-                },
-                2000                // 2초
-            );
+            this.timeout = setTimeout(() => {this.exitApp = false;}, 2000);
         } else {
             clearTimeout(this.timeout);
             BackHandler.exitApp();  // 앱 종료
