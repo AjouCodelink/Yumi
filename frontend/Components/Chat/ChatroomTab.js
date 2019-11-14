@@ -124,8 +124,7 @@ export default class ChatroomTab extends Component {
 
     }
     searchRoomByKeyword(){
-        //Alert 또는 popup으로 채팅방 결과 띄워주기 
-        console.log(1);
+        //Alert 또는 popup으로 채팅방 결과 띄워주기
         var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
         fetch(url, {
             method: 'GET',
