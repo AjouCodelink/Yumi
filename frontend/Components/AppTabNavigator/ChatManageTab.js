@@ -18,6 +18,7 @@ export default class ChatManageTab extends Component {
             this.setState({search});
         };
     }
+    
 
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (

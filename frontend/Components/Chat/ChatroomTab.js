@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput,Button } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import {Icon} from 'native-base';
 import * as SQLite from 'expo-sqlite';
@@ -19,6 +19,8 @@ export default class ChatroomTab extends Component {
             arrayHolder: [],
             textInput_Holder_Theme: '',
             isAlertVisible: false,
+            isSearchVisible: false,
+            search : '',
         }    
     }
 
@@ -29,7 +31,6 @@ export default class ChatroomTab extends Component {
 
     componentDidMount() {
         this.setState({ arrayHolder: [...this.array] })
-
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM token',
@@ -52,6 +53,7 @@ export default class ChatroomTab extends Component {
             'Content-Type' : 'application/json',
             'token': 'token',
             'x-access-token': this.token
+            //다른 search에서만 쓰면 안된다. 
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
@@ -114,6 +116,26 @@ export default class ChatroomTab extends Component {
             }}/>
         );
     }
+    suggestRoom(){
+        Alert.alert("Room suggest Pressed");
+    }
+    searchBarShow(){
+        this.setState({isSearchVisible: !this.state.isSearchVisible});
+
+    }
+    searchRoomByKeyword(){
+        //Alert 또는 popup으로 채팅방 결과 띄워주기
+        var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token',
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        //.then(responseJson => console.log(responseJson));
+    }
 
     GetItem(item) {
         Alert.alert(item);
@@ -122,8 +144,25 @@ export default class ChatroomTab extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.header}/>
-                <DialogInput
+                <View style={styles.header}>
+                <Text style={styles.font_title}>ChatRoom</Text>
+                    <View style={styles.febContainer}>
+                        <TouchableOpacity
+                            onPress={()=> this.setState({isAlertVisible:true})} 
+                            activeOpacity={0.7} 
+                            style={styles.button_create} >
+                            <Icon name='chatbubbles' style={{color: '#FFF'}}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                            onPress={()=> this.searchBarShow()} 
+                            activeOpacity={0.7} 
+                            style={styles.button_search} >
+                            <Icon name='ios-search' style={{color: '#FFF'}}/>
+                    </TouchableOpacity>
+                    </View>
+                    </View>
+
+                    <DialogInput
                     isDialogVisible = {this.state.isAlertVisible}
                     title={"Create Chatroom"}
                     message={"Type Theme"}
@@ -146,32 +185,111 @@ export default class ChatroomTab extends Component {
                 />
                 <View style={styles.febContainer}>
                     <TouchableOpacity
-                        onPress={()=> this.setState({isAlertVisible:true})} 
-                        activeOpacity={0.7} 
-                        style={styles.feb} >
-                        <Icon name='chatboxes' style={{color: '#FFF'}}/>
+                            onPress={()=> this.suggestRoom()} 
+                            activeOpacity={0.7} 
+                            style={styles.button_suggest}
+                            >
+                            <Icon name='paw' style={{color: '#FFF'}}/>
                     </TouchableOpacity>
                 </View>
+                {
+                    (this.state.isSearchVisible == true) ? (
+                    <View style = {styles.search}>
+                    <TextInput
+                        style={{height: 40, width: "75%", backgroundColor:'#666',  fontSize:18, borderRadius: 5,paddingLeft: 10}}
+                        placeholder="Search..."
+                        value={this.state.search}
+                        onChangeText={(search) => this.setState({search})}
+                    />
+                    <TouchableOpacity
+                        style={{backgroundColor: '#384850',width: 40, height: 40, borderRadius: 40, justifyContent : 'center', alignItems : 'center',
+                                marginLeft :15,marginRight: 15, backgroundColor:'#AAA'}} 
+                        onPress={()=>this.searchRoomByKeyword()}
+                    >
+                        <Icon name='ios-search' style={{color: '#FFF'}}/>
+                    </TouchableOpacity>
+                    </View> 
+                    ) :(<View style = {styles.hide}></View>)
+                    }
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    header: {
-        flexDirection : "row",
-        width:'100%',
-        height:'8%',
-        justifyContent: 'flex-end',
-        paddingLeft: '4%',
-        paddingBottom: '1.1%',
-        backgroundColor: '#333',
-    },
     container : {
-        justifyContent : 'center',
+        justifyContent : 'flex-start',
         alignItems : 'center',
         flex : 1,
         backgroundColor : '#333'
+    },
+    header: {
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        flexDirection : "row",
+        width:'100%',
+        height: 110,
+        backgroundColor: '#888',
+    },
+    font_title: {
+        marginTop: 10,
+        marginLeft: 15,
+        color: 'white',
+        fontSize: 35,
+        alignItems: 'center',
+        fontWeight: 'bold',
+        },
+    search: {
+        marginTop: 65,
+        position : 'absolute',
+        flex: 3,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems : "stretch",
+        paddingTop: 50,
+        paddingLeft : 20,
+        width:'100%',
+        
+    },
+    hide : {
+    },
+    febContainer: {
+        flexDirection : 'row',
+        marginTop: 20,
+        flex: 2,
+        width: '100%',
+        height: 50,
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+    },
+    button_search:{
+        width:  50,
+        height: 50,
+        justifyContent: 'center',
+        backgroundColor: '#0054FF',
+        alignItems: 'center',
+        borderRadius: 50,
+        marginRight: 50,
+
+    },
+    button_create: {
+        width:  50,
+        height: 50,
+        justifyContent: 'center',
+        backgroundColor: '#1DDB16',
+        alignItems: 'center',
+        marginRight: 20,
+        borderRadius: 50,
+    }, 
+    button_suggest : {
+        backgroundColor: '#FFE400',
+        width:  50,
+        height: 50,
+        marginRight:  50,
+        marginBottom: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 50,
     },
     item : {
         flexDirection : 'row',
@@ -193,33 +311,5 @@ const styles = StyleSheet.create({
         marginTop : 12,
         color : '#fff',
     },
-    febContainer: {
-        flex: 2,
-        width: '100%',
-        height: 50,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
-    }, 
-    feb: {
-        backgroundColor: '#47C83E',
-        width: 50,
-        height: 50,
-        marginRight: 40,
-        marginBottom: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 90,
-    }, 
-    button : {
-        width : '85%',
-        height: 40,
-        padding : 10,
-        backgroundColor : '#222',
-        borderRadius : 8,
-        marginTop: 10
-    },
-    buttonText : {
-        color : '#fff',
-        textAlign : 'center',
-    },
+
 });
