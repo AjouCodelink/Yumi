@@ -16,16 +16,15 @@ const io = require('socket.io-client');
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
+    };
+
+    componentWillMount() {
         this.socket = io('http://101.101.160.185:3000');     
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            addMessage(data);
-            //this.dbAdd(data);
+            console.log(RECEIVE_MESSAGE)
+            this.dbAdd(data);
         });
-        const addMessage = data => {
-            console.log(data);
-            this.setState({chatlog:[...this.state.chatlog, data]});
-        };
-    };
+    }
 
     static navigationOptions = {
         header: null
@@ -39,24 +38,8 @@ export default class Chatroom extends Component {
         chatlog:[], // 채팅로그
         key: 0,
     }
-
-    renderDrawer = () => {
-        return (
-            <View>
-                <ChatroomSideMenu/>
-            </View>
-        );
-    };
     
     componentDidMount() {  // table이 없으면 create
-        db.transaction(tx => {
-            tx.executeSql(  // chatlog 저장하는 table 생성하기
-                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, PRIMARY KEY("user_email","cr_id","Time"))',
-                [],
-                null,
-                (_,error) => console.error(error)
-            )
-        },(error) => console.error(error))
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
                 'SELECT user_email FROM token',
@@ -137,6 +120,14 @@ export default class Chatroom extends Component {
         );
     }
 
+    renderDrawer = () => {
+        return (
+            <View>
+                <ChatroomSideMenu/>
+            </View>
+        );
+    };
+
     dbAdd(newchat) {
         db.transaction( tx => {
             tx.executeSql(
@@ -170,7 +161,7 @@ export default class Chatroom extends Component {
                 message: this.state.message,
             }
             this.dbAdd(newchat)
-            //this.socket.emit('SEND_MESSAGE', newchat);
+            this.socket.emit('SEND_MESSAGE', newchat);
             this.setState({message: null});    
         }
     }
@@ -178,11 +169,6 @@ export default class Chatroom extends Component {
     handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
         goback()
     };
-}
-
-const drawerStyles = {
-    drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3},
-    main: {paddingLeft: 3},
 }
 
 const style = StyleSheet.create({
@@ -206,7 +192,7 @@ const style = StyleSheet.create({
     },
     font_header: {
         color: 'white',
-        fontSize: 35,
+        fontSize: 30,
         alignItems: 'center',
         fontWeight: 'bold',
     },

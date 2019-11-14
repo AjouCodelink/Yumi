@@ -137,10 +137,12 @@ export default class ChatroomTab extends Component {
                     keyExtractor = {(item, index) => String(index)}
                     ItemSeparatorComponent={this.FlatListItemSeparator}
                     renderItem={({ item }) =>
-                        <TouchableOpacity onPress={() => this._onPressChatroom(item)}>
-                            <Text style={styles.item}>
-                                # {item.title}{'\n'}# roomID: {item.roomID}
-                            </Text>
+                        <TouchableOpacity activeOpacity={0.5} onPress={() => this._onPressChatroom(item)}>
+                            <View style={styles.item}>
+                                <Text style={styles.item_font}>
+                                    # {item.title}{'\n'}# roomID: {item.roomID}
+                                </Text>
+                            </View>
                         </TouchableOpacity>
                     }
                 />
@@ -174,14 +176,15 @@ const styles = StyleSheet.create({
         backgroundColor : '#333'
     },
     item : {
-        flexDirection : 'row',
+        justifyContent : 'center',
         borderWidth : 1, 
         borderColor : '#333',
         backgroundColor: '#fff',
         borderRadius: 7,
         padding : 10,
-        fontSize : 18,
-        height : 77,
+    },
+    item_font : {
+        fontSize : 16,
     },
     textInputStyle:{
         textAlign : 'center',

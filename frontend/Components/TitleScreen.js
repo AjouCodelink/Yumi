@@ -15,28 +15,13 @@ export default class TitleScreen extends Component {
         super(props);
         this.state={email: '', password: '', loginResult: -1, token:''}
     }
-
-    componentWillMount() {  // table이 없으면 create
-        db.transaction(tx => {
-            tx.executeSql(  //chatlog 저장하는 table 생성하기
-                'CREATE TABLE if not exists token (access_token TEXT NOT NULL, user_email TEXT NOT NULL, PRIMARY KEY("access_token"))',
-                [],
-                null,
-                (_,error) => console.error(error)
-            )
-        },(error) => console.error(error))
-        db.transaction( tx => {
-            tx.executeSql(
-                'SELECT * FROM token',
-                [],
-                (_, { rows: { _array }  }) => {    // TODO : 이 과정이 1초정도 걸리기 때문에 토큰이 있는 경우 타이틀 화면 갔다가 메인 페이지로 넘어가짐. 중간에 새로운 화면을 만들던지 해야할 듯.
-                    if(_array.length) this.goMain();  // db에 토큰이 있는지 검사
-                },
-                (_,error) => console.error(error)
-            );
-        },(error) => console.error(error))
+    componentWillMount() {
+        this.setState({
+            email: '',
+            password: '',
+            loginResult: -1,
+            token:''})
     }
-
     render() {
         return (
             <View style={style.container}>
@@ -60,11 +45,6 @@ export default class TitleScreen extends Component {
                             titleColor={'#ddd'}
                             buttonColor={'#000'}
                             onPress={() => this.goSignup_Welcome()}/>
-                        <CustomButton
-                            title={'chatroom'}
-                            titleColor={'#ddd'}
-                            buttonColor={'#000'}
-                            onPress={() => this.goChatroom()}/>
                     </View>
                     <View style={style.footer_nextbutton}>
                     <CustomButton
@@ -113,9 +93,6 @@ export default class TitleScreen extends Component {
         } else {                                     // 서버 전송 오류
             alert("Failed to login. Please try again.")
         }
-    }
-    goChatroom(){
-        this.props.navigation.navigate('Chatroom');
     }
     goSignup_Welcome(){
         this.props.navigation.navigate('SignUp_Welcome');

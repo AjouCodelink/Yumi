@@ -32,7 +32,7 @@ export default class Chatbox_other extends Component {
                     style: 'cancel',
                 },
                 {text: 'OK', onPress: () => {
-                    Linking.openURL('https://papago.naver.com/?sk=auto&tk=en&st=' + message);   // 이후 연락 가능한 페이지로 연동해야함
+                    Linking.openURL('https://papago.naver.com/?sk=auto&tk=en&st='+message);   // 이후 연락 가능한 페이지로 연동해야함
                 }},
             ],
             {cancelable: false},
@@ -69,11 +69,10 @@ const style = StyleSheet.create({
         marginBottom: 5,
     },
     text_time: {
-        fontSize : 13,
+        fontSize : 12,
         color: '#ddd',
     },
     text_message: {
         fontSize: 15,
     },
 })
-

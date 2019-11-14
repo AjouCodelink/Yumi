@@ -63,13 +63,13 @@ export default class SettingTab extends Component {
     onPressLogout() {
         db.transaction(tx => {
             tx.executeSql(
-                'DROP TABLE token',
+                'DELETE FROM token',
                 [],
                 null,
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
-        this.props.navigation.navigate('TitleScreen');
+        RootNavigator('Title')
     }
     onPressContect() {
         Linking.openURL('http://google.com');   // 이후 연락 가능한 페이지로 연동해야함
@@ -89,7 +89,7 @@ export default class SettingTab extends Component {
                 {text: 'OK', onPress: () => {
                     db.transaction(tx => {
                         tx.executeSql(
-                            'DROP TABLE chatLog',
+                            'DELETE FROM chatLog',
                             [],
                             null,
                             (_,error) => console.error(error)
