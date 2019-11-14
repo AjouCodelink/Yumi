@@ -17,16 +17,9 @@ export default class ChatManageTab extends Component {
         updateSearch = search =>{
             this.setState({search});
         };
-<<<<<<< HEAD
-        
     }
-ButtonClickCheckFunction = () =>{
-            alert("Button Clicked");
-        }
-=======
-    }
+    
 
->>>>>>> bb0ddcf1fe91cc4a6599251e604b968f2fbe26c8
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
             <Icon name='md-search' size={300} style={{color: tintColor}} />
