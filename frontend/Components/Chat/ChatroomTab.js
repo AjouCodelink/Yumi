@@ -134,7 +134,7 @@ export default class ChatroomTab extends Component {
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => console.log(responseJson));
+        //.then(responseJson => console.log(responseJson));
     }
 
     GetItem(item) {
