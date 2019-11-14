@@ -16,7 +16,7 @@ export default class ChatroomTab extends Component {
         this.email = '',
         this.array = [],
         this.state = {
-            arrayHolder: [],
+            arrayHolder: [{title:'Test', roomID:'11111'}],
             textInput_Holder_Theme: '',
             isAlertVisible: false,
         }    

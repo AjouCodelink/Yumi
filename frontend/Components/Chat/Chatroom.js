@@ -16,8 +16,7 @@ const io = require('socket.io-client');
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
-        this.socket = io('http://101.101.160.185:3000'); 
-
+        this.socket = io('http://101.101.160.185:3000');     
         this.socket.on('RECEIVE_MESSAGE', function(data){
             addMessage(data);
             //this.dbAdd(data);
@@ -51,21 +50,19 @@ export default class Chatroom extends Component {
     
     componentDidMount() {  // table이 없으면 create
         db.transaction(tx => {
-            tx.executeSql(  //chatlog 저장하는 table 생성하기
+            tx.executeSql(  // chatlog 저장하는 table 생성하기
                 'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, PRIMARY KEY("user_email","cr_id","Time"))',
                 [],
                 null,
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
-
         db.transaction(tx => {
-            tx.executeSql(  //chatlog 저장하는 table 생성하기
+            tx.executeSql(  // token에서 user_email 읽어오기
                 'SELECT user_email FROM token',
                 [],
-                (_, { rows: { _array }  }) => {    
-                    this.state.myEmail = _array[0].user_email;
-                },
+                (_, { rows: { _array }  }) =>     
+                    (_array != []) ? (this.state.myEmail = _array[0].user_email) :
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
@@ -159,8 +156,9 @@ export default class Chatroom extends Component {
                 [this.state.cr_id],
                 (_, { rows: { _array }  }) => this.setState({ chatlog: _array }),
                 (_,error) => console.error(error)
-            );
-        },(error) => console.error(error))
+            )
+        },(error) => console.error(error)
+        )
     };
 
     _onPressSend(){
@@ -171,10 +169,8 @@ export default class Chatroom extends Component {
                 Time: Date(),
                 message: this.state.message,
             }
-            
             this.dbAdd(newchat)
-            
-            this.socket.emit('SEND_MESSAGE', newchat);
+            //this.socket.emit('SEND_MESSAGE', newchat);
             this.setState({message: null});    
         }
     }

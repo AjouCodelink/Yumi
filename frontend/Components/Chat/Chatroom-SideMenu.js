@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Icon, } from 'native-base';
+import { Icon } from 'native-base';
 
 export default class Chatroom_SideMenu extends Component {
     constructor(props){

@@ -100,7 +100,6 @@ export default class SettingTab extends Component {
             ],
             {cancelable: false},
         );
-        
     }
 }
 

@@ -25,20 +25,18 @@ export default class TitleScreen extends Component {
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
-
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM token',
                 [],
                 (_, { rows: { _array }  }) => {    // TODO : 이 과정이 1초정도 걸리기 때문에 토큰이 있는 경우 타이틀 화면 갔다가 메인 페이지로 넘어가짐. 중간에 새로운 화면을 만들던지 해야할 듯.
-                    console.log(_array);
                     if(_array.length) this.goMain();  // db에 토큰이 있는지 검사
                 },
                 (_,error) => console.error(error)
             );
         },(error) => console.error(error))
     }
-    
+
     render() {
         return (
             <View style={style.container}>
@@ -84,8 +82,6 @@ export default class TitleScreen extends Component {
             </View>
         );
     }
-
-
     dbSaveToken(token){
         db.transaction( tx => {
             tx.executeSql(
@@ -131,7 +127,6 @@ export default class TitleScreen extends Component {
         var user= {}
         user.email = this.state.email
         user.password = this.state.password
-
         var url = 'http://101.101.160.185:3000/user/login';
         fetch(url, {
             method: 'POST',

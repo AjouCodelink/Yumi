@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Linking, Alert  } from 'react-native';
 import { Button, Thumbnail } from 'native-base';
 
 export default class Chatbox_other extends Component {
@@ -12,13 +12,30 @@ export default class Chatbox_other extends Component {
                     <Thumbnail circular backgroundColor="#fff" style={style.thumbnail}
                         source={require('../../assets/default_thumbnail.png')}/>
                     <View>
-                        <Button style={style.messageBox}>
+                        <Button style={style.messageBox} onPress={onPressTextBox(data.message)}>
                             <Text style={style.text_message}> {data.message} </Text>
                         </Button>
                     </View>
                     <Text style={style.text_time}>  {data.Time.toString().substr(16, 5)}</Text>
                 </View>
             </View>
+        );
+    }
+
+    onPressTextBox(message) {
+        Alert.alert(
+            'Translate?',
+            'If you press OK button, you will be redirected to Papago translator.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {text: 'OK', onPress: () => {
+                    Linking.openURL('https://papago.naver.com/?sk=auto&tk=en&st=' + message);   // 이후 연락 가능한 페이지로 연동해야함
+                }},
+            ],
+            {cancelable: false},
         );
     }
 }
