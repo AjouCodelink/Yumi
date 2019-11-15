@@ -29,6 +29,7 @@ module.exports = function (server) {
                         } else{
                             console.log('socketID already exists');
                             socket.id = chatroom.participants[i].socketID;
+                            socket.join(data.cr_id);
                         }
                     }
                 }
