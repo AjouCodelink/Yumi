@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import { Text, Icon, Thumbnail } from 'native-base';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { Icon, Thumbnail } from 'native-base';
 
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
@@ -10,11 +10,13 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 export default class ProfileTab extends Component {
     state = {
         myEmail: '',
+        myNickname: 'My nickname',
+        myThumbnailURL: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd', // 이후 기본 URL로 연동해야함.
     }
 
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
-            <Icon name='md-person' style={{color: tintColor}} />
+            <Icon name='md-person' style={{color: tintColor}}/>
         ),
     }
 
@@ -30,18 +32,46 @@ export default class ProfileTab extends Component {
         },(error) => console.error(error))
     }
 
+    _onPressNickname() {
+        alert("you pressed Nickname Edit.")
+    }
+
+    _onPressThumbnail() {
+        alert("you pressed Thumbnail Edit.")
+    }
+
+    _onPressStatusMessage() {
+        alert("you pressed Status Message Edit.") // 상메 안쓰니 곧 대체될 컴포넌트
+    }
+
     render() {
         return (
             <View style={style.container}>
                 <View style={style.topsideContainer}>
-                    <Text style={style.font_header}>My Profile{"\n"}123123</Text>
+                    <View style={{justifyContent: 'center', width: '80%', flexDirection:'row', alignItems: 'flex-end'}}> 
+                        <Text style={style.font_header}>여기엔 뭐넣징 추천좀;;{"\n"}빈칸 너무 어색하지않음?ㅜㅜ</Text>
+                        <TouchableOpacity
+                            onPress= {() => this._onPressStatusMessage()}>
+                            <Icon name='md-create' style={{fontSize: 25, margin: 10, color: 'white'}} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <View style={style.downsideContainer}>
-                    <Text style={style.font_nickname}>내 닉네임</Text>
-                    <Text style={style.font_ID}>{this.state.myEmail}</Text>
+                    <View style={{flexDirection:'row', alignItems: 'flex-end', marginLeft: 25}}> 
+                        <Text style={style.font_nickname}>{this.state.myNickname}</Text>
+                        <TouchableOpacity onPress= {() => this._onPressNickname()}>
+                            <Icon name='md-create' style={{fontSize: 25, margin: 10, color: 'white'}} />
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={style.font_email}>{this.state.myEmail}</Text>
                 </View>
-                <Thumbnail circle backgroundColor="#fff" style={style.thumbnail}
-                    source={{ uri: 'https://steemitimages.com/u/anpigon/avatar' }}/>
+                <TouchableOpacity
+                    style={style.thumbnailContainer}
+                    onPress= {() => this._onPressThumbnail()}
+                    activeOpacity= {0.8}>
+                    <Thumbnail circle backgroundColor="#fff" style={style.thumbnail}
+                        source={{ uri: this.state.myThumbnailURL }}/>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -63,7 +93,7 @@ const style = StyleSheet.create({
     },
     font_header: {
         color: 'white',
-        fontSize: 42,
+        fontSize: 35,
         fontWeight: 'bold',
         textAlign: 'center',
     },
@@ -74,21 +104,25 @@ const style = StyleSheet.create({
         backgroundColor: '#555',
         alignItems: 'center',
     },
-    thumbnail: {
+    thumbnailContainer: {
         flex: 2,
         position : 'absolute',
         top: '50%',
+    },
+    thumbnail: {
         height: screenHeight*0.2,
         width: screenHeight*0.2,
-        borderRadius: screenHeight*0.08,
+        borderWidth: 4,
+        borderColor: '#333',
+        borderRadius: (screenHeight*0.2)*0.4,
     },
     font_nickname: {
         color: '#ddd',
         fontSize: 40,
         fontWeight: 'bold',
     },
-    font_ID: {
+    font_email: {
         color: '#ddd',
-        fontSize: 30,
+        fontSize: 24,
     },
 });

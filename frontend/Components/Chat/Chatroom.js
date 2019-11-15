@@ -11,6 +11,7 @@ import ChatroomSideMenu from './Chatroom-SideMenu';
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
 
+const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 const io = require('socket.io-client');
 
@@ -73,13 +74,13 @@ export default class Chatroom extends Component {
         }
     }
 
-    _receivePopQuiz(receivedQuiz){
+    _receivePopQuiz(question, answer){
         const newQuiz = {
             user_email: 'PopQuizBot',
             cr_id: this.state.cr_id,
             Time: Date(),
-            message: receivedQuiz.message,
-            answer: receivedQuiz.answer,
+            question: question,
+            answer: answer,
         }
         this.db_Add(newQuiz)
     }
@@ -118,11 +119,10 @@ export default class Chatroom extends Component {
         const { navigation } = this.props;
         this.state.cr_id = navigation.getParam('cr_id', '-1');
         this.state.cr_name = navigation.getParam('title', 'No cr_name');
-        const receivedQuiz = {message: '한국은 영어로 뭘까~~~~~요? 영어로 입력해주세요.', answer: 'korea'}  // 임시 팝퀴즈 스테이트
         return (
             <DrawerLayout
                 ref={ drawer => this.drawer = drawer }
-                drawerWidth={300}
+                drawerWidth={screenWidth*0.6}
                 drawerPosition={DrawerLayout.positions.Right}
                 drawerType='front'
                 drawerBackgroundColor="#555"
@@ -146,7 +146,7 @@ export default class Chatroom extends Component {
                 </View>
                 <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={0} style={style.container}>
                     <TouchableOpacity onPress={() => this._receivePopQuiz(receivedQuiz)}>
-                        <Icon name='md-arrow-round-back' style={{color: '#999', fontSize: 30}}/>
+                        <Text style={{color: "#bbb"}}>(대충 팝퀴즈 만드는 버튼)</Text>
                     </TouchableOpacity>
                     <ScrollView
                         ref={scrollView => {
@@ -168,7 +168,6 @@ export default class Chatroom extends Component {
                                 ? (
                                     <View key={this.state.key++} style={style.other_chat}>
                                         <Chatbox_other data={chatlog}/>
-
                                     </View>
                                 ) : (
                                 <View key={this.state.key++} style={style.other_chat}>

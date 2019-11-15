@@ -61,7 +61,8 @@ const style = StyleSheet.create({
     thumbnail: {
         height: 45,
         width: 45,
-        marginRight: 10
+        marginRight: 10,
+        borderRadius: 45 * 0.4,
     },
     messageBox: {
         paddingLeft: 5,

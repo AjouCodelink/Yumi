@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { Icon } from 'native-base';
+
+const screenWidth = Math.round(Dimensions.get('window').width);
 
 export default class Chatroom_SideMenu extends Component {
     constructor(props){
@@ -90,7 +92,7 @@ export default class Chatroom_SideMenu extends Component {
 const style = StyleSheet.create({
     container: {
         paddingTop: 40,
-        width: 300,
+        width: screenWidth*0.6,
         height: '100%',
         justifyContent: 'flex-start',
         backgroundColor: '#444',

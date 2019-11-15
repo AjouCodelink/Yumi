@@ -34,7 +34,7 @@ const style = StyleSheet.create({
         borderRadius: 6
     },
     text_time: {
-        fontSize : 13,
+        fontSize : 12,
         color: '#ddd',
     },
     text_message: {
