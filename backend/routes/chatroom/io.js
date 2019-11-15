@@ -1,6 +1,8 @@
 module.exports = function (server) {
     var io = require('socket.io')(server);
     var PopQuiz = require('../../models/popQuiz');
+    var ChatRoom = require('../../models/chatRoom');
+    var User = require('../../models/user');
 
     io.sockets.on('connection', function (socket) {
         console.log(socket.id);
@@ -10,10 +12,27 @@ module.exports = function (server) {
             io.sockets.in(data.cr_id).emit('RECEIVE_MESSAGE', data); 
             //socket.emit('MY_MESSAGE', data); // 나한테만 메세지 전송함
             //socket.broadcast.emit('OTHER_MESSAGE', data); // 본인을 제외한 다른 사람들에게만 메세지 전송함
-        });
+        })
 
-        socket.on('JOIN_ROOM', function(cr_id){
-            socket.join(cr_id);
+        socket.on('JOIN_ROOM', function(data){
+            ChatRoom.findOne({_id:data.cr_id}, function(err, chatroom){
+                var len = chatroom.participants.length;
+
+                for(var i=0; i<len; i++){
+                    
+                    if(data.myEmail == chatroom.participants[i].email){
+                        if(chatroom.participants[i].socketID == undefined){
+                            chatroom.participants[i].socketID = socket.id;
+                            chatroom.save();
+                            console.log(1);
+                            socket.join(data.cr_id);
+                        } else{
+                            console.log(2);
+                            socket.id = chatroom.participants[i].socketID;
+                        }
+                    }
+                }
+            })
         });
 
         socket.on('LEAVE_ROOM', function(cr_id){
