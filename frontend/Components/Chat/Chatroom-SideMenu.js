@@ -22,7 +22,7 @@ export default class Chatroom_SideMenu extends Component {
             notification: !this.state.notification
         })
     }
-    _onPressExit() {
+    _onPressExit = () => {
         alert("You pressed Exit.")
     }
     _onPressPicture() {

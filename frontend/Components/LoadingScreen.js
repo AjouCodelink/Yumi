@@ -52,7 +52,7 @@ export default class LoadingScreen extends Component {
                 <Text style={style.loadingFont}>Loading</Text>
                 
                 <TouchableOpacity style={style.stopClick} onPress={() => this.goTitle()}>
-                    <Text style={style.stopClickFont}>Click here when the screen stops.</Text>
+                    <Text style={style.stopClickFont}>Screen frozen more than 3 seconds, press here.</Text>
                 </TouchableOpacity>
             </View>
         );

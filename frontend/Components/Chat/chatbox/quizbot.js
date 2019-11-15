@@ -11,11 +11,16 @@ export default class quizbot extends Component {
             isAlertVisible: false,
         }
     }
+
+    isCorrect() {
+        alert("correct!")
+    }
+
     submit = (inputText, answer) => {
         inputText = inputText.toLowerCase()
         {
             (answer == inputText)
-            ? alert("correct!")
+            ? this.isCorrect()
             : alert("wrong!")
         }
     }

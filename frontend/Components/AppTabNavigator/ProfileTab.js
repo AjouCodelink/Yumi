@@ -49,7 +49,7 @@ export default class ProfileTab extends Component {
             <View style={style.container}>
                 <View style={style.topsideContainer}>
                     <View style={{justifyContent: 'center', width: '80%', flexDirection:'row', alignItems: 'flex-end'}}> 
-                        <Text style={style.font_header}>여기엔 뭐넣징 추천좀;;{"\n"}빈칸 너무 어색하지않음?ㅜㅜ</Text>
+                        <Text style={style.font_header}>여기엔 뭐넣을지 추천좀;{"\n"}빈칸 너무 어색할거같은뎅ㅜ</Text>
                         <TouchableOpacity
                             onPress= {() => this._onPressStatusMessage()}>
                             <Icon name='md-create' style={{fontSize: 25, margin: 10, color: 'white'}} />

@@ -74,12 +74,12 @@ export default class Chatroom extends Component {
         }
     }
 
-    _receivePopQuiz(question, answer){
+    _receivePopQuiz(question, answer){ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
         const newQuiz = {
             user_email: 'PopQuizBot',
             cr_id: this.state.cr_id,
             Time: Date(),
-            question: question,
+            message: question,
             answer: answer,
         }
         this.db_Add(newQuiz)
@@ -108,7 +108,6 @@ export default class Chatroom extends Component {
         },(error) => console.error(error)
         )
     };
-
 
     handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
         goback()
@@ -145,7 +144,8 @@ export default class Chatroom extends Component {
                     </Right>
                 </View>
                 <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={0} style={style.container}>
-                    <TouchableOpacity onPress={() => this._receivePopQuiz(receivedQuiz)}>
+                    <TouchableOpacity        // 임시 컴포넌트입니다. 팝퀴즈 구현이 끝나면 삭제해주세요.
+                        onPress={() => this._receivePopQuiz("이곳엔 질문을 입력합니다. 정답은 현재 test이며, 꾹 누르면 팝업창이 등장합니다. (대소문자 관계X)", "test")}>
                         <Text style={{color: "#bbb"}}>(대충 팝퀴즈 만드는 버튼)</Text>
                     </TouchableOpacity>
                     <ScrollView
