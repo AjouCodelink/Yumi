@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Icon, } from 'native-base';
+import { Icon } from 'native-base';
 
 export default class Chatroom_SideMenu extends Component {
     constructor(props){
@@ -32,6 +32,12 @@ export default class Chatroom_SideMenu extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={style.toolBox}>
+                        <TouchableOpacity onPress={() => this._onPressCamera()}>
+                            <View style={style.tool}>
+                                <Icon name='md-camera' style={style.tool_icon}/>
+                                <Text style={style.tool_text}>  Camera</Text>
+                            </View>
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={() => this._onPressPicture()}>
                             <View style={style.tool}>
                                 <Icon name='md-images' style={style.tool_icon}/>
@@ -42,12 +48,6 @@ export default class Chatroom_SideMenu extends Component {
                             <View style={style.tool}>
                                 <Icon name='md-locate' style={style.tool_icon}/>
                                 <Text style={style.tool_text}>  Place Recommend</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this._onPressCamera()}>
-                            <View style={style.tool}>
-                                <Icon name='md-camera' style={style.tool_icon}/>
-                                <Text style={style.tool_text}>  Camera</Text>
                             </View>
                         </TouchableOpacity>
                     </View>

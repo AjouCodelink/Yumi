@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ToastAndroid, BackHandler, StatusBar } from 'react-native';
+import { ToastAndroid, BackHandler } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs'; 
 import { createAppContainer } from 'react-navigation';
 
@@ -37,12 +37,12 @@ const AppTabContainet = createAppContainer(AppTabNavigator);
 export default class MainScreen extends Component {
     constructor (props) {
         super(props);
+        RootNavigator = (route) => {this.props.navigation.navigate(route)}
     }
     static navigationOptions = {    // 상단바 안보이게 하기
         header: null
     }
     render() {
-        <StatusBar hidden='yes' />
         return <AppTabContainet/>; 
     }
     componentDidMount() {   // 뒤로가기 눌렀을 때
@@ -56,12 +56,7 @@ export default class MainScreen extends Component {
         if (this.exitApp == undefined || !this.exitApp) {
             ToastAndroid.show('Press once more to exit.', ToastAndroid.SHORT);
             this.exitApp = true;
-            this.timeout = setTimeout(
-                () => {
-                    this.exitApp = false;
-                },
-                2000                // 2초
-            );
+            this.timeout = setTimeout(() => {this.exitApp = false;}, 2000);
         } else {
             clearTimeout(this.timeout);
             BackHandler.exitApp();  // 앱 종료
