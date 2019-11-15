@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button } from 'native-base';
 
-export default class Chatbox_my extends Component {
+export default class mychat extends Component {
     render() {
         const data = this.props.data;
         return (

@@ -10,6 +10,29 @@ export default class Chatroom_SideMenu extends Component {
             users: [],
         }
     }
+    _onPressBookmark() {
+        this.setState({
+            bookmark: !this.state.bookmark
+        })
+    }
+    _onPressNoti() {
+        this.setState({
+            notification: !this.state.notification
+        })
+    }
+    _onPressExit() {
+        alert("You pressed Exit.")
+    }
+    _onPressPicture() {
+        alert("You pressed Picture.")
+    }
+    _onPressRecom() {
+        alert("You pressed Recom.")
+    }
+    _onPressCamera() {
+        alert("You pressed Camera.")
+    }
+    
     render() {
         return (
             <View style={style.container}>
@@ -61,28 +84,6 @@ export default class Chatroom_SideMenu extends Component {
                 </View>
             </View>
         );
-    }
-    _onPressBookmark() {
-        this.setState({
-            bookmark: !this.state.bookmark
-        })
-    }
-    _onPressNoti() {
-        this.setState({
-            notification: !this.state.notification
-        })
-    }
-    _onPressExit() {
-        alert("You pressed Exit.")
-    }
-    _onPressPicture() {
-        alert("You pressed Picture.")
-    }
-    _onPressRecom() {
-        alert("You pressed Recom.")
-    }
-    _onPressCamera() {
-        alert("You pressed Camera.")
     }
 }
 

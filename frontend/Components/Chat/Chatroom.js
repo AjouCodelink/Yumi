@@ -3,8 +3,8 @@ import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollVi
 import {Icon, Input, Left, Right} from 'native-base';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 
-import Chatbox_my from './Chatbox_my';
-import Chatbox_other from './Chatbox_other';
+import Chatbox_my from './chatbox/mychat';
+import Chatbox_other from './chatbox/otherchat';
 import ChatroomSideMenu from './Chatroom-SideMenu';
 
 import * as SQLite from 'expo-sqlite';
@@ -48,6 +48,56 @@ export default class Chatroom extends Component {
         },(error) => console.error(error))
         this.dbUpdate();
     }
+
+    renderDrawer = () => {
+        return (
+            <View>
+                <ChatroomSideMenu/>
+            </View>
+        );
+    };
+
+    dbAdd(newchat) {
+        db.transaction( tx => {
+            tx.executeSql(
+                'INSERT INTO chatLog (user_email, cr_id, Time, message) values (?, ?, ?, ?);',
+                [newchat.user_email, newchat.cr_id, newchat.Time, newchat.message],
+                null,
+                (_,error) => console.error(error)   // sql문 실패 에러
+            );
+        },(error) => console.error(error))   // 트랜젝션 에러
+        this.dbUpdate()
+    }
+
+    dbUpdate = () => {        // DB 내의 채팅 로그 읽어오기
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
+                [this.state.cr_id],
+                (_, { rows: { _array }  }) => this.setState({ chatlog: _array }),
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error)
+        )
+    };
+
+    _onPressSend(){
+        if (this.state.message != ''){
+            const newchat = {
+                user_email: this.state.myEmail,
+                cr_id: this.state.cr_id,
+                Time: Date(),
+                message: this.state.message,
+            }
+            this.dbAdd(newchat)
+            this.socket.emit('SEND_MESSAGE', newchat);
+            this.setState({message: null});    
+        }
+    }
+
+    handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
+        goback()
+    };
 
     render() {
         const { goBack } = this.props.navigation;
@@ -116,56 +166,6 @@ export default class Chatroom extends Component {
             </DrawerLayout>
         );
     }
-
-    renderDrawer = () => {
-        return (
-            <View>
-                <ChatroomSideMenu/>
-            </View>
-        );
-    };
-
-    dbAdd(newchat) {
-        db.transaction( tx => {
-            tx.executeSql(
-                'INSERT INTO chatLog (user_email, cr_id, Time, message) values (?, ?, ?, ?);',
-                [newchat.user_email, newchat.cr_id, newchat.Time, newchat.message],
-                null,
-                (_,error) => console.error(error)   // sql문 실패 에러
-            );
-        },(error) => console.error(error))   // 트랜젝션 에러
-        this.dbUpdate()
-    }
-
-    dbUpdate = () => {        // DB 내의 채팅 로그 읽어오기
-        db.transaction( tx => {
-            tx.executeSql(
-                'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
-                [this.state.cr_id],
-                (_, { rows: { _array }  }) => this.setState({ chatlog: _array }),
-                (_,error) => console.error(error)
-            )
-        },(error) => console.error(error)
-        )
-    };
-
-    _onPressSend(){
-        if (this.state.message != ''){
-            const newchat = {
-                user_email: this.state.myEmail,
-                cr_id: this.state.cr_id,
-                Time: Date(),
-                message: this.state.message,
-            }
-            this.dbAdd(newchat)
-            this.socket.emit('SEND_MESSAGE', newchat);
-            this.setState({message: null});    
-        }
-    }
-
-    handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
-        goback()
-    };
 }
 
 const style = StyleSheet.create({

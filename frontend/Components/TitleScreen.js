@@ -23,41 +23,6 @@ export default class TitleScreen extends Component {
             loginResult: -1,
             token:''})
     }
-    render() {
-        return (
-            <View style={style.container}>
-                <Image
-                    style={{height:'50%', width:'50%', resizeMode:'contain'}}
-                    source={require('../assets/Titleimage.png')}/>
-                <KeyboardAvoidingView behavior='padding' style={style.content}>
-                    <Item style={{height: 53}} floatingLabel>
-                        <Label style={{color: '#999'}}>Email Address</Label>
-                        <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(email) => this.setState({email})}/>
-                    </Item>
-                    <Item style={{height: 53, marginTop: 10}} floatingLabel>
-                        <Label style={{color: '#999'}}>Password</Label>
-                        <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(password) => this.setState({password})}/>
-                    </Item>
-                </KeyboardAvoidingView>
-                <View style={style.footer}>
-                    <View style={style.footer_backbutton}>
-                        <CustomButton
-                            title={'Sign up'}
-                            titleColor={'#ddd'}
-                            buttonColor={'#000'}
-                            onPress={() => this.goSignup_Welcome()}/>
-                    </View>
-                    <View style={style.footer_nextbutton}>
-                    <CustomButton
-                            title={'Log In'}
-                            titleColor={'#000'}
-                            buttonColor={'#ddd'}
-                            onPress={ () => this.onPressLogin()}/>
-                    </View>
-                </View>
-            </View>
-        );
-    }
     dbSaveToken(token){
         db.transaction( tx => {
             tx.executeSql(
@@ -118,6 +83,42 @@ export default class TitleScreen extends Component {
             loginResult: responseJson.result,       // 실패시0 성공시1 
             token: responseJson.token
         }));
+    }
+    
+    render() {
+        return (
+            <View style={style.container}>
+                <Image
+                    style={{height:'50%', width:'50%', resizeMode:'contain'}}
+                    source={require('../assets/Titleimage.png')}/>
+                <KeyboardAvoidingView behavior='padding' style={style.content}>
+                    <Item style={{height: 53}} floatingLabel>
+                        <Label style={{color: '#999'}}>Email Address</Label>
+                        <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(email) => this.setState({email})}/>
+                    </Item>
+                    <Item style={{height: 53, marginTop: 10}} floatingLabel>
+                        <Label style={{color: '#999'}}>Password</Label>
+                        <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(password) => this.setState({password})}/>
+                    </Item>
+                </KeyboardAvoidingView>
+                <View style={style.footer}>
+                    <View style={style.footer_backbutton}>
+                        <CustomButton
+                            title={'Sign up'}
+                            titleColor={'#ddd'}
+                            buttonColor={'#000'}
+                            onPress={() => this.goSignup_Welcome()}/>
+                    </View>
+                    <View style={style.footer_nextbutton}>
+                    <CustomButton
+                            title={'Log In'}
+                            titleColor={'#000'}
+                            buttonColor={'#ddd'}
+                            onPress={ () => this.onPressLogin()}/>
+                    </View>
+                </View>
+            </View>
+        );
     }
 }
 

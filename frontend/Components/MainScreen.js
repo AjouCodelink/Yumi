@@ -42,9 +42,6 @@ export default class MainScreen extends Component {
     static navigationOptions = {    // 상단바 안보이게 하기
         header: null
     }
-    render() {
-        return <AppTabContainet/>; 
-    }
     componentDidMount() {   // 뒤로가기 눌렀을 때
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     }
@@ -62,5 +59,9 @@ export default class MainScreen extends Component {
             BackHandler.exitApp();  // 앱 종료
         }
         return true;
+    }
+
+    render() {
+        return <AppTabContainet/>; 
     }
 };

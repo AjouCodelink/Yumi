@@ -37,6 +37,13 @@ export default class LoadingScreen extends Component {
         },(error) => console.error(error))
     }
 
+    goMain(){
+        this.props.navigation.navigate('Main');
+    }
+    goTitle(){
+        this.props.navigation.navigate('Title');
+    }
+
     render() {
         return (
             <View style={style.container}>
@@ -44,13 +51,6 @@ export default class LoadingScreen extends Component {
                 <Text style={style.loadingFont}>Loading</Text>
             </View>
         );
-    }
-
-    goMain(){
-        this.props.navigation.navigate('Main');
-    }
-    goTitle(){
-        this.props.navigation.navigate('Title');
     }
 }
 

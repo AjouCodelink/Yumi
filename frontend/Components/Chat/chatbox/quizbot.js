@@ -2,43 +2,46 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Linking, Alert  } from 'react-native';
 import { Button, Thumbnail } from 'native-base';
 
-export default class Chatbox_other extends Component {
+export default class quizbot extends Component {
     constructor() {
         super();
+        this.state = {
+            isActive: true,
+            isAlertVisible: false,
+        }
     }
+    submit = (inputText, answer) => {
+        {
+            (answer == inputText)
+            ? alert("correct!")
+            : alert("wrong!")
+        }
+    }
+    
     render() {
         const data = this.props.data;
         return (
             <View>
-                <Text style={style.text_name}>{data.user_email} </Text>
+                <DialogInput
+                    isDialogVisible = {this.state.isAlertVisible}
+                    title={"PopQuiz"}
+                    message={data.question}
+                    hintInput ={"Answer"}
+                    submitInput={ (inputText) => {this.submit(inputText,data.answer)}}
+                    closeDialog={ () => {this.setState({isAlertVisible:false})} }/>
+                <Text style={style.text_name}>PopQuizBot </Text>
                 <View style={style.content}>
                     <Thumbnail circular backgroundColor="#fff" style={style.thumbnail}
-                        source={require('../../assets/default_thumbnail.png')}/>
+                        source={require('../../../assets/chatbot.jpg')}/>
                     <View>
-                        <Button style={style.messageBox} onLongPress={() => this.papagoAlert(data.message)}>
+                        <Button style={style.messageBox} onLongPress={() => this.setState(isAlertVisible=true)}>
                             <Text style={style.text_message}> {data.message} </Text>
                         </Button>
                     </View>
                     <Text style={style.text_time}>  {data.Time.toString().substr(16, 5)}</Text>
                 </View>
+                
             </View>
-        );
-    }
-
-    papagoAlert = (message) => {
-        Alert.alert(
-            'Translate?',
-            'Press OK to redirect the message to the papago translator.',
-            [
-                {
-                    text: 'Cancel',
-                    style: 'cancel',
-                },
-                {text: 'OK', onPress: () => {
-                    Linking.openURL('https://papago.naver.com/?sk=auto&tk=en&st='+message);   // 이후 연락 가능한 페이지로 연동해야함
-                }},
-            ],
-            {cancelable: false},
         );
     }
 }
