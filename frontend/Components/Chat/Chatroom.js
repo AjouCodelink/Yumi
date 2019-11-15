@@ -16,16 +16,11 @@ const io = require('socket.io-client');
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
-        this.socket = io('http://101.101.160.185:3000'); 
-
+        this.socket = io('http://101.101.160.185:3000');     
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            addMessage(data);
-            //this.dbAdd(data);
+            console.log(RECEIVE_MESSAGE)
+            this.dbAdd(data);
         });
-        const addMessage = data => {
-            console.log(data);
-            this.setState({chatlog:[...this.state.chatlog, data]});
-        };
     };
 
     static navigationOptions = {
@@ -40,32 +35,14 @@ export default class Chatroom extends Component {
         chatlog:[], // 채팅로그
         key: 0,
     }
-
-    renderDrawer = () => {
-        return (
-            <View>
-                <ChatroomSideMenu/>
-            </View>
-        );
-    };
     
-    componentDidMount() {  // table이 없으면 create
+    componentDidMount() {
         db.transaction(tx => {
-            tx.executeSql(  //chatlog 저장하는 table 생성하기
-                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, PRIMARY KEY("user_email","cr_id","Time"))',
-                [],
-                null,
-                (_,error) => console.error(error)
-            )
-        },(error) => console.error(error))
-
-        db.transaction(tx => {
-            tx.executeSql(  //chatlog 저장하는 table 생성하기
+            tx.executeSql(  // token에서 user_email 읽어오기
                 'SELECT user_email FROM token',
                 [],
-                (_, { rows: { _array }  }) => {    
-                    this.state.myEmail = _array[0].user_email;
-                },
+                (_, { rows: { _array }  }) =>     
+                    (_array != []) ? (this.state.myEmail = _array[0].user_email) :
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
@@ -140,6 +117,14 @@ export default class Chatroom extends Component {
         );
     }
 
+    renderDrawer = () => {
+        return (
+            <View>
+                <ChatroomSideMenu/>
+            </View>
+        );
+    };
+
     dbAdd(newchat) {
         db.transaction( tx => {
             tx.executeSql(
@@ -159,8 +144,9 @@ export default class Chatroom extends Component {
                 [this.state.cr_id],
                 (_, { rows: { _array }  }) => this.setState({ chatlog: _array }),
                 (_,error) => console.error(error)
-            );
-        },(error) => console.error(error))
+            )
+        },(error) => console.error(error)
+        )
     };
 
     _onPressSend(){
@@ -171,9 +157,7 @@ export default class Chatroom extends Component {
                 Time: Date(),
                 message: this.state.message,
             }
-            
             this.dbAdd(newchat)
-            
             this.socket.emit('SEND_MESSAGE', newchat);
             this.setState({message: null});    
         }
@@ -182,11 +166,6 @@ export default class Chatroom extends Component {
     handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
         goback()
     };
-}
-
-const drawerStyles = {
-    drawer: { shadowColor: '#000000', shadowOpacity: 0.8, shadowRadius: 3},
-    main: {paddingLeft: 3},
 }
 
 const style = StyleSheet.create({
@@ -210,7 +189,7 @@ const style = StyleSheet.create({
     },
     font_header: {
         color: 'white',
-        fontSize: 35,
+        fontSize: 30,
         alignItems: 'center',
         fontWeight: 'bold',
     },

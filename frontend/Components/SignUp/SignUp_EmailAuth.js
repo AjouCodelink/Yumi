@@ -146,13 +146,9 @@ export default class SignUp_EmailAuth extends Component {
         });
     }
     submit(){
-        var email= {}
-        email.email = this.state.email
-        console.log(email);
-        var url = 'http://101.101.160.185:3000/user/send-email';
+        var url = 'http://101.101.160.185:3000/user/send-email/'+this.state.email;
         fetch(url, {
             method: 'POST',
-            body: JSON.stringify(email),
             headers: new Headers({
             'Content-Type' : 'application/json',
             'token': 'token'

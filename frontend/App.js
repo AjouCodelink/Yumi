@@ -1,6 +1,7 @@
 import { createStackNavigator } from 'react-navigation-stack'; 
 import { createAppContainer } from 'react-navigation';
 
+import LoadingScreen from './Components/LoadingScreen';
 import MainScreen from './Components/MainScreen';
 import TitleScreen from './Components/TitleScreen';
 import Chatroom from './Components/Chat/Chatroom';
@@ -10,7 +11,10 @@ import SignUp_Detail from './Components/SignUp/SignUp_Detail';
 import SignUp_Interest from './Components/SignUp/SignUp_Interest';
 import SignUp_Done from './Components/SignUp/SignUp_Done';
 
-const AppStackNavigator = createStackNavigator({
+const RootNavigator = createStackNavigator({
+  Loading:{
+    screen: LoadingScreen
+  },
   Title:{
     screen: TitleScreen
   },
@@ -34,10 +38,12 @@ const AppStackNavigator = createStackNavigator({
   },
   Chatroom:{
     screen: Chatroom
-  },
-});
+  }}, {
+    initialRouteName: 'Loading'
+  }
+);
 
-export default createAppContainer(AppStackNavigator);
+export default createAppContainer(RootNavigator);
 
 
 

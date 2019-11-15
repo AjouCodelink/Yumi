@@ -100,6 +100,36 @@ export default class ChatroomTab extends Component {
         // },(error) => console.error(error))
     }
 
+    leaveChatRoom = (roomID) => { // 방 나가기
+        this.setState(prevState => {
+            const index = prevState.arrayHolder.findIndex(holder => holder.roomID === roomID);
+            prevState.arrayHolder.splice(index, 1);
+            return ({
+                arrayHolder: [...prevState.arrayHolder]
+            })
+        });
+        //todo: 근데 arrayHolder만 건드려서 그런가 방이 추가하면 다시 돌아오는 버그가 있음ㅠ
+        //나중에 유용하면 이용하시고 아니면 삭제해주세요ㅠ
+        //서버와도 연동해서 방에서 나가기 구현해야함.
+    }
+
+    _longPressChatroom = (roomID) => {  // 채팅방 꾹 누르면
+        Alert.alert(
+            'Exit?',
+            'Press the OK button to exit the chat room.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {text: 'OK', onPress: () => {
+                    this.leaveChatRoom(roomID);
+                }},
+            ],
+            {cancelable: false},
+        );
+    }
+
     _onPressChatroom = (item) => {
         this.props.navigation.navigate('Chatroom', {
             title: item.title,
@@ -140,12 +170,13 @@ export default class ChatroomTab extends Component {
     GetItem(item) {
         Alert.alert(item);
     }
+    
 
     render() {
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
-                <Text style={styles.font_title}>ChatRoom</Text>
+                <Text style={styles.font_header}>ChatRoom</Text>
                     <View style={styles.febContainer}>
                         <TouchableOpacity
                             onPress={()=> this.setState({isAlertVisible:true})} 
@@ -154,15 +185,14 @@ export default class ChatroomTab extends Component {
                             <Icon name='chatbubbles' style={{color: '#FFF'}}/>
                     </TouchableOpacity>
                     <TouchableOpacity
-                            onPress={()=> this.searchBarShow()} 
-                            activeOpacity={0.7} 
-                            style={styles.button_search} >
-                            <Icon name='ios-search' style={{color: '#FFF'}}/>
+                        onPress={()=> this.searchBarShow()} 
+                        activeOpacity={0.7} 
+                        style={styles.button_search} >
+                        <Icon name='ios-search' style={{color: '#FFF'}}/>
                     </TouchableOpacity>
                     </View>
-                    </View>
-
-                    <DialogInput
+                </View>
+                <DialogInput
                     isDialogVisible = {this.state.isAlertVisible}
                     title={"Create Chatroom"}
                     message={"Type Theme"}
@@ -176,41 +206,49 @@ export default class ChatroomTab extends Component {
                     keyExtractor = {(item, index) => String(index)}
                     ItemSeparatorComponent={this.FlatListItemSeparator}
                     renderItem={({ item }) =>
-                        <TouchableOpacity onPress={() => this._onPressChatroom(item)}>
-                            <Text style={styles.item}>
-                                # {item.title}{'\n'}# roomID: {item.roomID}
-                            </Text>
+                        <TouchableOpacity activeOpacity={0.5} onLongPress={() => this._longPressChatroom(item.roomID)}
+                            onPress={() => this._onPressChatroom(item)}>
+                            <View style={styles.item}>
+                                <Text style={styles.item_font}>
+                                    # {item.title}{'\n'}# roomID: {item.roomID}
+                                </Text>
+                            </View>
                         </TouchableOpacity>
                     }
                 />
                 <View style={styles.febContainer}>
+                    <TouchableOpacity    // 같은 ID로 채팅 컴포넌트 사용 위해서 임시로 만든 버튼입니다. 추후 채팅방 입장이 완료되면 삭제해주세요.
+                        onPress={()=> this.insertChatRoom('111','ADMIN')} 
+                        activeOpacity={0.7} 
+                        style={styles.button_suggest}
+                        >
+                        <Icon name='md-aperture' style={{color: '#222'}}/>
+                    </TouchableOpacity>
                     <TouchableOpacity
-                            onPress={()=> this.suggestRoom()} 
-                            activeOpacity={0.7} 
-                            style={styles.button_suggest}
-                            >
-                            <Icon name='paw' style={{color: '#FFF'}}/>
+                        onPress={()=> this.suggestRoom()} 
+                        activeOpacity={0.7} 
+                        style={styles.button_suggest}
+                        >
+                        <Icon name='paw' style={{color: '#222'}}/>
                     </TouchableOpacity>
                 </View>
                 {
                     (this.state.isSearchVisible == true) ? (
-                    <View style = {styles.search}>
-                    <TextInput
-                        style={{height: 40, width: "75%", backgroundColor:'#666',  fontSize:18, borderRadius: 5,paddingLeft: 10}}
-                        placeholder="Search..."
-                        value={this.state.search}
-                        onChangeText={(search) => this.setState({search})}
-                    />
-                    <TouchableOpacity
-                        style={{backgroundColor: '#384850',width: 40, height: 40, borderRadius: 40, justifyContent : 'center', alignItems : 'center',
-                                marginLeft :15,marginRight: 15, backgroundColor:'#AAA'}} 
-                        onPress={()=>this.searchRoomByKeyword()}
-                    >
-                        <Icon name='ios-search' style={{color: '#FFF'}}/>
-                    </TouchableOpacity>
+                    <View style = {styles.searchBarConatiner}>
+                        <TextInput
+                            style={styles.searchBar}
+                            placeholder="Search..."
+                            value={this.state.search}
+                            onChangeText={(search) => this.setState({search})}
+                        />
+                        <TouchableOpacity
+                            style={styles.searchButton} 
+                            onPress={()=>this.searchRoomByKeyword()}>
+                            <Icon name='ios-search' style={{color: '#FFF'}}/>
+                        </TouchableOpacity>
                     </View> 
-                    ) :(<View style = {styles.hide}></View>)
-                    }
+                    ):(<View style = {styles.hide}></View>)
+                }
             </View>
         );
     }
@@ -218,47 +256,35 @@ export default class ChatroomTab extends Component {
 
 const styles = StyleSheet.create({
     container : {
+        flex : 1,
         justifyContent : 'flex-start',
         alignItems : 'center',
-        flex : 1,
         backgroundColor : '#333'
     },
     header: {
-        justifyContent: 'flex-start',
-        alignItems: 'center',
         flexDirection : "row",
         width:'100%',
-        height: 110,
+        height: 74,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-end',
+        marginBottom: 15,
         backgroundColor: '#888',
     },
-    font_title: {
-        marginTop: 10,
-        marginLeft: 15,
+    font_header: {
         color: 'white',
-        fontSize: 35,
         alignItems: 'center',
+        fontSize: 42,
         fontWeight: 'bold',
-        },
-    search: {
-        marginTop: 65,
-        position : 'absolute',
-        flex: 3,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems : "stretch",
-        paddingTop: 50,
-        paddingLeft : 20,
-        width:'100%',
-        
+        marginLeft: 15,
     },
     hide : {
     },
     febContainer: {
-        flexDirection : 'row',
-        marginTop: 20,
         flex: 2,
+        flexDirection : 'row',
         width: '100%',
         height: 50,
+        marginTop: 20,
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
     },
@@ -266,50 +292,78 @@ const styles = StyleSheet.create({
         width:  50,
         height: 50,
         justifyContent: 'center',
-        backgroundColor: '#0054FF',
         alignItems: 'center',
+        marginRight: 30,
         borderRadius: 50,
-        marginRight: 50,
-
+        backgroundColor: '#33AAFF',
     },
     button_create: {
         width:  50,
         height: 50,
         justifyContent: 'center',
-        backgroundColor: '#1DDB16',
         alignItems: 'center',
-        marginRight: 20,
+        marginRight: 30,
         borderRadius: 50,
+        backgroundColor: '#44DD44',
     }, 
     button_suggest : {
-        backgroundColor: '#FFE400',
         width:  50,
         height: 50,
-        marginRight:  50,
-        marginBottom: 60,
         justifyContent: 'center',
         alignItems: 'center',
+        marginRight:  50,
+        marginBottom: 60,
         borderRadius: 50,
+        backgroundColor: '#eeee33',
     },
     item : {
-        flexDirection : 'row',
+        padding : 10,
+        justifyContent : 'center',
         borderWidth : 1, 
+        borderRadius: 7,
         borderColor : '#333',
         backgroundColor: '#fff',
-        borderRadius: 7,
-        padding : 10,
-        fontSize : 18,
-        height : 77,
+    },
+    item_font : {
+        fontSize : 16,
     },
     textInputStyle:{
-        textAlign : 'center',
-        height: 40,
         width: '85%',
-        borderWidth : 1, 
-        borderColor : '#4CAF50',
-        borderRadius: 7,
-        marginTop : 12,
+        height: 40,
+        textAlign : 'center',
         color : '#fff',
+        borderWidth : 1, 
+        borderRadius: 7,
+        borderColor : '#4CAF50',
+        marginTop : 12,
     },
-
-});
+    searchBarConatiner: {
+        position : 'absolute',
+        flex: 3,
+        flexDirection: 'row',
+        width:'100%',
+        justifyContent: 'center',
+        alignItems : "stretch",
+        marginTop: 90,
+        paddingLeft: 15,
+    },
+    searchBar:{
+        width: "75%",
+        height: 40,
+        fontSize:18,
+        color: '#ddd',
+        backgroundColor:'rgba(0, 0, 0, 0.8)',
+        paddingLeft: 10,
+        borderRadius: 5,
+    },
+    searchButton:{
+        width: 40,
+        height: 40,
+        borderRadius: 40,
+        justifyContent : 'center',
+        alignItems : 'center',
+        marginLeft :15,
+        marginRight: 15,
+        backgroundColor:'rgba(0, 0, 0, 0.5)',
+    }
+})

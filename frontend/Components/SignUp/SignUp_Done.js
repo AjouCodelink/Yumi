@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CustomButton from '../CustomButton';
 
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
+
 export default class SignUp_Done extends Component {
     static navigationOptions = {
         header: null
@@ -58,16 +61,26 @@ export default class SignUp_Done extends Component {
             alert("Email or password is incorrect.")
             this.state.loginResult = -1
         } else if (this.state.loginResult == 1) {    // 로그인 성공
+            this.dbSaveToken(this.state.token);
             this.goMain();
         } else {                                     // 서버 전송 오류
             alert("Failed to login. Please try again.")
         }
     }
+    dbSaveToken(token){
+        db.transaction( tx => {
+            tx.executeSql(
+                'INSERT INTO token (access_token, user_email) values (?,?);',
+                [token, this.state.email],
+                null,
+                (_,error) => console.error(error)   // sql문 실패 에러
+            );
+        },(error) => console.error(error))   // 트랜젝션 에러
+    }
     submit(){
         var user= {}
         user.email = this.state.email
         user.password = this.state.password
-        console.log(user);
         var url = 'http://101.101.160.185:3000/user/login';
         fetch(url, {
             method: 'POST',
@@ -79,7 +92,8 @@ export default class SignUp_Done extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => this.setState({
-            loginResult: responseJson.result     // 실패시0 성공시1 
+            loginResult: responseJson.result,       // 실패시0 성공시1 
+            token: responseJson.token
         }));
     }
 }
