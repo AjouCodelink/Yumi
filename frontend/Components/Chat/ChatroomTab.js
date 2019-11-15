@@ -63,11 +63,11 @@ export default class ChatroomTab extends Component {
                     title: responseJson[i].interest,
                     roomID: responseJson[i].cr_id
                 })
-                this.setState({arrayHolder: [...this.array]})
+                this.setState({arrayHolder: [...this.array]}
+                )
             }
         })
     }
-
     createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
         var url = 'http://101.101.160.185:3000/chatroom/creation/'+inputText;
         fetch(url, {
@@ -125,7 +125,7 @@ export default class ChatroomTab extends Component {
     }
     searchRoomByKeyword(){
         //Alert 또는 popup으로 채팅방 결과 띄워주기 
-        console.log(1);
+        
         var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
         fetch(url, {
             method: 'GET',
@@ -135,7 +135,9 @@ export default class ChatroomTab extends Component {
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => console.log(responseJson));
+        .then(responseJson => console.log(responseJson[0].interest));
+       
+    
     }
 
     GetItem(item) {
