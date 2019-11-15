@@ -83,7 +83,7 @@ export default class SignUp_EmailAuth extends Component {
             'token': 'token'
             })
         }).then(response => response.json())
-        .catch(error => console.log('Error: ', error))
+        .catch(error => console.error('Error: ', error))
         .then(responseJson => this.setState({
             serverAuthcode: responseJson.number,
             mailSendResult: responseJson.result     // 실패시-1 중복시0 성공시1

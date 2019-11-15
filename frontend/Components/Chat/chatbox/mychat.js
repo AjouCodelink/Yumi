@@ -28,8 +28,10 @@ const style = StyleSheet.create({
         paddingBottom: 5,
     },
     messageBox: {
+        paddingLeft: 5,
+        paddingRight: 5,
         backgroundColor: "#ee3",
-        borderRadius: 5,
+        borderRadius: 6
     },
     text_time: {
         fontSize : 13,

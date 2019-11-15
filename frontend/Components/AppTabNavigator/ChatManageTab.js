@@ -26,7 +26,6 @@ export default class ChatManageTab extends Component {
         ),
     }
     searchRoomByKeyword(){
-        console.log(1);
         var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
         fetch(url, {
             method: 'GET',
@@ -35,7 +34,7 @@ export default class ChatManageTab extends Component {
             'token': 'token',
             })
         }).then(response => response.json())
-        .catch(error => console.log('Error: ', error))
+        .catch(error => console.error('Error: ', error))
         .then(responseJson => console.log(responseJson));
     }
     render() {

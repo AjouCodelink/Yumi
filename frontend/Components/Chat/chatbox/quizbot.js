@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Linking, Alert  } from 'react-native';
+import { View, Text, StyleSheet  } from 'react-native';
+import DialogInput from 'react-native-dialog-input';
 import { Button, Thumbnail } from 'native-base';
 
 export default class quizbot extends Component {
@@ -11,13 +12,14 @@ export default class quizbot extends Component {
         }
     }
     submit = (inputText, answer) => {
+        inputText = inputText.toLowerCase()
         {
             (answer == inputText)
             ? alert("correct!")
             : alert("wrong!")
         }
     }
-    
+
     render() {
         const data = this.props.data;
         return (
@@ -25,17 +27,17 @@ export default class quizbot extends Component {
                 <DialogInput
                     isDialogVisible = {this.state.isAlertVisible}
                     title={"PopQuiz"}
-                    message={data.question}
+                    message={data.message}
                     hintInput ={"Answer"}
-                    submitInput={ (inputText) => {this.submit(inputText,data.answer)}}
+                    submitInput={ (inputText) => {this.submit(inputText,data.answer, this.setState({isAlertVisible:false}))}}
                     closeDialog={ () => {this.setState({isAlertVisible:false})} }/>
-                <Text style={style.text_name}>PopQuizBot </Text>
+                <Text style={style.text_name}>PopQuizBot</Text>
                 <View style={style.content}>
-                    <Thumbnail circular backgroundColor="#fff" style={style.thumbnail}
+                    <Thumbnail backgroundColor="#fff" style={style.thumbnail}
                         source={require('../../../assets/chatbot.jpg')}/>
                     <View>
-                        <Button style={style.messageBox} onLongPress={() => this.setState(isAlertVisible=true)}>
-                            <Text style={style.text_message}> {data.message} </Text>
+                        <Button style={style.messageBox} onLongPress={() => this.setState({isAlertVisible: true})}>
+                            <Text style={style.text_message}>{data.message} </Text>
                         </Button>
                     </View>
                     <Text style={style.text_time}>  {data.Time.toString().substr(16, 5)}</Text>
@@ -62,7 +64,9 @@ const style = StyleSheet.create({
         marginRight: 10
     },
     messageBox: {
-        backgroundColor: "#bbb",
+        paddingLeft: 5,
+        paddingRight: 5,
+        backgroundColor: "#fff",
         borderRadius: 6
     },
     text_name: {

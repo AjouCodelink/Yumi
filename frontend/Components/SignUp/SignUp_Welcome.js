@@ -115,5 +115,6 @@ const style = StyleSheet.create({
     font_main: {
         color: '#aaa',
         fontSize: 20,
+        textAlign: 'center',
     },
 });

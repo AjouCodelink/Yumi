@@ -23,18 +23,18 @@ export default class otherchat extends Component {
             {cancelable: false},
         );
     }
-    
+
     render() {
         const data = this.props.data;
         return (
             <View>
-                <Text style={style.text_name}>{data.user_email} </Text>
+                <Text style={style.text_name}>{data.user_email}</Text>
                 <View style={style.content}>
-                    <Thumbnail circular backgroundColor="#fff" style={style.thumbnail}
+                    <Thumbnail backgroundColor="#fff" style={style.thumbnail}
                         source={require('../../../assets/default_thumbnail.png')}/>
                     <View>
                         <Button style={style.messageBox} onLongPress={() => this.papagoAlert(data.message)}>
-                            <Text style={style.text_message}> {data.message} </Text>
+                            <Text style={style.text_message}>{data.message} </Text>
                         </Button>
                     </View>
                     <Text style={style.text_time}>  {data.Time.toString().substr(16, 5)}</Text>
@@ -60,6 +60,8 @@ const style = StyleSheet.create({
         marginRight: 10
     },
     messageBox: {
+        paddingLeft: 5,
+        paddingRight: 5,
         backgroundColor: "#bbb",
         borderRadius: 6
     },

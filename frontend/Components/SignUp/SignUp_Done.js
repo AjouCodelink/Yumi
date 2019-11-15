@@ -58,7 +58,7 @@ export default class SignUp_Done extends Component {
             'token': 'token'
             })
         }).then(response => response.json())
-        .catch(error => console.log('Error: ', error))
+        .catch(error => console.error('Error: ', error))
         .then(responseJson => this.setState({
             loginResult: responseJson.result,       // 실패시0 성공시1 
             token: responseJson.token
@@ -152,5 +152,6 @@ const style = StyleSheet.create({
     font_main: {
         color: '#aaa',
         fontSize: 20,
+        textAlign: 'center',
     },
 });

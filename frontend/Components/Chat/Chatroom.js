@@ -5,6 +5,7 @@ import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 
 import Chatbox_my from './chatbox/mychat';
 import Chatbox_other from './chatbox/otherchat';
+import Chatbox_quizbot from './chatbox/quizbot';
 import ChatroomSideMenu from './Chatroom-SideMenu';
 
 import * as SQLite from 'expo-sqlite';
@@ -18,8 +19,8 @@ export default class Chatroom extends Component {
         super(props);
         this.socket = io('http://101.101.160.185:3000');     
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            console.log(RECEIVE_MESSAGE)
-            this.dbAdd(data);
+            //console.log(RECEIVE_MESSAGE)
+            this.db_Add(data);
         });
     };
 
@@ -36,7 +37,7 @@ export default class Chatroom extends Component {
         key: 0,
     }
     
-    componentDidMount() {
+    componentWillMount() {
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
                 'SELECT user_email FROM token',
@@ -46,7 +47,7 @@ export default class Chatroom extends Component {
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
-        this.dbUpdate();
+        this.db_Update();
     }
 
     renderDrawer = () => {
@@ -57,19 +58,45 @@ export default class Chatroom extends Component {
         );
     };
 
-    dbAdd(newchat) {
+    _onPressSend(){
+        if (this.state.message != ''){
+            const newchat = {
+                user_email: this.state.myEmail,
+                cr_id: this.state.cr_id,
+                Time: Date(),
+                message: this.state.message,
+                answer: null
+            }
+            this.db_Add(newchat)
+            this.socket.emit('SEND_MESSAGE', newchat);
+            this.setState({message: null});    
+        }
+    }
+
+    _receivePopQuiz(receivedQuiz){
+        const newQuiz = {
+            user_email: 'PopQuizBot',
+            cr_id: this.state.cr_id,
+            Time: Date(),
+            message: receivedQuiz.message,
+            answer: receivedQuiz.answer,
+        }
+        this.db_Add(newQuiz)
+    }
+
+    db_Add(newchat) {
         db.transaction( tx => {
             tx.executeSql(
-                'INSERT INTO chatLog (user_email, cr_id, Time, message) values (?, ?, ?, ?);',
-                [newchat.user_email, newchat.cr_id, newchat.Time, newchat.message],
+                'INSERT INTO chatLog (user_email, cr_id, Time, message, answer) values (?, ?, ?, ?, ?);',
+                [newchat.user_email, newchat.cr_id, newchat.Time, newchat.message, newchat.answer],
                 null,
                 (_,error) => console.error(error)   // sql문 실패 에러
             );
         },(error) => console.error(error))   // 트랜젝션 에러
-        this.dbUpdate()
+        this.db_Update()
     }
 
-    dbUpdate = () => {        // DB 내의 채팅 로그 읽어오기
+    db_Update = () => {        // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
@@ -81,19 +108,6 @@ export default class Chatroom extends Component {
         )
     };
 
-    _onPressSend(){
-        if (this.state.message != ''){
-            const newchat = {
-                user_email: this.state.myEmail,
-                cr_id: this.state.cr_id,
-                Time: Date(),
-                message: this.state.message,
-            }
-            this.dbAdd(newchat)
-            this.socket.emit('SEND_MESSAGE', newchat);
-            this.setState({message: null});    
-        }
-    }
 
     handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
         goback()
@@ -104,6 +118,7 @@ export default class Chatroom extends Component {
         const { navigation } = this.props;
         this.state.cr_id = navigation.getParam('cr_id', '-1');
         this.state.cr_name = navigation.getParam('title', 'No cr_name');
+        const receivedQuiz = {message: '한국은 영어로 뭘까~~~~~요? 영어로 입력해주세요.', answer: 'korea'}  // 임시 팝퀴즈 스테이트
         return (
             <DrawerLayout
                 ref={ drawer => this.drawer = drawer }
@@ -130,6 +145,9 @@ export default class Chatroom extends Component {
                     </Right>
                 </View>
                 <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={0} style={style.container}>
+                    <TouchableOpacity onPress={() => this._receivePopQuiz(receivedQuiz)}>
+                        <Icon name='md-arrow-round-back' style={{color: '#999', fontSize: 30}}/>
+                    </TouchableOpacity>
                     <ScrollView
                         ref={scrollView => {
                             this.scrollView = scrollView;
@@ -142,14 +160,22 @@ export default class Chatroom extends Component {
                             })
                         }}
                         style={{width: '100%'}}>
-                        {this.state.chatlog.map( chatlog => chatlog.user_email == this.state.myEmail ?(   // 말풍선 만들기
-                            <View key={this.state.key++} style={style.my_chat}>
+                        {this.state.chatlog.map( chatlog => (chatlog.user_email == this.state.myEmail    // 말풍선 만들기
+                            ? ( <View key={this.state.key++} style={style.my_chat}>
                                 <Chatbox_my data={chatlog}/>
                             </View>
-                        ) : (
-                            <View key={this.state.key++} style={style.other_chat}>
-                                <Chatbox_other data={chatlog}/>
-                            </View>
+                            ) : ( chatlog.user_email != 'PopQuizBot' 
+                                ? (
+                                    <View key={this.state.key++} style={style.other_chat}>
+                                        <Chatbox_other data={chatlog}/>
+
+                                    </View>
+                                ) : (
+                                <View key={this.state.key++} style={style.other_chat}>
+                                    <Chatbox_quizbot data={chatlog}/>
+                                </View>
+                                )
+                            )
                         ))}
                     </ScrollView>
                     <View style={style.inputPlace}>

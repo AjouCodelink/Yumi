@@ -59,7 +59,6 @@ export default class SignUp_Interest extends Component {
         user.password = this.state.password
         user.nickname = this.state.nickname
         user.interests = this.state.interests
-        console.log(user);
         var url = 'http://101.101.160.185:3000/user/signup';
         fetch(url, {
             method: 'POST',
@@ -69,7 +68,7 @@ export default class SignUp_Interest extends Component {
             'token': 'token'
             })
         }).then(response => response.json())
-        .catch(error => console.log('Error: ', error))
+        .catch(error => console.error('Error: ', error))
         .then(responseJson => this.setState({
             signUpResult: responseJson.result     // 실패시0 성공시1 
         }));

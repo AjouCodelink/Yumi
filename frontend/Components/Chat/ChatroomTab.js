@@ -56,7 +56,7 @@ export default class ChatroomTab extends Component {
             //다른 search에서만 쓰면 안된다. 
             })
         }).then(response => response.json())
-        .catch(error => console.log('Error: ', error))
+        .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             for(var i=0; i<responseJson.length; i++){ // TODO : 이거 포문으로 했는데 혹시 map으로 할 수 있으면 수정 좀 해주셈
                 this.array.push({
@@ -78,7 +78,7 @@ export default class ChatroomTab extends Component {
             'x-access-token': this.token
             })
         }).then(response => response.json())
-        .catch(error => console.log('Error: ', error))
+        .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             this.insertChatRoom(responseJson.chatroom_id, responseJson.interest);
         })
@@ -163,7 +163,7 @@ export default class ChatroomTab extends Component {
             'token': 'token',
             })
         }).then(response => response.json())
-        .catch(error => console.log('Error: ', error))
+        .catch(error => console.error('Error: ', error))
         //.then(responseJson => console.log(responseJson));
     }
 
