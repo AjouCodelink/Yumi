@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image, KeyboardAvoidingView } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 import { Item, Label, Input } from 'native-base';
 
 import CustomButton from './CustomButton';
@@ -52,11 +53,6 @@ export default class TitleScreen extends Component {
                             titleColor={'#000'}
                             buttonColor={'#ddd'}
                             onPress={ () => this.onPressLogin()}/>
-                    <CustomButton
-                            title={'go main'}
-                            titleColor={'#000'}
-                            buttonColor={'#393'}
-                            onPress={ () => this.goMain()}/>
                     </View>
                 </View>
             </View>
@@ -98,7 +94,11 @@ export default class TitleScreen extends Component {
         this.props.navigation.navigate('SignUp_Welcome');
     }
     goMain(){
-        this.props.navigation.navigate('Main');
+        const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'Main' })],
+        });
+        this.props.navigation.dispatch(resetAction);
     }
     submit(){
         var user= {}
@@ -113,7 +113,7 @@ export default class TitleScreen extends Component {
             'token': 'token'
             })
         }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
+        .catch(error => console.log('Error: ', error))
         .then(responseJson => this.setState({
             loginResult: responseJson.result,       // 실패시0 성공시1 
             token: responseJson.token

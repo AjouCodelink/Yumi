@@ -90,7 +90,7 @@ export default class SignUp_Done extends Component {
             'token': 'token'
             })
         }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
+        .catch(error => console.log('Error: ', error))
         .then(responseJson => this.setState({
             loginResult: responseJson.result,       // 실패시0 성공시1 
             token: responseJson.token

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, } from 'react-native';
 import CustomButton from '../CustomButton';
 
 import Games from './Interest/Games';
@@ -106,7 +106,7 @@ export default class SignUp_Interest extends Component {
             'token': 'token'
             })
         }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
+        .catch(error => console.log('Error: ', error))
         .then(responseJson => this.setState({
             signUpResult: responseJson.result     // 실패시0 성공시1 
         }));

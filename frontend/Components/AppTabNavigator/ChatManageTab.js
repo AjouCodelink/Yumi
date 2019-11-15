@@ -35,7 +35,7 @@ export default class ChatManageTab extends Component {
             'token': 'token',
             })
         }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
+        .catch(error => console.log('Error: ', error))
         .then(responseJson => console.log(responseJson));
     }
     render() {
