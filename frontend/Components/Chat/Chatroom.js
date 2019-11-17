@@ -18,11 +18,18 @@ const io = require('socket.io-client');
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
-        this.socket = io('http://101.101.160.185:3000');     
+        this.socket = io('http://101.101.160.185:3389');
+        this.db_Add = this.db_Add.bind(this);
+
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            //console.log(RECEIVE_MESSAGE)
-            this.db_Add(data);
+            console.log(data);
+
+            //this.db_Add(data); // TODO : DB에 채팅 내역 저장해야 함.
         });
+
+        this.socket.on('disconnect', function(){
+            console.log('disconnect');
+        })
     };
 
     static navigationOptions = {
@@ -43,8 +50,9 @@ export default class Chatroom extends Component {
             tx.executeSql(  // token에서 user_email 읽어오기
                 'SELECT user_email FROM token',
                 [],
-                (_, { rows: { _array }  }) =>     
-                    (_array != []) ? (this.state.myEmail = _array[0].user_email) :
+                (_, { rows: { _array }  }) => {
+                    this.state.myEmail = _array[0].user_email,
+                    this.socket.emit('JOIN_ROOM', {cr_id : this.state.cr_id, myEmail : this.state.myEmail})},
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
@@ -66,9 +74,9 @@ export default class Chatroom extends Component {
                 cr_id: this.state.cr_id,
                 Time: Date(),
                 message: this.state.message,
-                answer: null
+                //answer: null
             }
-            this.db_Add(newchat)
+
             this.socket.emit('SEND_MESSAGE', newchat);
             this.setState({message: null});    
         }
