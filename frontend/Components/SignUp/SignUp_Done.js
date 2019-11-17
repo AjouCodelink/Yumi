@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Spinner } from 'native-base';
 import CustomButton from '../CustomButton';
 
 import * as SQLite from 'expo-sqlite';
@@ -14,12 +15,14 @@ export default class SignUp_Done extends Component {
         this.state = {
             email: '',
             password: '',
-            loginResult: -1
+            loginResult: -1,
+            spinnerOpacity: 0,
         }
     }
     pressDone(){
         this.submit();
-        setTimeout(() => {this.checkLoginResult();}, 250);
+        this.setState({spinnerOpacity: 1})
+        setTimeout(() => {this.checkLoginResult(), this.setState({spinnerOpacity: 0})}, 500);
     }
     goMain(){
         this.props.navigation.navigate('Main');
@@ -74,10 +77,8 @@ export default class SignUp_Done extends Component {
                     <Text style={style.font_title}>Thank you!</Text>
                 </View>
                 <View style={style.content}>
-                    <View style={style.content}>
+                    <View style={[style.content, {justifyContent: 'space-around'}]}>
                         <Text style={style.font_main}>All sign up procedures are complete!</Text>
-                    </View>
-                    <View style={style.content}>
                         <Text style={style.font_main}>Your chosen interest is used only to{"\n"}recommend a suitable chat room for you.</Text>
                     </View>
                     <Text style={style.font_main}>Press the 'Done' button and experience Yumi.</Text>
@@ -93,6 +94,7 @@ export default class SignUp_Done extends Component {
                             onPress={() => this.pressDone()}/>
                     </View>
                 </View>
+                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 3, position: "absolute", bottom: '50%'}}color='#ddd'/>
             </View>
         )
     }

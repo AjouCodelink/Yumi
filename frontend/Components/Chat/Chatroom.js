@@ -39,9 +39,8 @@ export default class Chatroom extends Component {
                     [newChat.user_email, newChat.cr_id, newChat.Time, newChat.message, newChat.answer],
                     null,
                     (_,error) => console.error(error)   // sql문 실패 에러
-                ).catch(e => {this.db_Rebuild});
-            },(error) => console.error(error))
-            .catch(e => {this.db_Rebuild})   // 트랜젝션 에러
+                );
+            },(error) => console.error(error))          // 트랜젝션 에러
             this.db_Update()
         }
     };

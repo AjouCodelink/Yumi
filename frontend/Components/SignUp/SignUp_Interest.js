@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Spinner } from 'native-base';
 import CustomButton from '../CustomButton';
 
 import Games from './Interest/Games';
@@ -17,7 +18,8 @@ export default class SignUp_Interest extends Component {
             password: '',
             nickname: '',
             interests: [],
-            signUpResult: -1
+            signUpResult: -1,
+            spinnerOpacity: 0,
         }
     }
     goSignUp_Detail(){
@@ -31,8 +33,8 @@ export default class SignUp_Interest extends Component {
     }
     pressDone(){
         this.submit();
-        alert("Sign Up is in progress. It takes about 3 seconds.")
-        setTimeout(() => {this.checkSignUpResult();}, 3000);
+        this.setState({spinnerOpacity: 1})
+        setTimeout(() => {this.checkSignUpResult(), this.setState({spinnerOpacity: 0})}, 3000);
     }
     checkSignUpResult(){
         if (this.state.signUpResult == 1) {    // 회원가입 성공
@@ -107,6 +109,7 @@ export default class SignUp_Interest extends Component {
                             onPress={() => this.pressDone()}/>
                     </View>
                 </View>
+                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 3, position: "absolute", bottom: '50%'}}color='#ddd'/>
             </View>
         )
     }

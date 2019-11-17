@@ -6,7 +6,7 @@ class ContactInfo extends Component {
     render() {
         const data = this.props.data;
         return (
-            <View key={data.key} >
+            <View>
                 <TouchableOpacity style={style.interestBox} onPress={() => this.props._onPress(data.key)}>
                     {
                         data.selected

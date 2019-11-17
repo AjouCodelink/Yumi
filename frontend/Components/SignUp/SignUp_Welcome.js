@@ -29,13 +29,9 @@ export default class SignUp_Welcome extends Component {
                     <Text style={style.font_title}>Welcome!</Text>
                 </View>
                 <View style={style.content}>
-                    <View style={style.content}>
-                        <Text style={style.font_main}>Yumi is an open chatting application for{"\n"} students studying abroad.</Text>
-                    </View>
-                    <View style={style.content}>
+                    <View style={[style.content, {justifyContent: 'space-around'}]}>
+                        <Text style={style.font_main}>Yumi is an open chatting application for students studying abroad.</Text>
                         <Text style={style.font_main}>(대충 그럴싸한 설명 하는 글1)</Text>
-                    </View>
-                    <View style={style.content}>
                         <Text style={style.font_main}>(대충 지 잘난거 자랑 하는 글2)</Text>
                     </View>
                     <Text style={style.font_main}>Now, press the next button.</Text>
