@@ -183,19 +183,16 @@ export default class Chatroom extends Component {
                         }}
                         style={{width: '100%'}}>
                         {this.state.chatlog.map( chatlog => (chatlog.user_email == this.state.myEmail    // 말풍선 만들기
-                            ? ( <View key={this.state.key++} style={style.my_chat}>
+                            ? (<View key={this.state.key++} style={style.my_chat}>
                                 <Chatbox_my data={chatlog}/>
-                            </View>
-                            ) : ( chatlog.user_email != 'PopQuizBot' 
-                                ? (
-                                    <View key={this.state.key++} style={style.other_chat}>
-                                        <Chatbox_other data={chatlog}/>
-                                    </View>
-                                ) : (
-                                    <View key={this.state.key++} style={style.other_chat}>
-                                        <Chatbox_quizbot data={chatlog}/>
-                                    </View>
-                                )
+                            </View>)
+                            : ( chatlog.user_email != 'PopQuizBot' 
+                                ? (<View key={this.state.key++} style={style.other_chat}>
+                                    <Chatbox_other data={chatlog}/>
+                                </View>)
+                                : (<View key={this.state.key++} style={style.other_chat}>
+                                    <Chatbox_quizbot data={chatlog}/>
+                                </View>)
                             )
                         ))}
                     </ScrollView>

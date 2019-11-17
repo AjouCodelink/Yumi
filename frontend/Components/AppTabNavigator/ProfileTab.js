@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import { Icon, Thumbnail } from 'native-base';
 
@@ -58,13 +58,9 @@ export default class ProfileTab extends Component {
                     submitInput={ (inputText) => {this._changeNickname(inputText), this.setState({isAlertVisible:false})}}
                     closeDialog={ () => {this.setState({isAlertVisible:false})} }/>
                 <View style={style.topsideContainer}>
-                    <View style={{justifyContent: 'center', width: '80%', flexDirection:'row', alignItems: 'flex-end'}}> 
-                        <Text style={style.font_header}>여기엔 뭐넣을지 추천좀;{"\n"}빈칸 너무 어색할거같은뎅ㅜ</Text>
-                        <TouchableOpacity
-                            onPress= {() => this._onPressStatusMessage()}>
-                            <Icon name='md-create' style={{fontSize: 25, margin: 10, color: 'white'}} />
-                        </TouchableOpacity>
-                    </View>
+                    <Image
+                        style={{height:'100%', width:'100%', opacity: 0.2, resizeMode:'cover'}}
+                        source={{ uri: this.state.myThumbnailURL }}/>
                 </View>
                 <View style={style.downsideContainer}>
                     <View style={{flexDirection:'row', alignItems: 'flex-end', marginLeft: 25}}> 
@@ -79,7 +75,7 @@ export default class ProfileTab extends Component {
                     style={style.thumbnailContainer}
                     onPress= {() => this._onPressThumbnail()}
                     activeOpacity= {0.8}>
-                    <Thumbnail circle backgroundColor="#fff" style={style.thumbnail}
+                    <Thumbnail circle backgroundColor="#ddd" style={style.thumbnail}
                         source={{ uri: this.state.myThumbnailURL }}/>
                 </TouchableOpacity>
             </View>

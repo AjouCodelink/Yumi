@@ -81,18 +81,18 @@ export default class Chatroom_SideMenu extends Component {
                     </View>
                     <View style={style.userList}>
                         <ScrollView>
-                            {this.state.userlist.map( user => (user.thumbnailURL != null
+                            {this.state.userlist.map( user => (user.thumbnailURL == null || user.thumbnailURL == ''
                                 ? (<View style={style.user} key={this.state.key++}>
-                                    <Thumbnail backgroundColor="#fff" style={style.user_thumbnail}
-                                        source={{ uri: this.state.thumbnailURL }}/>
-                                    <Text style={style.user_name}>{user.nickname}</Text>
-                                </View>)
-                                : (<View style={style.user} key={this.state.key++}>
                                     <Thumbnail backgroundColor="#fff" style={style.user_thumbnail}
                                         source={require('../../assets/default_thumbnail.png')}/>
                                     <Text style={style.user_name}>{user.nickname}</Text>
                                     </View>
                                 )
+                                : (<View style={style.user} key={this.state.key++}>
+                                    <Thumbnail backgroundColor="#fff" style={style.user_thumbnail}
+                                        source={{ uri: this.state.thumbnailURL }}/>
+                                    <Text style={style.user_name}>{user.nickname}</Text>
+                                </View>)
                             ))}
                         </ScrollView>
                     </View>
