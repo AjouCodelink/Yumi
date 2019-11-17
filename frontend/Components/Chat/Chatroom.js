@@ -23,22 +23,28 @@ export default class Chatroom extends Component {
     constructor(props){
         super(props);
         this.socket = io('http://101.101.160.185:3000');
-        this.db_Add = this.db_Add.bind(this);
 
         this.socket.on('RECEIVE_MESSAGE', function(data){
             console.log(data);
-
-            //this.db_Add(data); // TODO : DB에 채팅 내역 저장해야 함.
+            db_Add(data); // TODO : DB에 채팅 내역 저장해야 함.
         });
 
         this.socket.on('disconnect', function(){
             console.log('disconnect');
         })
-    };
 
-    static navigationOptions = {
-        header: null
-    }
+        db_Add = (newChat) => {
+            db.transaction( tx => {
+                tx.executeSql(
+                    'INSERT INTO chatLog (user_email, cr_id, Time, message, answer) values (?, ?, ?, ?, ?);',
+                    [newChat.user_email, newChat.cr_id, newChat.Time, newChat.message, newChat.answer],
+                    null,
+                    (_,error) => console.error(error)   // sql문 실패 에러
+                );
+            },(error) => console.error(error))   // 트랜젝션 에러
+            this.db_Update()
+        }
+    };
 
     state = {
         cr_id: 0,
@@ -67,7 +73,11 @@ export default class Chatroom extends Component {
             {nickname: '123'},],
         key: 0,
     }
-    
+
+    static navigationOptions = {
+        header: null
+    }
+
     componentWillMount() {
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
@@ -93,15 +103,14 @@ export default class Chatroom extends Component {
 
     _onPressSend(){
         if (this.state.message != ''){
-            const newchat = {
+            const newChat = {
                 user_email: this.state.myEmail,
                 cr_id: this.state.cr_id,
                 Time: Date(),
                 message: this.state.message,
                 //answer: null
             }
-
-            this.socket.emit('SEND_MESSAGE', newchat);
+            this.socket.emit('SEND_MESSAGE', newChat);
             this.setState({message: null});    
         }
     }
@@ -117,17 +126,6 @@ export default class Chatroom extends Component {
         this.db_Add(newQuiz)
     }
 
-    db_Add(newchat) {
-        db.transaction( tx => {
-            tx.executeSql(
-                'INSERT INTO chatLog (user_email, cr_id, Time, message, answer) values (?, ?, ?, ?, ?);',
-                [newchat.user_email, newchat.cr_id, newchat.Time, newchat.message, newchat.answer],
-                null,
-                (_,error) => console.error(error)   // sql문 실패 에러
-            );
-        },(error) => console.error(error))   // 트랜젝션 에러
-        this.db_Update()
-    }
 
     db_Update = () => {        // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
