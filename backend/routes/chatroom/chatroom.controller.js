@@ -14,6 +14,7 @@ exports.searchWord = (req, res) =>{
     })
 }
 
+
 /*
     POST /chatroom/creation/:interest
 */
@@ -63,6 +64,28 @@ exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반�
     })
 }
 
+
+/*
+    chatroom recommendation api
+    GET /chatroom/recommend
+*/
+
+exports.recommend = (req, res) => {
+    console.log(req.decoded.email);
+    var userEmail = req.decoded.email;
+    
+    User.findOne({email:userEmail}, function(err, data){
+        console.log(data.interests);
+        console.log(data.interests.section);
+        var interest = data.interests;
+        ChatRoom.findOne({interest: 'gd'}, function(err, data){
+            console.log(data._id);
+            res.json(data._id);
+            console.log('2')
+        })
+    })
+}
+
 /*
     GET /chatroom/log/:cr_id
 */
@@ -86,3 +109,4 @@ exports.getParticipants = (req, res) => {
         res.send(data.participants);
     })
 }
+
