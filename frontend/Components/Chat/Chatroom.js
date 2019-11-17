@@ -51,25 +51,26 @@ export default class Chatroom extends Component {
         message: '',
         myEmail:'',
         chatlog:[], // 채팅로그
-        userlist:[{nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '456'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},],
+        userlist:[{thumbnailURL: '', nickname: '123'},
+            {thumbnailURL: '', nickname: '12'},
+            {thumbnailURL: '', nickname: '234'},
+            {thumbnailURL: '', nickname: '43'},
+            {thumbnailURL: '', nickname: '2'},
+            {thumbnailURL: '', nickname: '654'},
+            {thumbnailURL: '', nickname: '3'},
+            {thumbnailURL: '', nickname: '5'},
+            {thumbnailURL: '', nickname: '6'},
+            {thumbnailURL: '', nickname: '756'},
+            {thumbnailURL: '', nickname: '5'},
+            {thumbnailURL: '', nickname: '77'},
+            {thumbnailURL: '', nickname: '6'},
+            {thumbnailURL: '', nickname: '84'},
+            {thumbnailURL: '', nickname: '29'},
+            {thumbnailURL: '', nickname: '97'},
+            {thumbnailURL: '', nickname: '56'},
+            {thumbnailURL: '', nickname: '123'},
+            {thumbnailURL: '', nickname: '32'},
+        ],
         key: 0,
     }
 
@@ -122,7 +123,7 @@ export default class Chatroom extends Component {
             message: question,
             answer: answer,
         }
-        this.db_Add(newQuiz)
+        //이 부분에는 socket로 팝퀴즈 전달하도록 해야함.
     }
 
     db_Update = () => {        // DB 내의 채팅 로그 읽어오기
@@ -190,10 +191,6 @@ export default class Chatroom extends Component {
                     </Right>
                 </View>
                 <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={0} style={style.container}>
-                    <TouchableOpacity        // 임시 컴포넌트입니다. 팝퀴즈 구현이 끝나면 삭제해주세요.
-                        onPress={() => this._receivePopQuiz("이곳엔 질문을 입력합니다. 정답은 현재 test이며, 꾹 누르면 팝업창이 등장합니다. (대소문자 관계X)", "test")}>
-                        <Text style={{color: "#bbb"}}>(대충 팝퀴즈 만드는 버튼)</Text>
-                    </TouchableOpacity>
                     <ScrollView
                         ref={scrollView => {
                             this.scrollView = scrollView;

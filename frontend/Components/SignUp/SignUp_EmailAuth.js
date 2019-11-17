@@ -107,7 +107,7 @@ export default class SignUp_EmailAuth extends Component {
                         </View>
                     </View>
                     <Text style={style.font_main}>  You must use school e-mail.</Text>
-                    <Text style={style.font_main}>    ex) example@ajou.ac.kr{"\n"}{"\n"}</Text>
+                    <Text style={style.font_main}>    example. example@ajou.ac.kr{"\n"}{"\n"}</Text>
                 </KeyboardAvoidingView>
                 <KeyboardAvoidingView behavior='padding' style={[style.content, {display: this.state.authHideness}]}>
                     <Text style={{fontSize: 17, color: '#aaa'}}> Your email address :</Text>
