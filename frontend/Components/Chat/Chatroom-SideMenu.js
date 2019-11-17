@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
-import { Icon } from 'native-base';
+import { Icon, Thumbnail } from 'native-base';
 
+const screenHeight = Math.round(Dimensions.get('window').height);
 const screenWidth = Math.round(Dimensions.get('window').width);
 
 export default class Chatroom_SideMenu extends Component {
     constructor(props){
         super(props);
         this.state={
-            bookmark: false, notification: true,
-            users: [],
+            bookmark: false,
+            notification: true,
+            userlist: this.props.userlist,
+            key: 0,
         }
     }
     _onPressBookmark() {
@@ -78,8 +81,18 @@ export default class Chatroom_SideMenu extends Component {
                     </View>
                     <View style={style.userList}>
                         <ScrollView>
-                            {this.state.users.map( user => (
-                                <Text style={style.tool_text}>{user.nickname}</Text>
+                            {this.state.userlist.map( user => (user.thumbnailURL != null
+                                ? (<View style={style.user} key={this.state.key++}>
+                                    <Thumbnail backgroundColor="#fff" style={style.user_thumbnail}
+                                        source={{ uri: this.state.thumbnailURL }}/>
+                                    <Text style={style.user_name}>{user.nickname}</Text>
+                                </View>)
+                                : (<View style={style.user} key={this.state.key++}>
+                                    <Thumbnail backgroundColor="#fff" style={style.user_thumbnail}
+                                        source={require('../../assets/default_thumbnail.png')}/>
+                                    <Text style={style.user_name}>{user.nickname}</Text>
+                                    </View>
+                                )
                             ))}
                         </ScrollView>
                     </View>
@@ -91,19 +104,19 @@ export default class Chatroom_SideMenu extends Component {
 
 const style = StyleSheet.create({
     container: {
-        paddingTop: 40,
         width: screenWidth*0.6,
-        height: '100%',
         justifyContent: 'flex-start',
         backgroundColor: '#444',
     },
     content: {
         width: '100%',
+        marginTop: 40,
         justifyContent: 'center',
         alignItems: 'center',
     },
     iconBox: {
         width: '100%',
+        height: 80,
         paddingBottom: 25,
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -117,6 +130,7 @@ const style = StyleSheet.create({
     },
     toolBox: {
         width: '100%',
+        height: 240,
         paddingLeft: 20,
         paddingTop: 12,
         paddingBottom: 12,
@@ -142,13 +156,31 @@ const style = StyleSheet.create({
     },
     userList: {
         width: '100%',
-        paddingTop: 25,
-        justifyContent: 'center',
-        alignItems: 'center',
+        height: screenHeight-80-240-90, //iconbox height - toolbox height - 105
+        paddingTop: 10,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
     },
     user: {
+        width: screenWidth*0.6,
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
+        paddingRight: 15,
+        paddingLeft: 15,
+        marginBottom: 6,
+    },
+    user_thumbnail: {
+        height: 36,
+        width: 36,
+        marginRight: 5,
+        borderWidth: 1,
+        borderColor: '#333',
+        borderRadius: 36*0.4,
+    },
+    user_name: {
+        color: '#ddd',
+        fontSize: 20,
+        paddingBottom: 1,
     },
 })

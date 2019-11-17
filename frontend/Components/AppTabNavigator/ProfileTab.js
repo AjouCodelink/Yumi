@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import DialogInput from 'react-native-dialog-input';
 import { Icon, Thumbnail } from 'native-base';
 
 import * as SQLite from 'expo-sqlite';
@@ -12,6 +13,7 @@ export default class ProfileTab extends Component {
         myEmail: '',
         myNickname: 'My nickname',
         myThumbnailURL: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd', // 이후 기본 URL로 연동해야함.
+        isAlertVisible: false,
     }
 
     static navigationOptions = {
@@ -32,8 +34,9 @@ export default class ProfileTab extends Component {
         },(error) => console.error(error))
     }
 
-    _onPressNickname() {
-        alert("you pressed Nickname Edit.")
+    _changeNickname = (inputText) => {
+        this.setState({myNickname: inputText})
+        alert("Changed! (이후 서버로 보내야함)")
     }
 
     _onPressThumbnail() {
@@ -47,6 +50,13 @@ export default class ProfileTab extends Component {
     render() {
         return (
             <View style={style.container}>
+                <DialogInput
+                    isDialogVisible = {this.state.isAlertVisible}
+                    title={"Change Nickname"}
+                    message={'Now your nickname is ['+this.state.myNickname+']'}
+                    hintInput ={"New Nickname"}
+                    submitInput={ (inputText) => {this._changeNickname(inputText), this.setState({isAlertVisible:false})}}
+                    closeDialog={ () => {this.setState({isAlertVisible:false})} }/>
                 <View style={style.topsideContainer}>
                     <View style={{justifyContent: 'center', width: '80%', flexDirection:'row', alignItems: 'flex-end'}}> 
                         <Text style={style.font_header}>여기엔 뭐넣을지 추천좀;{"\n"}빈칸 너무 어색할거같은뎅ㅜ</Text>
@@ -59,7 +69,7 @@ export default class ProfileTab extends Component {
                 <View style={style.downsideContainer}>
                     <View style={{flexDirection:'row', alignItems: 'flex-end', marginLeft: 25}}> 
                         <Text style={style.font_nickname}>{this.state.myNickname}</Text>
-                        <TouchableOpacity onPress= {() => this._onPressNickname()}>
+                        <TouchableOpacity onPress= {() => this.setState({isAlertVisible: true})}>
                             <Icon name='md-create' style={{fontSize: 25, margin: 10, color: 'white'}} />
                         </TouchableOpacity>
                     </View>

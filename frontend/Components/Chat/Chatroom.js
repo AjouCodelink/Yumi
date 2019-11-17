@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Dimensions } from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Dimensions, YellowBox } from 'react-native';
 import {Icon, Input, Left, Right} from 'native-base';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 
@@ -15,14 +15,16 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 const io = require('socket.io-client');
 
+YellowBox.ignoreWarnings([  // 강제로 에러 안뜨게 하기
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+]);
+
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
+        this.db_Add = this.db_Add.bind(this);
         this.socket = io('http://101.101.160.185:3000');     
-        this.socket.on('RECEIVE_MESSAGE', function(data){
-            //console.log(RECEIVE_MESSAGE)
-            this.db_Add(data);
-        });
+        this.socket.on('RECEIVE_MESSAGE', this.db_Add);
     };
 
     static navigationOptions = {
@@ -35,6 +37,25 @@ export default class Chatroom extends Component {
         message: '',
         myEmail:'',
         chatlog:[], // 채팅로그
+        userlist:[{nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '456'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},],
         key: 0,
     }
     
@@ -49,12 +70,13 @@ export default class Chatroom extends Component {
             )
         },(error) => console.error(error))
         this.db_Update();
+        
     }
 
     renderDrawer = () => {
         return (
             <View>
-                <ChatroomSideMenu/>
+                <ChatroomSideMenu userlist={this.state.userlist}/>
             </View>
         );
     };
@@ -170,9 +192,9 @@ export default class Chatroom extends Component {
                                         <Chatbox_other data={chatlog}/>
                                     </View>
                                 ) : (
-                                <View key={this.state.key++} style={style.other_chat}>
-                                    <Chatbox_quizbot data={chatlog}/>
-                                </View>
+                                    <View key={this.state.key++} style={style.other_chat}>
+                                        <Chatbox_quizbot data={chatlog}/>
+                                    </View>
                                 )
                             )
                         ))}
