@@ -73,3 +73,16 @@ exports.getLog = (req, res) => {
         res.json(chatroom.chatlog);
     })
 }
+
+/*
+    chatroom participants 불러오는 api
+    GET /chatroom/participants/:cr_id
+*/
+
+exports.getParticipants = (req, res) => {
+    var cr_id = req.params.cr_id;
+
+    ChatRoom.findOne({_id:cr_id}, function(err, data){
+        res.send(data.participants);
+    })
+}
