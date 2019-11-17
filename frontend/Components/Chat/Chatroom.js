@@ -18,7 +18,7 @@ const io = require('socket.io-client');
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
-        this.socket = io('http://101.101.160.185:3389');
+        this.socket = io('http://101.101.160.185:3000');
         this.db_Add = this.db_Add.bind(this);
 
         this.socket.on('RECEIVE_MESSAGE', function(data){
