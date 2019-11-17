@@ -42,15 +42,12 @@ export default class MainScreen extends Component {
     static navigationOptions = {    // 상단바 안보이게 하기
         header: null
     }
-    render() {
-        return <AppTabContainet/>; 
-    }
-    componentDidMount() {   // 뒤로가기 눌렀을 때
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-    }
-    componentWillUnmount() {    // 해제
+    componentWillUnmount() {
         this.exitApp = false;
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    }
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     }
     handleBackButton = () => {  // 2000(2초) 안에 back 버튼을 한번 더 클릭 할 경우 앱 종료
         if (this.exitApp == undefined || !this.exitApp) {
@@ -59,8 +56,12 @@ export default class MainScreen extends Component {
             this.timeout = setTimeout(() => {this.exitApp = false;}, 2000);
         } else {
             clearTimeout(this.timeout);
-            BackHandler.exitApp();  // 앱 종료
+            BackHandler.exitApp();  // todo: 앱 완전 종료 되도록 하기 (현재: 최소화만 됨)
         }
         return true;
+    }
+
+    render() {
+        return <AppTabContainet/>; 
     }
 };

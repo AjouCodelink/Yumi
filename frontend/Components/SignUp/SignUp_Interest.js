@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, } from 'react-native';
 import CustomButton from '../CustomButton';
 
 import Games from './Interest/Games';
@@ -19,43 +19,6 @@ export default class SignUp_Interest extends Component {
             interests: [],
             signUpResult: -1
         }
-    }
-    render() {
-        const {navigation} = this.props;
-        this.state.email = navigation.getParam('email', 'No Email');
-        this.state.password = navigation.getParam('password', 'No Password');
-        this.state.nickname = navigation.getParam('nickname', 'No Nickname');
-        return (
-            <View style={style.container}>
-                <View style={style.header}/>
-                <View style={style.title}>
-                    <Text style={style.font_title}>Enter Interest</Text>
-                </View>
-                <View style={style.content}>
-                    <ScrollView> 
-                        <Foods interAdd={this.interAdd} interRemove={this.interRemove}/>
-                        <Games interAdd={this.interAdd} interRemove={this.interRemove}/>
-                        <Sports interAdd={this.interAdd} interRemove={this.interRemove}/>
-                    </ScrollView>
-                </View>
-                <View style={style.footer}>
-                    <View style={style.footer_backbutton}>
-                        <CustomButton
-                            title={'Back'}
-                            titleColor={'#ddd'}
-                            buttonColor={'#000'}
-                            onPress={() => this.goSignUp_Detail()}/>
-                    </View>
-                    <View style={style.footer_nextbutton}>
-                        <CustomButton
-                            title={'Next'}
-                            titleColor={'#000'}
-                            buttonColor={'#ddd'}
-                            onPress={() => this.pressDone()}/>
-                    </View>
-                </View>
-            </View>
-        )
     }
     goSignUp_Detail(){
         this.props.navigation.navigate('SignUp_Detail');
@@ -96,7 +59,6 @@ export default class SignUp_Interest extends Component {
         user.password = this.state.password
         user.nickname = this.state.nickname
         user.interests = this.state.interests
-        console.log(user);
         var url = 'http://101.101.160.185:3000/user/signup';
         fetch(url, {
             method: 'POST',
@@ -110,6 +72,43 @@ export default class SignUp_Interest extends Component {
         .then(responseJson => this.setState({
             signUpResult: responseJson.result     // 실패시0 성공시1 
         }));
+    }
+    render() {
+        const {navigation} = this.props;
+        this.state.email = navigation.getParam('email', 'No Email');
+        this.state.password = navigation.getParam('password', 'No Password');
+        this.state.nickname = navigation.getParam('nickname', 'No Nickname');
+        return (
+            <View style={style.container}>
+                <View style={style.header}/>
+                <View style={style.title}>
+                    <Text style={style.font_title}>Enter Interest</Text>
+                </View>
+                <View style={style.content}>
+                    <ScrollView> 
+                        <Foods interAdd={this.interAdd} interRemove={this.interRemove}/>
+                        <Games interAdd={this.interAdd} interRemove={this.interRemove}/>
+                        <Sports interAdd={this.interAdd} interRemove={this.interRemove}/>
+                    </ScrollView>
+                </View>
+                <View style={style.footer}>
+                    <View style={style.footer_backbutton}>
+                        <CustomButton
+                            title={'Back'}
+                            titleColor={'#ddd'}
+                            buttonColor={'#000'}
+                            onPress={() => this.goSignUp_Detail()}/>
+                    </View>
+                    <View style={style.footer_nextbutton}>
+                        <CustomButton
+                            title={'Next'}
+                            titleColor={'#000'}
+                            buttonColor={'#ddd'}
+                            onPress={() => this.pressDone()}/>
+                    </View>
+                </View>
+            </View>
+        )
     }
 }
 

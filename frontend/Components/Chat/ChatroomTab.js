@@ -21,7 +21,7 @@ export default class ChatroomTab extends Component {
             isAlertVisible: false,
             isSearchVisible: false,
             search : '',
-        }    
+        }
     }
 
     submit(inputText){
@@ -151,7 +151,6 @@ export default class ChatroomTab extends Component {
     }
     searchBarShow(){
         this.setState({isSearchVisible: !this.state.isSearchVisible});
-
     }
     searchRoomByKeyword(){
         //Alert 또는 popup으로 채팅방 결과 띄워주기

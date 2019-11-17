@@ -24,19 +24,6 @@ export default class SettingTab extends Component {
         }
     }
 
-    render() {
-        return (
-            <View style={style.container}>
-                <View style={style.content}>
-                    <FlatList
-                        data={this.state.data}
-                        renderItem={this._renderItem}
-                        onEndReachedThreshold={1}/>
-                </View>
-            </View>
-        )
-    }
-
     _renderItem = ({item}) => {
         return (
             <TouchableOpacity onPress={() => this._onPress(item.key)}>
@@ -84,12 +71,15 @@ export default class SettingTab extends Component {
             {cancelable: false},
         );
     }
+    
     onPressContect() {
         Linking.openURL('http://google.com');   // 이후 연락 가능한 페이지로 연동해야함
     }
+
     onPressLeave() {
         alert("you press Leave");
     }
+
     onPressDeleteChatLog() {
         Alert.alert(
             'Really?',
@@ -113,6 +103,20 @@ export default class SettingTab extends Component {
             ],
             {cancelable: false},
         );
+    }
+
+    
+    render() {
+        return (
+            <View style={style.container}>
+                <View style={style.content}>
+                    <FlatList
+                        data={this.state.data}
+                        renderItem={this._renderItem}
+                        onEndReachedThreshold={1}/>
+                </View>
+            </View>
+        )
     }
 }
 

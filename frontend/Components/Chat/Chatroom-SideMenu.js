@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { Icon } from 'native-base';
+
+const screenWidth = Math.round(Dimensions.get('window').width);
 
 export default class Chatroom_SideMenu extends Component {
     constructor(props){
@@ -10,6 +12,29 @@ export default class Chatroom_SideMenu extends Component {
             users: [],
         }
     }
+    _onPressBookmark() {
+        this.setState({
+            bookmark: !this.state.bookmark
+        })
+    }
+    _onPressNoti() {
+        this.setState({
+            notification: !this.state.notification
+        })
+    }
+    _onPressExit = () => {
+        alert("You pressed Exit.")
+    }
+    _onPressPicture() {
+        alert("You pressed Picture.")
+    }
+    _onPressRecom() {
+        alert("You pressed Recom.")
+    }
+    _onPressCamera() {
+        alert("You pressed Camera.")
+    }
+    
     render() {
         return (
             <View style={style.container}>
@@ -62,34 +87,12 @@ export default class Chatroom_SideMenu extends Component {
             </View>
         );
     }
-    _onPressBookmark() {
-        this.setState({
-            bookmark: !this.state.bookmark
-        })
-    }
-    _onPressNoti() {
-        this.setState({
-            notification: !this.state.notification
-        })
-    }
-    _onPressExit() {
-        alert("You pressed Exit.")
-    }
-    _onPressPicture() {
-        alert("You pressed Picture.")
-    }
-    _onPressRecom() {
-        alert("You pressed Recom.")
-    }
-    _onPressCamera() {
-        alert("You pressed Camera.")
-    }
 }
 
 const style = StyleSheet.create({
     container: {
         paddingTop: 40,
-        width: 300,
+        width: screenWidth*0.6,
         height: '100%',
         justifyContent: 'flex-start',
         backgroundColor: '#444',

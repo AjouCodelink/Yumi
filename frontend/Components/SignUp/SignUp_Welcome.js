@@ -16,6 +16,12 @@ export default class SignUp_Welcome extends Component {
             email: ''
         })
     }
+    goTitle(){
+        this.props.navigation.navigate('Title');
+    }
+    goSignUp_EmailAuth(){
+        this.props.navigation.navigate('SignUp_EmailAuth');
+    }
     render() {
         return (
             <View style={style.container}>
@@ -52,12 +58,6 @@ export default class SignUp_Welcome extends Component {
                 </View>
             </View>
         )
-    }
-    goTitle(){
-        this.props.navigation.navigate('Title');
-    }
-    goSignUp_EmailAuth(){
-        this.props.navigation.navigate('SignUp_EmailAuth');
     }
 }
 
@@ -115,5 +115,6 @@ const style = StyleSheet.create({
     font_main: {
         color: '#aaa',
         fontSize: 20,
+        textAlign: 'center',
     },
 });

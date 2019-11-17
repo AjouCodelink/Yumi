@@ -71,27 +71,6 @@ class Games extends Component {
             key : '0199',
         },]
     }
-    render() {
-        return (
-            <View style = {style.container}>
-                <TouchableOpacity style={style.section} onPress={() => this._onPressSection()}>
-                    <Text style={{color: '#ddd', fontSize: 20}}>{this.state.section}</Text>
-                    {
-                        this.state.opened == 'flex'
-                            ?<Icon name='md-arrow-dropdown' style={{color: "#ddd", fontSize: 32}}/>
-                            :<Icon name='md-arrow-dropup' style={{color: "#ddd", fontSize: 32}}/>
-                    }
-                </TouchableOpacity>
-                <View style={[style.list, {display: this.state.opened}]}>
-                    {
-                        this.state.contactData.map( contactData => (
-                            <InterestList data={contactData} _onPress={this._onPressGroup}/>
-                        ))
-                    }
-                </View>
-            </View>
-        )
-    }
     _onPressSection() {
         if (this.state.opened == 'none') {
             this.setState({opened: 'flex'})
@@ -113,6 +92,27 @@ class Games extends Component {
             ];
             return ({contactData})
         });
+    }
+    render() {
+        return (
+            <View style = {style.container}>
+                <TouchableOpacity style={style.section} onPress={() => this._onPressSection()}>
+                    <Text style={{color: '#ddd', fontSize: 20}}>{this.state.section}</Text>
+                    {
+                        this.state.opened == 'flex'
+                            ?<Icon name='md-arrow-dropdown' style={{color: "#ddd", fontSize: 32}}/>
+                            :<Icon name='md-arrow-dropup' style={{color: "#ddd", fontSize: 32}}/>
+                    }
+                </TouchableOpacity>
+                <View style={[style.list, {display: this.state.opened}]}>
+                    {
+                        this.state.contactData.map( contactData => (
+                            <InterestList data={contactData} _onPress={this._onPressGroup}/>
+                        ))
+                    }
+                </View>
+            </View>
+        )
     }
 }
 const style = StyleSheet.create({
