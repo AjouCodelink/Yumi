@@ -9,5 +9,7 @@ router.get('/search/:keyword', controller.searchWord);
 router.post('/creation/:interest', controller.creation);
 router.get('/list', controller.getList);
 router.get('/log/:cr_id', controller.getLog);
+router.get('/participants/:cr_id', controller.getParticipants);
+router.get('/recommendChatroom', controller.recommendChatroom);
 
 module.exports = router;
