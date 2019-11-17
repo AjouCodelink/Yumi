@@ -25,8 +25,7 @@ export default class Chatroom extends Component {
         this.socket = io('http://101.101.160.185:3000');
 
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            console.log(data);
-            db_Add(data); // TODO : DB에 채팅 내역 저장해야 함.
+            db_Add(data);
         });
 
         this.socket.on('disconnect', function(){
@@ -40,8 +39,9 @@ export default class Chatroom extends Component {
                     [newChat.user_email, newChat.cr_id, newChat.Time, newChat.message, newChat.answer],
                     null,
                     (_,error) => console.error(error)   // sql문 실패 에러
-                );
-            },(error) => console.error(error))   // 트랜젝션 에러
+                ).catch(e => {this.db_Rebuild});
+            },(error) => console.error(error))
+            .catch(e => {this.db_Rebuild})   // 트랜젝션 에러
             this.db_Update()
         }
     };
@@ -126,13 +126,30 @@ export default class Chatroom extends Component {
         this.db_Add(newQuiz)
     }
 
-
     db_Update = () => {        // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
                 [this.state.cr_id],
                 (_, { rows: { _array }  }) => this.setState({ chatlog: _array }),
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error)
+        )
+    };
+
+    db_Rebuild = () => {        // DB attribute가 다른 이유로 input에 실패 할 때, 디비를 다시 build시킴
+        db.transaction( tx => {
+            tx.executeSql(
+                'DROP TABLE chatLog',
+                [this.state.cr_id],
+                (_, { rows: { _array }  }) => this.setState({ chatlog: _array }),
+                (_,error) => console.error(error)
+            )
+            tx.executeSql(
+                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
+                [],
+                null,
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error)
