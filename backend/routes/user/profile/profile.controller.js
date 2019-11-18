@@ -7,7 +7,9 @@ exports.nickname = function(req, res){
     var email = req.decoded.email;
 
     User.findOne({email:email}, function(err, user){
-        res.json(user.nickname);
+        if(err) res.json({result : 0, message: "save failed"});
+
+        res.json({result : 1, nickname : user.nickname});
     })
 }
 
