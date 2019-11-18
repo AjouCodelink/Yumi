@@ -13,6 +13,7 @@ exports.searchWord = (req, res) =>{
     })
 }
 
+
 /*
     POST /chatroom/creation/:interest
 */
@@ -62,6 +63,66 @@ exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반�
     })
 }
 
+
+
+/*
+    chatroom recommendation api
+    GET /chatroom/recommend
+*/
+
+exports.recommend = (req, res) => {
+
+    console.log(req.decoded.email);//o
+    var userEmail = req.decoded.email;//o
+    
+    User.findOne({email:userEmail}, function(err, user){
+        var length = user.interests.length;
+        var result = Math.floor(Math.random() * length);
+
+        console.log(user.interests);//o
+        console.log(user.interests[result].section);//undefined
+        console.log(user.interests[result].group);
+
+        console.log(result);
+
+        var interestSection = user.interests[result].section;
+        var interestGroup = user.interests[result].group;
+        
+        ChatRoom.find({interest: interestSection}, function(err, chatroom){
+            // console.log(chatroom);
+            res.json(chatroom);
+            // console.log('1');
+        })
+    })
+}
+
+/*
+    GET /chatroom/log/:cr_id
+*/
+exports.getLog = (req, res) => {
+    var cr_id = req.params.cr_id;
+    
+    ChatRoom.findOne({_id : cr_id}, function(err, chatroom){ // TODO : 추후에 채팅 기록 소량만 가져올 수 있게끔 수정해야 함.
+        res.json(chatroom.chatlog);
+    })
+}
+
+/*
+    chatroom participants 불러오는 api
+    GET /chatroom/participants/:cr_id
+
+    return nickname, profile, email
+*/
+
+exports.getParticipants = (req, res) => {
+    var cr_id = req.params.cr_id;
+
+    ChatRoom.findOne({_id:cr_id}, function(err, chatroom){
+        res.send(chatroom.participants);
+    })
+}
+
+
 // /*
 //     GET /chatroom/log/:cr_id
 // */
@@ -72,3 +133,4 @@ exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반�
 //         res.json(chatroom.chatlog);
 //     })
 // }
+
