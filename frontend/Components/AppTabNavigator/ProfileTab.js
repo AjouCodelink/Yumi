@@ -11,9 +11,10 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 export default class ProfileTab extends Component {
     state = {
         myEmail: '',
-        myNickname: 'My nickname',
+        myNickname: 'LOADING',
         myThumbnailURL: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd', // 이후 기본 URL로 연동해야함.
         isAlertVisible: false,
+        token: ''
     }
 
     static navigationOptions = {
@@ -25,18 +26,49 @@ export default class ProfileTab extends Component {
     componentWillMount() {
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
-                'SELECT user_email FROM token',
+                'SELECT * FROM token',
                 [],
-                (_, { rows: { _array }  }) =>     
-                    (_array != []) ? this.setState({myEmail: _array[0].user_email}) :
+                (_, { rows: { _array }  }) => {
+                    if(_array != []) (
+                        this.setState({
+                            myEmail: _array[0].user_email, 
+                            token: _array[0].access_token
+                        }),
+                        this._getNickname()
+                    )
+                },
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
     }
 
-    _changeNickname = (inputText) => {
-        this.setState({myNickname: inputText})
-        alert("Changed! (이후 서버로 보내야함)")
+    _getNickname() {
+        var url = 'http://101.101.160.185:3000/user/profile/nickname';
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token' : 'token',
+            'x-access-token': this.state.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {this.setState({myNickname : responseJson.nickname})})
+    }
+
+    _changeNickname = (newNickname) => {
+        var url = 'http://101.101.160.185:3000/user/profile/nickname/'+newNickname;
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token' : 'token',
+            'x-access-token': this.state.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {this.setState({myNickname : responseJson.nickname})})
+        alert("Changed!")
     }
 
     _onPressThumbnail() {

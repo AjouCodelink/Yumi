@@ -59,13 +59,13 @@ export default class SettingTab extends Component {
                 {text: 'LogOut', onPress: () => {
                     db.transaction(tx => {
                         tx.executeSql(
-                            'DELETE FROM token',
+                            'DROP TABLE token',
                             [],
                             null,
                             (_,error) => console.error(error)
                         )
                     },(error) => console.error(error))
-                    RootNavigator('Title')
+                    RootNavigator('Loading')
                 }},
             ],
             {cancelable: false},
@@ -92,7 +92,13 @@ export default class SettingTab extends Component {
                 {text: 'OK', onPress: () => {
                     db.transaction(tx => {
                         tx.executeSql(
-                            'DELETE FROM chatLog',
+                            'DROP TABLE chatLog',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        )
+                        tx.executeSql(          // chatlog 저장하는 table 생성하기
+                            'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
                             [],
                             null,
                             (_,error) => console.error(error)
