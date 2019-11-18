@@ -71,17 +71,27 @@ exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반�
 */
 
 exports.recommend = (req, res) => {
-    console.log(req.decoded.email);
-    var userEmail = req.decoded.email;
+
+    console.log(req.decoded.email);//o
+    var userEmail = req.decoded.email;//o
     
-    User.findOne({email:userEmail}, function(err, data){
-        console.log(data.interests);
-        console.log(data.interests.section);
-        var interest = data.interests;
-        ChatRoom.findOne({interest: 'gd'}, function(err, data){
-            console.log(data._id);
-            res.json(data._id);
-            console.log('2')
+    User.findOne({email:userEmail}, function(err, user){
+        var length = user.interests.length;
+        var result = Math.floor(Math.random() * length);
+
+        console.log(user.interests);//o
+        console.log(user.interests[result].section);//undefined
+        console.log(user.interests[result].group);
+
+        console.log(result);
+
+        var interestSection = user.interests[result].section;
+        var interestGroup = user.interests[result].group;
+        
+        ChatRoom.find({interest: interestSection}, function(err, chatroom){
+            // console.log(chatroom);
+            res.json(chatroom);
+            // console.log('1');
         })
     })
 }
@@ -100,13 +110,15 @@ exports.getLog = (req, res) => {
 /*
     chatroom participants 불러오는 api
     GET /chatroom/participants/:cr_id
+
+    return nickname, profile, email
 */
 
 exports.getParticipants = (req, res) => {
     var cr_id = req.params.cr_id;
 
-    ChatRoom.findOne({_id:cr_id}, function(err, data){
-        res.send(data.participants);
+    ChatRoom.findOne({_id:cr_id}, function(err, chatroom){
+        res.send(chatroom.participants);
     })
 }
 
