@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text} from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
@@ -19,7 +20,7 @@ export default class LoadingScreen extends Component {
                 (_,error) => console.error(error)
             )
             tx.executeSql(          // chatlog 저장하는 table 생성하기
-                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, PRIMARY KEY("user_email","cr_id","Time"))',
+                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
                 [],
                 null,
                 (_,error) => console.error(error)
@@ -37,20 +38,24 @@ export default class LoadingScreen extends Component {
         },(error) => console.error(error))
     }
 
-    render() {
-        return (
-            <View style={style.container}>
-                <Text style={style.loadingFont}>Yumi</Text>
-                <Text style={style.loadingFont}>Loading</Text>
-            </View>
-        );
-    }
-
     goMain(){
         this.props.navigation.navigate('Main');
     }
     goTitle(){
         this.props.navigation.navigate('Title');
+    }
+
+    render() {
+        return (
+            <View style={style.container}>
+                <Text style={style.loadingFont}>Yumi</Text>
+                <Text style={style.loadingFont}>Loading</Text>
+                
+                <TouchableOpacity style={style.stopClick} onPress={() => this.goTitle()}>
+                    <Text style={style.stopClickFont}>Screen frozen more than 3 seconds, press here.</Text>
+                </TouchableOpacity>
+            </View>
+        );
     }
 }
 
@@ -67,5 +72,14 @@ const style = StyleSheet.create({
         fontSize: 50,
         color: '#ddd',
         fontWeight: 'bold',
+    },
+    stopClick: {
+        flex: 2,
+        position : 'absolute',
+        bottom: '35%',
+    },
+    stopClickFont: {
+        fontSize: 20,
+        color: '#aaa',
     },
 });

@@ -13,77 +13,6 @@ export default class SignUp_EmailAuth extends Component {
         this.state={email: '', clientAuthcode: '', serverAuthcode: 'admin',
         emailHideness: 'flex', authHideness: 'none', nextHideness: 'none', authSuccess: 0, mailSendResult: -1}
     }
-    render() {
-        return (
-            <View style={style.container}>
-                <View style={style.header}/>
-                <View style={style.title}>
-                    <Text style={style.font_title}>E-mail authentication</Text>
-                </View>
-                <KeyboardAvoidingView behavior='padding' style={[style.content, {display: this.state.emailHideness}]}>
-                    <View style={style.input_place}>
-                        <View style={style.input}>
-                            <Item style={{height: 53, marginBottom: 20}} floatingLabel>
-                                <Label style={{color: '#999'}}>Email Address</Label>
-                                <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(email) => this.setState({email})}/>
-                            </Item>
-                        </View>
-                        <View style={style.auth_button}>
-                            <CustomButton
-                                title={'Send'}
-                                titleColor={'#000'}
-                                buttonColor={'#ddd'}
-                                onPress={() => {this.onPressEmail();}}/>
-                        </View>
-                    </View>
-                    <Text style={style.font_main}>  You must use school e-mail.</Text>
-                    <Text style={style.font_main}>    ex) example@ajou.ac.kr{"\n"}{"\n"}</Text>
-                </KeyboardAvoidingView>
-                <KeyboardAvoidingView behavior='padding' style={[style.content, {display: this.state.authHideness}]}>
-                    <Text style={{fontSize: 17, color: '#aaa'}}> Your email address :</Text>
-                    <Text style={{fontSize: 20, color: '#ddd'}}>  {this.state.email}{"\n"}</Text>
-                    <View style={style.input_place}>
-                        <View style={style.input}>
-                            <Item style={{height: 53, marginBottom: 20}} floatingLabel>
-                                <Label style={{color: '#999'}}>Authentication number</Label>
-                                <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(clientAuthcode) => this.setState({clientAuthcode})}/>
-                            </Item>
-                        </View>
-                        <View style={style.auth_button}>
-                            <CustomButton
-                                title={'Check'}
-                                titleColor={'#000'}
-                                buttonColor={'#ddd'}
-                                onPress={() => {this.onPressAuth();}}/>
-                        </View>
-                    </View>
-                    <Text style={style.font_main}>  The authentication number is 6 digits.{"\n"}</Text>
-                    {/*<Text style={style.font_main}>  현재 서버에 전송된 인증번호: {this.state.serverAuthcode}</Text>*/}
-                </KeyboardAvoidingView>
-                <View style={[style.content, {display: this.state.nextHideness}]}>
-                    <Text style={{fontSize: 17, color: '#aaa'}}> Your email address :</Text>
-                    <Text style={{fontSize: 20, color: '#ddd'}}>  {this.state.email}{"\n"}</Text>
-                    <Text style={{fontSize: 20, color: '#ddd'}}>   Email authentication completed.{"\n"}   Please press Next.</Text>
-                </View>
-            <View style={style.footer}>
-                <View style={style.footer_backbutton}>
-                    <CustomButton
-                        title={'Back'}
-                        titleColor={'#ddd'}
-                        buttonColor={'#000'}
-                        onPress={() => this.goTitle()}/>
-                </View>
-                <View style={style.footer_nextbutton}>
-                    <CustomButton
-                        title={'Next'}
-                        titleColor={'#000'}
-                        buttonColor={'#ddd'}
-                        onPress={() => this.onPressNext()}/>
-                </View>
-            </View>
-        </View>
-        )
-    }
     onPressEmail(){
         if(this.state.email == '') {    // 메일주소 입력X
             alert("Please enter your email address.")
@@ -159,6 +88,77 @@ export default class SignUp_EmailAuth extends Component {
             serverAuthcode: responseJson.number,
             mailSendResult: responseJson.result     // 실패시-1 중복시0 성공시1
         }));
+    }
+    render() {
+        return (
+            <View style={style.container}>
+                <View style={style.header}/>
+                <View style={style.title}>
+                    <Text style={style.font_title}>E-mail authentication</Text>
+                </View>
+                <KeyboardAvoidingView behavior='padding' style={[style.content, {display: this.state.emailHideness}]}>
+                    <View style={style.input_place}>
+                        <View style={style.input}>
+                            <Item style={{height: 53, marginBottom: 20}} floatingLabel>
+                                <Label style={{color: '#999'}}>Email Address</Label>
+                                <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(email) => this.setState({email})}/>
+                            </Item>
+                        </View>
+                        <View style={style.auth_button}>
+                            <CustomButton
+                                title={'Send'}
+                                titleColor={'#000'}
+                                buttonColor={'#ddd'}
+                                onPress={() => {this.onPressEmail();}}/>
+                        </View>
+                    </View>
+                    <Text style={style.font_main}>  You must use school e-mail.</Text>
+                    <Text style={style.font_main}>    ex) example@ajou.ac.kr{"\n"}{"\n"}</Text>
+                </KeyboardAvoidingView>
+                <KeyboardAvoidingView behavior='padding' style={[style.content, {display: this.state.authHideness}]}>
+                    <Text style={{fontSize: 17, color: '#aaa'}}> Your email address :</Text>
+                    <Text style={{fontSize: 20, color: '#ddd'}}>  {this.state.email}{"\n"}</Text>
+                    <View style={style.input_place}>
+                        <View style={style.input}>
+                            <Item style={{height: 53, marginBottom: 20}} floatingLabel>
+                                <Label style={{color: '#999'}}>Authentication number</Label>
+                                <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(clientAuthcode) => this.setState({clientAuthcode})}/>
+                            </Item>
+                        </View>
+                        <View style={style.auth_button}>
+                            <CustomButton
+                                title={'Check'}
+                                titleColor={'#000'}
+                                buttonColor={'#ddd'}
+                                onPress={() => {this.onPressAuth();}}/>
+                        </View>
+                    </View>
+                    <Text style={style.font_main}>  The authentication number is 6 digits.{"\n"}</Text>
+                    {/*<Text style={style.font_main}>  현재 서버에 전송된 인증번호: {this.state.serverAuthcode}</Text>*/}
+                </KeyboardAvoidingView>
+                <View style={[style.content, {display: this.state.nextHideness}]}>
+                    <Text style={{fontSize: 17, color: '#aaa'}}> Your email address :</Text>
+                    <Text style={{fontSize: 20, color: '#ddd'}}>  {this.state.email}{"\n"}</Text>
+                    <Text style={{fontSize: 20, color: '#ddd'}}>   Email authentication completed.{"\n"}   Please press Next.</Text>
+                </View>
+            <View style={style.footer}>
+                <View style={style.footer_backbutton}>
+                    <CustomButton
+                        title={'Back'}
+                        titleColor={'#ddd'}
+                        buttonColor={'#000'}
+                        onPress={() => this.goTitle()}/>
+                </View>
+                <View style={style.footer_nextbutton}>
+                    <CustomButton
+                        title={'Next'}
+                        titleColor={'#000'}
+                        buttonColor={'#ddd'}
+                        onPress={() => this.onPressNext()}/>
+                </View>
+            </View>
+        </View>
+        )
     }
 }
 

@@ -17,38 +17,6 @@ export default class SignUp_Done extends Component {
             loginResult: -1
         }
     }
-    render() {
-        const {navigation} = this.props;
-        this.state.email = navigation.getParam('email', 'No Email');
-        this.state.password = navigation.getParam('password', 'No Password');
-        return (
-            <View style={style.container}>
-                <View style={style.title}>
-                    <Text style={style.font_title}>Thank you!</Text>
-                </View>
-                <View style={style.content}>
-                    <View style={style.content}>
-                        <Text style={style.font_main}>All sign up procedures are complete!</Text>
-                    </View>
-                    <View style={style.content}>
-                        <Text style={style.font_main}>Your chosen interest is used only to{"\n"}recommend a suitable chat room for you.</Text>
-                    </View>
-                    <Text style={style.font_main}>Press the 'Done' button and experience Yumi.</Text>
-                </View>
-                <View style={style.footer}>
-                    <View style={style.footer_backbutton}>
-                    </View>
-                    <View style={style.footer_nextbutton}>
-                        <CustomButton
-                            title={'Done'}
-                            titleColor={'#000'}
-                            buttonColor={'#ddd'}
-                            onPress={() => this.pressDone()}/>
-                    </View>
-                </View>
-            </View>
-        )
-    }
     pressDone(){
         this.submit();
         setTimeout(() => {this.checkLoginResult();}, 250);
@@ -95,6 +63,38 @@ export default class SignUp_Done extends Component {
             loginResult: responseJson.result,       // 실패시0 성공시1 
             token: responseJson.token
         }));
+    }
+    render() {
+        const {navigation} = this.props;
+        this.state.email = navigation.getParam('email', 'No Email');
+        this.state.password = navigation.getParam('password', 'No Password');
+        return (
+            <View style={style.container}>
+                <View style={style.title}>
+                    <Text style={style.font_title}>Thank you!</Text>
+                </View>
+                <View style={style.content}>
+                    <View style={style.content}>
+                        <Text style={style.font_main}>All sign up procedures are complete!</Text>
+                    </View>
+                    <View style={style.content}>
+                        <Text style={style.font_main}>Your chosen interest is used only to{"\n"}recommend a suitable chat room for you.</Text>
+                    </View>
+                    <Text style={style.font_main}>Press the 'Done' button and experience Yumi.</Text>
+                </View>
+                <View style={style.footer}>
+                    <View style={style.footer_backbutton}>
+                    </View>
+                    <View style={style.footer_nextbutton}>
+                        <CustomButton
+                            title={'Done'}
+                            titleColor={'#000'}
+                            buttonColor={'#ddd'}
+                            onPress={() => this.pressDone()}/>
+                    </View>
+                </View>
+            </View>
+        )
     }
 }
 
@@ -152,5 +152,6 @@ const style = StyleSheet.create({
     font_main: {
         color: '#aaa',
         fontSize: 20,
+        textAlign: 'center',
     },
 });

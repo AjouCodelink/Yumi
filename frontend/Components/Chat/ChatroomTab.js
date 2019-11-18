@@ -25,7 +25,7 @@ export default class ChatroomTab extends Component {
             isSearchVisible: false,
             isSearchResultPopupVisible: false,
             search : '',
-        }    
+        }
     }
     submit(inputText){
         this.setState({isAlertVisible: false})

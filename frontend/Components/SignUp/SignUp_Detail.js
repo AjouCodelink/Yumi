@@ -18,6 +18,49 @@ export default class SignUp_Detail extends Component {
             passwordChecked: 0, nicknameChecked: 0,
         }
     }
+    goTitle(){
+        this.props.navigation.navigate('Title');
+    }
+    goSignUp_Interest(){
+        this.props.navigation.navigate('SignUp_Interest', {
+            email: this.state.email,
+            password: this.state.password,
+            nickname: this.state.nickname,
+        });
+    }
+    pressNext(){
+        this.setState({
+            passwordChecked: 0,
+            nicknameChecked: 0
+        })
+        this.passwordCheck();
+        this.nicknameCheck();
+        if (this.state.passwordChecked == 1 && this.state.nicknameChecked == 1) {
+            this.goSignUp_Interest()
+        }
+    }
+    passwordCheck(){
+        if (this.state.password == '') {
+            alert("Please enter your password.")
+        } else if (this.state.password_check == '') {
+            alert("Please enter your confirm password.")
+        } else if (this.state.password != this.state.password_check) {
+            alert("The two passwords you entered are different.")
+        } else if (String(this.state.password).length > 16 || String(this.state.password).length < 8) {
+            alert("Password is too long or too short.")
+        } else {
+            this.state.passwordChecked = 1
+        }
+    }
+    nicknameCheck(){
+        if (this.state.nickname == '') {
+            alert("Please enter your nickname.")
+        } else if (String(this.state.nickname).length> 20 || String(this.state.nickname).length < 2) {
+            alert("Nickname is too long or too short.")
+        } else {
+            this.state.nicknameChecked = 1
+        }
+    }
     render() {
         const {navigation} = this.props;
         this.state.email = navigation.getParam('email', 'No Email');
@@ -64,49 +107,6 @@ export default class SignUp_Detail extends Component {
                 </View>
             </View>
         )
-    }
-    goTitle(){
-        this.props.navigation.navigate('Title');
-    }
-    goSignUp_Interest(){
-        this.props.navigation.navigate('SignUp_Interest', {
-            email: this.state.email,
-            password: this.state.password,
-            nickname: this.state.nickname,
-        });
-    }
-    pressNext(){
-        this.setState({
-            passwordChecked: 0,
-            nicknameChecked: 0
-        })
-        this.passwordCheck();
-        this.nicknameCheck();
-        if (this.state.passwordChecked == 1 && this.state.nicknameChecked == 1) {
-            this.goSignUp_Interest()
-        }
-    }
-    passwordCheck(){
-        if (this.state.password == '') {
-            alert("Please enter your password.")
-        } else if (this.state.password_check == '') {
-            alert("Please enter your confirm password.")
-        } else if (this.state.password != this.state.password_check) {
-            alert("The two passwords you entered are different.")
-        } else if (String(this.state.password).length > 16 || String(this.state.password).length < 8) {
-            alert("Password is too long or too short.")
-        } else {
-            this.state.passwordChecked = 1
-        }
-    }
-    nicknameCheck(){
-        if (this.state.nickname == '') {
-            alert("Please enter your nickname.")
-        } else if (String(this.state.nickname).length> 20 || String(this.state.nickname).length < 2) {
-            alert("Nickname is too long or too short.")
-        } else {
-            this.state.nicknameChecked = 1
-        }
     }
 }
 

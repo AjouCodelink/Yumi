@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button } from 'native-base';
 
-export default class Chatbox_my extends Component {
+export default class mychat extends Component {
     render() {
         const data = this.props.data;
         return (
@@ -28,11 +28,13 @@ const style = StyleSheet.create({
         paddingBottom: 5,
     },
     messageBox: {
+        paddingLeft: 5,
+        paddingRight: 5,
         backgroundColor: "#ee3",
-        borderRadius: 5,
+        borderRadius: 6
     },
     text_time: {
-        fontSize : 13,
+        fontSize : 12,
         color: '#ddd',
     },
     text_message: {

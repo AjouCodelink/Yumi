@@ -6,7 +6,8 @@ const ChatRoomSchema = mongoose.Schema({
     participants: [{
         email: { type: String},
         nickname: { type: String},
-        interests: [{ type: String }]
+        interests: [{ type: String }],
+        socketID: { type: String }
     }],
     chatlog:[{
         user_email:{type: String},

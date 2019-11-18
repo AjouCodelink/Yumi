@@ -2,27 +2,9 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Linking, Alert  } from 'react-native';
 import { Button, Thumbnail } from 'native-base';
 
-export default class Chatbox_other extends Component {
+export default class otherchat extends Component {
     constructor() {
         super();
-    }
-    render() {
-        const data = this.props.data;
-        return (
-            <View>
-                <Text style={style.text_name}>{data.user_email} </Text>
-                <View style={style.content}>
-                    <Thumbnail circular backgroundColor="#fff" style={style.thumbnail}
-                        source={require('../../assets/default_thumbnail.png')}/>
-                    <View>
-                        <Button style={style.messageBox} onLongPress={() => this.papagoAlert(data.message)}>
-                            <Text style={style.text_message}> {data.message} </Text>
-                        </Button>
-                    </View>
-                    <Text style={style.text_time}>  {data.Time.toString().substr(16, 5)}</Text>
-                </View>
-            </View>
-        );
     }
 
     papagoAlert = (message) => {
@@ -41,6 +23,25 @@ export default class Chatbox_other extends Component {
             {cancelable: false},
         );
     }
+
+    render() {
+        const data = this.props.data;
+        return (
+            <View>
+                <Text style={style.text_name}>{data.user_email}</Text>
+                <View style={style.content}>
+                    <Thumbnail backgroundColor="#fff" style={style.thumbnail}
+                        source={require('../../../assets/default_thumbnail.png')}/>
+                    <View>
+                        <Button style={style.messageBox} onLongPress={() => this.papagoAlert(data.message)}>
+                            <Text style={style.text_message}>{data.message} </Text>
+                        </Button>
+                    </View>
+                    <Text style={style.text_time}>  {data.Time.toString().substr(16, 5)}</Text>
+                </View>
+            </View>
+        );
+    }
 }
 
 const style = StyleSheet.create({
@@ -56,10 +57,13 @@ const style = StyleSheet.create({
     thumbnail: {
         height: 45,
         width: 45,
-        marginRight: 10
+        marginRight: 10,
+        borderRadius: 45 * 0.4,
     },
     messageBox: {
-        backgroundColor: "#bbb",
+        paddingLeft: 5,
+        paddingRight: 5,
+        backgroundColor: "#aaa",
         borderRadius: 6
     },
     text_name: {
