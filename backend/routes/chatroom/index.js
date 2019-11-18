@@ -8,6 +8,5 @@ router.use('/list', authMiddleware);
 router.get('/search/:keyword', controller.searchWord);
 router.post('/creation/:interest', controller.creation);
 router.get('/list', controller.getList);
-router.get('/log/:cr_id', controller.getLog);
 
 module.exports = router;
