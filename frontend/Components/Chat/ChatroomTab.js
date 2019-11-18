@@ -1,5 +1,4 @@
 
-
 import React, { Component } from 'react';
 import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput,Button,Platform } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
@@ -25,7 +24,6 @@ export default class ChatroomTab extends Component {
             textInput_Holder_Theme: '',
             isAlertVisible: false,
             isSearchVisible: false,
-            isSearchResultPopupVisible: false,
             isSearchListVisible : false,
             search : '',
         
@@ -143,13 +141,10 @@ export default class ChatroomTab extends Component {
     searchBarShow(){
         this.setState({isSearchVisible: !this.state.isSearchVisible});
     }
-
-   // toggleSearchResult(){
-   //   this.setState({isSearchResultPopupVisible: !this.state.isSearchResultPopupVisible});
-   // }
-
-    
     searchRoomByKeyword(){
+        this.searcharray.splice(0,100) //searchlist 초기화값이 100인 이유는동일한 chatlist 검색 결과가 최대 100개라고 가정
+        this.state.searcharrayHolder.splice(0,100)
+        this.setState({isSearchListVisible: !this.state.isSearchListVisible});
         var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
         fetch(url, {
             method: 'GET',
@@ -166,19 +161,15 @@ export default class ChatroomTab extends Component {
                     title: responseJson[i].interest,
                     roomID: responseJson[i]._id
                 })
-                    this.setState({searcharrayHolder: [...this.searcharray]})
-                
+                    
+                    
+                    
             }
+            this.setState({searcharrayHolder: [...this.searcharray]})
         
-            console.log(this.state.isSearchVisible)
-            console.log(this.state.searcharrayHolder)
-            console.log(responseJson)
         }
         )
-           // this._id = responseJson[0]._id
-            //this.state.textInput_Holder_Theme = responseJson[0].interest
-            //this.setState({isSearchVisible :false})
-        
+
     }
 
     GetItem(item) {
@@ -237,7 +228,7 @@ export default class ChatroomTab extends Component {
                 ):(<FlatList
                         data={this.state.searcharrayHolder}
                         width='85%'
-                        extraData={this.state.searcharrayHolder}
+                        //extraData={this.state.searcharrayHolder}
                         keyExtractor = {(item, index) => String(index)}
                         ItemSeparatorComponent={this.FlatListItemSeparator}
                         renderItem={({ item }) =>
