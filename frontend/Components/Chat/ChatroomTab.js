@@ -254,13 +254,6 @@ export default class ChatroomTab extends Component {
                 }
                 
                 <View style={styles.febContainer}>
-                    <TouchableOpacity    // 같은 ID로 채팅 컴포넌트 사용 위해서 임시로 만든 버튼입니다. 추후 채팅방 입장이 완료되면 삭제해주세요.
-                        onPress={()=> this.insertChatRoom('111','ADMIN')} 
-                        activeOpacity={0.7} 
-                        style={styles.button_suggest}
-                        >
-                        <Icon name='md-aperture' style={{color: '#222'}}/>
-                    </TouchableOpacity>
                     <TouchableOpacity
                         onPress={()=> this.suggestRoom()} 
                         activeOpacity={0.7} 

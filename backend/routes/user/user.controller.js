@@ -1,6 +1,5 @@
-var jwt = require('jsonwebtoken')
 var User = require('../../models/user')
-
+const jwt = require('jsonwebtoken')
 /*
     POST /user/send-email/:email
 */

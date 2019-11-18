@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Image, KeyboardAvoidingView } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
-import { Item, Label, Input } from 'native-base';
+import { Item, Label, Input, Spinner } from 'native-base';
 
 import CustomButton from './CustomButton';
 
@@ -14,7 +14,13 @@ export default class TitleScreen extends Component {
     }
     constructor(props){
         super(props);
-        this.state={email: '', password: '', loginResult: -1, token:''}
+        this.state={
+            email: '',
+            password: '',
+            loginResult: -1,
+            token:'',
+            spinnerOpacity: 0,
+        }
     }
     componentWillMount() {
         this.setState({
@@ -40,11 +46,13 @@ export default class TitleScreen extends Component {
         else if (this.state.password == ''){
             alert('Please enter your password.');
         } else {
+            this.setState({spinnerOpacity: 1})
             this.submit();
             setTimeout(() => {this.checkLoginResult();}, 500);
         }
     }
     checkLoginResult(){
+        this.setState({spinnerOpacity: 0})
         if (this.state.loginResult == 0) {           // 잘못된 사용자 정보
             alert("Email or password is incorrect.")
             this.state.loginResult = -1
@@ -89,7 +97,7 @@ export default class TitleScreen extends Component {
         return (
             <View style={style.container}>
                 <Image
-                    style={{height:'50%', width:'50%', resizeMode:'contain'}}
+                    style={{height: '65%', width:'80%', resizeMode:'contain'}}
                     source={require('../assets/Titleimage.png')}/>
                 <KeyboardAvoidingView behavior='padding' style={style.content}>
                     <Item style={{height: 53}} floatingLabel>
@@ -117,6 +125,7 @@ export default class TitleScreen extends Component {
                             onPress={ () => this.onPressLogin()}/>
                     </View>
                 </View>
+                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 3, position: "absolute", bottom: '50%'}}color='#ddd'/>
             </View>
         );
     }
@@ -125,10 +134,9 @@ export default class TitleScreen extends Component {
 const style = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingTop: '30%',
-        paddingBottom: '10%',
+        paddingBottom: '12%',
         backgroundColor: '#444',
     },
     header: {
@@ -147,12 +155,12 @@ const style = StyleSheet.create({
     content: {
         flex: 1,
         width: '80%',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
     },
     footer: {
         width: '78%',
-        height: '9%',
+        height: '8%',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
