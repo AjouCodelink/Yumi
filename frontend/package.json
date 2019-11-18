@@ -11,6 +11,7 @@
     "@expo/vector-icons": "^10.0.5",
     "expo": "^35.0.0",
     "expo-cli": "^3.4.1",
+    "expo-image-picker": "~7.0.0",
     "expo-sqlite": "^7.0.0",
     "global": "^4.4.0",
     "lottie-react-native": "^3.2.1",

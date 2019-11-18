@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import DialogInput from 'react-native-dialog-input';
-import { Icon, Thumbnail } from 'native-base';
+import { Icon, Thumbnail, Spinner } from 'native-base';
 
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
@@ -14,7 +15,8 @@ export default class ProfileTab extends Component {
         myNickname: 'LOADING',
         myThumbnailURL: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd', // 이후 기본 URL로 연동해야함.
         isAlertVisible: false,
-        token: ''
+        token: '',
+        spinnerOpacity: 1
     }
 
     static navigationOptions = {
@@ -43,36 +45,65 @@ export default class ProfileTab extends Component {
     }
 
     _getNickname() {
-        var url = 'http://101.101.160.185:3000/user/profile/nickname';
+        var url = 'http://101.101.160.185:3000/user/profile';
         fetch(url, {
             method: 'GET',
             headers: new Headers({
             'Content-Type' : 'application/json',
-            'token' : 'token',
             'x-access-token': this.state.token
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => {this.setState({myNickname : responseJson.nickname})})
-    }
+        .then(responseJson => {this.setState({myNickname : responseJson.nickname, spinnerOpacity: 0})})
+    }//
 
     _changeNickname = (newNickname) => {
+        this.setState({spinnerOpacity: 1})
         var url = 'http://101.101.160.185:3000/user/profile/nickname/'+newNickname;
         fetch(url, {
             method: 'POST',
             headers: new Headers({
-            'Content-Type' : 'application/json',
-            'token' : 'token',
+            'Content-Type': 'application/json',
             'x-access-token': this.state.token
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {this.setState({myNickname : responseJson.nickname})})
-        alert("Changed!")
+        this.setState({spinnerOpacity: 0})
     }
 
     _onPressThumbnail() {
+        this._pickImage()
         alert("you pressed Thumbnail Edit.")
+    }
+
+    _pickImage = async () => {
+        let photo = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [1, 1],
+        });
+        if (!photo.cancelled) {
+            const newPhoto = new FormData();
+            newPhoto.append('uri', photo.uri)
+            newPhoto.append('name', this.state.myEmail+'_thumbnail.jpg')
+            newPhoto.append('type', photo.type)
+            this._uploadImage(newPhoto)
+            //this.setState({ myThumbnailURL: result.uri });
+        }
+    };
+
+    _uploadImage = (newPhoto) => {
+        var url = 'http://101.101.160.185:3000/user/profile/upload';
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'x-access-token': this.state.token
+            }),
+            body: newPhoto
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {console.log(responseJson)})
     }
 
     _onPressStatusMessage() {
@@ -110,6 +141,7 @@ export default class ProfileTab extends Component {
                     <Thumbnail circle backgroundColor="#ddd" style={style.thumbnail}
                         source={{ uri: this.state.myThumbnailURL }}/>
                 </TouchableOpacity>
+                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#ddd'/>
             </View>
         );
     }
@@ -138,7 +170,7 @@ const style = StyleSheet.create({
     downsideContainer: {
         width: '100%',
         height: '40%',
-        paddingTop: 110,
+        paddingTop: screenHeight*0.12,
         backgroundColor: '#555',
         alignItems: 'center',
     },
@@ -155,12 +187,12 @@ const style = StyleSheet.create({
         borderRadius: (screenHeight*0.2)*0.4,
     },
     font_nickname: {
-        color: '#ddd',
+        color: '#eee',
         fontSize: 40,
         fontWeight: 'bold',
     },
     font_email: {
-        color: '#ddd',
+        color: '#aaa',
         fontSize: 24,
     },
 });

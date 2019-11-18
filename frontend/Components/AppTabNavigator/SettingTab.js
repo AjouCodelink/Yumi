@@ -59,7 +59,7 @@ export default class SettingTab extends Component {
                 {text: 'LogOut', onPress: () => {
                     db.transaction(tx => {
                         tx.executeSql(
-                            'DROP TABLE token',
+                            'DELETE FROM token',
                             [],
                             null,
                             (_,error) => console.error(error)
@@ -96,7 +96,7 @@ export default class SettingTab extends Component {
                             [],
                             null,
                             (_,error) => console.error(error)
-                        )
+                        ),
                         tx.executeSql(          // chatlog 저장하는 table 생성하기
                             'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
                             [],

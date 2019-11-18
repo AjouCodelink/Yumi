@@ -23,15 +23,12 @@ export default class Chatroom extends Component {
     constructor(props){
         super(props);
         this.socket = io('http://101.101.160.185:3000');
-
         this.socket.on('RECEIVE_MESSAGE', function(data){
             db_Add(data);
         });
-
         this.socket.on('disconnect', function(){
             console.log('disconnect');
         })
-
         db_Add = (newChat) => {
             db.transaction( tx => {
                 tx.executeSql(
@@ -95,7 +92,7 @@ export default class Chatroom extends Component {
     renderDrawer = () => {
         return (
             <View>
-                <ChatroomSideMenu userlist={this.state.userlist}/>
+                <ChatroomSideMenu goBack={() => this.props.navigation.goBack(null)} userlist={this.state.userlist}/>
             </View>
         );
     };
@@ -190,10 +187,6 @@ export default class Chatroom extends Component {
                     </Right>
                 </View>
                 <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={0} style={style.container}>
-                    <TouchableOpacity        // 임시 컴포넌트입니다. 팝퀴즈 구현이 끝나면 삭제해주세요.
-                        onPress={() => this._receivePopQuiz("이곳엔 질문을 입력합니다. 정답은 현재 test이며, 꾹 누르면 팝업창이 등장합니다. (대소문자 관계X)", "test")}>
-                        <Text style={{color: "#bbb"}}>(대충 팝퀴즈 만드는 버튼)</Text>
-                    </TouchableOpacity>
                     <ScrollView
                         ref={scrollView => {
                             this.scrollView = scrollView;

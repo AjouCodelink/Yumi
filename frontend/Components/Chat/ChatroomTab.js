@@ -29,8 +29,7 @@ export default class ChatroomTab extends Component {
         this.createRoom(inputText);
     }
 
-    componentDidMount() {
-        this.setState({ arrayHolder: [...this.array] })
+    componentWillMount() {
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM token',
@@ -100,14 +99,27 @@ export default class ChatroomTab extends Component {
         // },(error) => console.error(error))
     }
 
-    leaveChatRoom = (roomID) => { // 방 나가기
-        this.setState(prevState => {
-            const index = prevState.arrayHolder.findIndex(holder => holder.roomID === roomID);
-            prevState.arrayHolder.splice(index, 1);
-            return ({
-                arrayHolder: [...prevState.arrayHolder]
+    exitChatRoom = (roomID) => { // 방 나가기
+        var url = 'http://101.101.160.185:3000/chatroom/exit/'+roomID;
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token' : 'token',
+            'x-access-token': this.token
             })
-        });
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            this.setState(prevState => {
+                const index = prevState.arrayHolder.findIndex(holder => holder.roomID === roomID);
+                prevState.arrayHolder.splice(index, 1);
+                return ({
+                    arrayHolder: [...prevState.arrayHolder]
+                })
+            });
+        })
+
         //todo: 근데 arrayHolder만 건드려서 그런가 방이 추가하면 다시 돌아오는 버그가 있음ㅠ
         //나중에 유용하면 이용하시고 아니면 삭제해주세요ㅠ
         //서버와도 연동해서 방에서 나가기 구현해야함.
@@ -123,7 +135,7 @@ export default class ChatroomTab extends Component {
                     style: 'cancel',
                 },
                 {text: 'OK', onPress: () => {
-                    this.leaveChatRoom(roomID);
+                    this.exitChatRoom(roomID);
                 }},
             ],
             {cancelable: false},

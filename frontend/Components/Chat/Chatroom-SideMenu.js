@@ -26,7 +26,7 @@ export default class Chatroom_SideMenu extends Component {
         })
     }
     _onPressExit = () => {
-        alert("You pressed Exit.")
+        this.props.goBack()
     }
     _onPressPicture() {
         alert("You pressed Picture.")
