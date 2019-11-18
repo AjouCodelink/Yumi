@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Dimensions } from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Dimensions, YellowBox } from 'react-native';
 import {Icon, Input, Left, Right} from 'native-base';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 
@@ -15,26 +15,35 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 const io = require('socket.io-client');
 
+YellowBox.ignoreWarnings([  // 강제로 에러 안뜨게 하기
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+]);
+
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
         this.socket = io('http://101.101.160.185:3000');
-        this.db_Add = this.db_Add.bind(this);
 
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            console.log(data);
-
-            //this.db_Add(data); // TODO : DB에 채팅 내역 저장해야 함.
+            db_Add(data);
         });
 
         this.socket.on('disconnect', function(){
             console.log('disconnect');
         })
-    };
 
-    static navigationOptions = {
-        header: null
-    }
+        db_Add = (newChat) => {
+            db.transaction( tx => {
+                tx.executeSql(
+                    'INSERT INTO chatLog (user_email, cr_id, Time, message, answer) values (?, ?, ?, ?, ?);',
+                    [newChat.user_email, newChat.cr_id, newChat.Time, newChat.message, newChat.answer],
+                    null,
+                    (_,error) => console.error(error)   // sql문 실패 에러
+                );
+            },(error) => console.error(error))          // 트랜젝션 에러
+            this.db_Update()
+        }
+    };
 
     state = {
         cr_id: 0,
@@ -42,9 +51,32 @@ export default class Chatroom extends Component {
         message: '',
         myEmail:'',
         chatlog:[], // 채팅로그
+        userlist:[{nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '456'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},],
         key: 0,
     }
-    
+
+    static navigationOptions = {
+        header: null
+    }
+
     componentWillMount() {
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
@@ -57,27 +89,27 @@ export default class Chatroom extends Component {
             )
         },(error) => console.error(error))
         this.db_Update();
+        
     }
 
     renderDrawer = () => {
         return (
             <View>
-                <ChatroomSideMenu/>
+                <ChatroomSideMenu userlist={this.state.userlist}/>
             </View>
         );
     };
 
     _onPressSend(){
         if (this.state.message != ''){
-            const newchat = {
+            const newChat = {
                 user_email: this.state.myEmail,
                 cr_id: this.state.cr_id,
                 Time: Date(),
                 message: this.state.message,
                 //answer: null
             }
-
-            this.socket.emit('SEND_MESSAGE', newchat);
+            this.socket.emit('SEND_MESSAGE', newChat);
             this.setState({message: null});    
         }
     }
@@ -93,24 +125,30 @@ export default class Chatroom extends Component {
         this.db_Add(newQuiz)
     }
 
-    db_Add(newchat) {
-        db.transaction( tx => {
-            tx.executeSql(
-                'INSERT INTO chatLog (user_email, cr_id, Time, message, answer) values (?, ?, ?, ?, ?);',
-                [newchat.user_email, newchat.cr_id, newchat.Time, newchat.message, newchat.answer],
-                null,
-                (_,error) => console.error(error)   // sql문 실패 에러
-            );
-        },(error) => console.error(error))   // 트랜젝션 에러
-        this.db_Update()
-    }
-
     db_Update = () => {        // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
                 [this.state.cr_id],
                 (_, { rows: { _array }  }) => this.setState({ chatlog: _array }),
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error)
+        )
+    };
+
+    db_Rebuild = () => {        // DB attribute가 다른 이유로 input에 실패 할 때, 디비를 다시 build시킴
+        db.transaction( tx => {
+            tx.executeSql(
+                'DROP TABLE chatLog',
+                [this.state.cr_id],
+                (_, { rows: { _array }  }) => this.setState({ chatlog: _array }),
+                (_,error) => console.error(error)
+            )
+            tx.executeSql(
+                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
+                [],
+                null,
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error)
@@ -169,19 +207,16 @@ export default class Chatroom extends Component {
                         }}
                         style={{width: '100%'}}>
                         {this.state.chatlog.map( chatlog => (chatlog.user_email == this.state.myEmail    // 말풍선 만들기
-                            ? ( <View key={this.state.key++} style={style.my_chat}>
+                            ? (<View key={this.state.key++} style={style.my_chat}>
                                 <Chatbox_my data={chatlog}/>
-                            </View>
-                            ) : ( chatlog.user_email != 'PopQuizBot' 
-                                ? (
-                                    <View key={this.state.key++} style={style.other_chat}>
-                                        <Chatbox_other data={chatlog}/>
-                                    </View>
-                                ) : (
-                                <View key={this.state.key++} style={style.other_chat}>
+                            </View>)
+                            : ( chatlog.user_email != 'PopQuizBot' 
+                                ? (<View key={this.state.key++} style={style.other_chat}>
+                                    <Chatbox_other data={chatlog}/>
+                                </View>)
+                                : (<View key={this.state.key++} style={style.other_chat}>
                                     <Chatbox_quizbot data={chatlog}/>
-                                </View>
-                                )
+                                </View>)
                             )
                         ))}
                     </ScrollView>

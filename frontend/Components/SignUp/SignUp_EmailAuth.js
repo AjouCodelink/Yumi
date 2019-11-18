@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, KeyboardAvoidingView } from 'react-native';
-import { Item, Label, Input } from 'native-base';
+import { View, Text, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import { Item, Label, Input, Spinner } from 'native-base';
 
 import CustomButton from '../CustomButton';
 
@@ -11,7 +11,8 @@ export default class SignUp_EmailAuth extends Component {
     constructor(props){
         super(props);
         this.state={email: '', clientAuthcode: '', serverAuthcode: 'admin',
-        emailHideness: 'flex', authHideness: 'none', nextHideness: 'none', authSuccess: 0, mailSendResult: -1}
+        emailHideness: 'flex', authHideness: 'none', nextHideness: 'none', authSuccess: 0, mailSendResult: -1,
+        spinnerOpacity: 0}
     }
     onPressEmail(){
         if(this.state.email == '') {    // 메일주소 입력X
@@ -20,11 +21,8 @@ export default class SignUp_EmailAuth extends Component {
             alert("Please enter a valid email address. The email address must include '@' and must end with 'ac.kr'")
         } else {
             this.submit();
-            this.setState({
-                emailHideness: 'none',
-                authHideness: 'flex'
-            })
-            setTimeout(() => {this.checkMailResult();}, 3500);
+            this.setState({spinnerOpacity: 1})
+            setTimeout(() => {this.checkMailResult(), this.setState({spinnerOpacity: 0})}, 3500);
         }
     }
     onPressAuth(){
@@ -50,19 +48,15 @@ export default class SignUp_EmailAuth extends Component {
     }
     checkMailResult(){
         if (this.state.mailSendResult == 0) {           // 중복된 메일주소
-            this.setState({
-                emailHideness: 'flex',
-                authHideness: 'none'
-            })
             alert("Duplicate email address.")
             this.state.mailSendResult = -1
         } else if (this.state.mailSendResult == 1) {    // 전송 성공
+            this.setState({
+                emailHideness: 'none',
+                authHideness: 'flex'
+            })
             alert("We sent you an email. Please check your email and enter your authentication number.")
         } else {                                        // 서버 내 전송 오류
-            this.setState({
-                emailHideness: 'flex',
-                authHideness: 'none'
-            })
             alert("Failed to send email. Please try again.")
         }
     }
@@ -134,7 +128,7 @@ export default class SignUp_EmailAuth extends Component {
                         </View>
                     </View>
                     <Text style={style.font_main}>  The authentication number is 6 digits.{"\n"}</Text>
-                    {/*<Text style={style.font_main}>  현재 서버에 전송된 인증번호: {this.state.serverAuthcode}</Text>*/}
+                    <Text style={style.font_main}>  현재 서버에 전송된 인증번호: {this.state.serverAuthcode}</Text>
                 </KeyboardAvoidingView>
                 <View style={[style.content, {display: this.state.nextHideness}]}>
                     <Text style={{fontSize: 17, color: '#aaa'}}> Your email address :</Text>
@@ -157,6 +151,7 @@ export default class SignUp_EmailAuth extends Component {
                         onPress={() => this.onPressNext()}/>
                 </View>
             </View>
+                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 3, position: "absolute", bottom: '50%'}}color='#ddd'/>
         </View>
         )
     }

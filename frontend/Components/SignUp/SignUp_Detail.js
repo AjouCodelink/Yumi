@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView } from 'react-native';
-import { Item, Label, Input } from 'native-base';
+import { Item, Label, Input, Spinner } from 'native-base';
 
 import CustomButton from '../CustomButton';
 
@@ -15,7 +15,9 @@ export default class SignUp_Detail extends Component {
             password: '',
             password_check: '',
             nickname: '',
-            passwordChecked: 0, nicknameChecked: 0,
+            passwordChecked: 0,
+            nicknameChecked: 0,
+            spinnerOpacity: 0,
         }
     }
     goTitle(){
