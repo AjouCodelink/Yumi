@@ -20,8 +20,9 @@ exports.changeNickname = function(req, res){
     var newNickname = req.params.newNickname;
 
     User.findOne({email:email}, function(err, user){
+        if(err) res.json({result : 0, message : "save failed"})
         user.nickname = newNickname;
         user.save();
-        res.json(user);
+        res.json({result : 1, nickname : user.nickname});
     })
 }
