@@ -1,5 +1,7 @@
+
+
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput,Button } from 'react-native';
+import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput,Button,Platform } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import {Icon} from 'native-base';
 import * as SQLite from 'expo-sqlite';
@@ -14,21 +16,21 @@ export default class ChatroomTab extends Component {
         super(props);
         this.token = '',
         this.email = '',
+        this._id = ''
         this.array = [],
         this.state = {
             arrayHolder: [],
             textInput_Holder_Theme: '',
             isAlertVisible: false,
             isSearchVisible: false,
+            isSearchResultPopupVisible: false,
             search : '',
         }    
     }
-
     submit(inputText){
         this.setState({isAlertVisible: false})
         this.createRoom(inputText);
     }
-
     componentDidMount() {
         this.setState({ arrayHolder: [...this.array] })
         db.transaction( tx => {
@@ -44,7 +46,6 @@ export default class ChatroomTab extends Component {
             );
         },(error) => console.error(error))
     }
-
     getChatRoomList(){
         var url = 'http://101.101.160.185:3000/chatroom/list';
         fetch(url, {
@@ -99,7 +100,6 @@ export default class ChatroomTab extends Component {
         //     )
         // },(error) => console.error(error))
     }
-
     leaveChatRoom = (roomID) => { // 방 나가기
         this.setState(prevState => {
             const index = prevState.arrayHolder.findIndex(holder => holder.roomID === roomID);
@@ -129,14 +129,12 @@ export default class ChatroomTab extends Component {
             {cancelable: false},
         );
     }
-
     _onPressChatroom = (item) => {
         this.props.navigation.navigate('Chatroom', {
             title: item.title,
             cr_id: item.roomID,
         });
     }
-
     FlatListItemSeparator = () => {
         return (
             <View style={{
@@ -151,6 +149,27 @@ export default class ChatroomTab extends Component {
     }
     searchBarShow(){
         this.setState({isSearchVisible: !this.state.isSearchVisible});
+    }
+
+   // toggleSearchResult(){
+   //   this.setState({isSearchResultPopupVisible: !this.state.isSearchResultPopupVisible});
+   // }
+
+    searchResult(){
+        Alert.alert(
+        'Alert Title',
+        'My Alert Msg',
+    [
+    {text: 'Ask me later', onPress: () => console.log('Ask me later pressed')},
+    {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+    },
+    {text: 'OK', onPress: () => console.log('OK Pressed')},
+    ],
+    {cancelable: false},
+);
 
     }
     searchRoomByKeyword(){
@@ -164,7 +183,10 @@ export default class ChatroomTab extends Component {
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => console.log(responseJson[0].interest));
+        .then(responseJson => {
+            this._id = responseJson[0]._id
+            this.state.textInput_Holder_Theme = responseJson[0].interest
+            this.searchResult()})
     }
 
     GetItem(item) {
@@ -192,6 +214,8 @@ export default class ChatroomTab extends Component {
                     </TouchableOpacity>
                     </View>
                 </View>
+                
+                {/*방생성 Dialog*/}
                 <DialogInput
                     isDialogVisible = {this.state.isAlertVisible}
                     title={"Create Chatroom"}
@@ -199,6 +223,18 @@ export default class ChatroomTab extends Component {
                     hintInput ={"Theme"}
                     submitInput={ (inputText) => { this.submit(inputText)}}
                     closeDialog={ (inputText) => {this.setState({isAlertVisible:false})}}/>
+                
+                {/*방 검색 Keyword 입력시 나오는 Dialog*/}
+                {/*
+                <DialogInput
+                    isDialogVisible = {this.state.isSearchResultPopupVisible}
+                    title = {"searchResult"}
+                    hintInput ={"Theme"}
+                    //submitInput={ (inputText) => { this.submit(inputText)}}
+                    closeDialog = {()=>this.toggleSearchResult()}>
+                    <Text>ABC</Text>
+                    </DialogInput>
+                */}
                 <FlatList
                     data={this.state.arrayHolder}
                     width='85%'
@@ -253,7 +289,6 @@ export default class ChatroomTab extends Component {
         );
     }
 }
-
 const styles = StyleSheet.create({
     container : {
         flex : 1,
