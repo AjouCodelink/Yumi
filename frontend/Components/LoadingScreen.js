@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text} from 'react-native';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { Spinner } from 'native-base';
 
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
@@ -25,6 +25,12 @@ export default class LoadingScreen extends Component {
                 null,
                 (_,error) => console.error(error)
             )
+            /*tx.executeSql(          // chatlog에 answer이 없으면 추가하기
+                'ALTER TABLE chatLog ADD COLUMN answer TEXT',
+                [],
+                null,
+                (_,error) => console.error(error)
+            )*/
             tx.executeSql(          // token 확인
                 'SELECT * FROM token',
                 [],
@@ -48,9 +54,8 @@ export default class LoadingScreen extends Component {
     render() {
         return (
             <View style={style.container}>
-                <Text style={style.loadingFont}>Yumi</Text>
+                <Spinner size={80} style={{display:'flex', flex: 3, position: "absolute"}}color='#ddd'/>
                 <Text style={style.loadingFont}>Loading</Text>
-                
                 <TouchableOpacity style={style.stopClick} onPress={() => this.goTitle()}>
                     <Text style={style.stopClickFont}>Screen frozen more than 3 seconds, press here.</Text>
                 </TouchableOpacity>
@@ -64,19 +69,18 @@ const style = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: '30%',
-        paddingBottom: '10%',
+        paddingBottom: '15%',
         backgroundColor: '#444',
     },
     loadingFont: {
-        fontSize: 50,
+        fontSize: 35,
         color: '#ddd',
         fontWeight: 'bold',
     },
     stopClick: {
         flex: 2,
         position : 'absolute',
-        bottom: '35%',
+        bottom: '25%',
     },
     stopClickFont: {
         fontSize: 20,

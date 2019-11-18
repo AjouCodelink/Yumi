@@ -1,5 +1,6 @@
+
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput,Button } from 'react-native';
+import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput,Button,Platform } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import {Icon} from 'native-base';
 import * as SQLite from 'expo-sqlite';
@@ -14,21 +15,24 @@ export default class ChatroomTab extends Component {
         super(props);
         this.token = '',
         this.email = '',
+        this._id = '',
+        this.searcharray = [],
         this.array = [],
         this.state = {
             arrayHolder: [],
+            searcharrayHolder: [],
             textInput_Holder_Theme: '',
             isAlertVisible: false,
             isSearchVisible: false,
+            isSearchListVisible : false,
             search : '',
+        
         }
     }
-
     submit(inputText){
         this.setState({isAlertVisible: false})
         this.createRoom(inputText);
     }
-
     componentDidMount() {
         this.setState({ arrayHolder: [...this.array] })
         db.transaction( tx => {
@@ -44,7 +48,6 @@ export default class ChatroomTab extends Component {
             );
         },(error) => console.error(error))
     }
-
     getChatRoomList(){
         var url = 'http://101.101.160.185:3000/chatroom/list';
         fetch(url, {
@@ -63,11 +66,11 @@ export default class ChatroomTab extends Component {
                     title: responseJson[i].interest,
                     roomID: responseJson[i].cr_id
                 })
-                this.setState({arrayHolder: [...this.array]})
+                this.setState({arrayHolder: [...this.array]}
+                )
             }
         })
     }
-
     createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
         var url = 'http://101.101.160.185:3000/chatroom/creation/'+inputText;
         fetch(url, {
@@ -90,16 +93,7 @@ export default class ChatroomTab extends Component {
             roomID: chatroom_id});
         this.setState({ arrayHolder: [...this.array] })
 
-        // db.transaction(tx => {
-        //     tx.executeSql(
-        //         'INSERT INTO chatroom (cr_id, email, Theme) values (?,?,?)',
-        //         [chatroom_id, this.email, this.state.textInput_Holder_Theme],
-        //         null,
-        //         (_,error) => console.error(error)
-        //     )
-        // },(error) => console.error(error))
     }
-
     leaveChatRoom = (roomID) => { // 방 나가기
         this.setState(prevState => {
             const index = prevState.arrayHolder.findIndex(holder => holder.roomID === roomID);
@@ -108,9 +102,6 @@ export default class ChatroomTab extends Component {
                 arrayHolder: [...prevState.arrayHolder]
             })
         });
-        //todo: 근데 arrayHolder만 건드려서 그런가 방이 추가하면 다시 돌아오는 버그가 있음ㅠ
-        //나중에 유용하면 이용하시고 아니면 삭제해주세요ㅠ
-        //서버와도 연동해서 방에서 나가기 구현해야함.
     }
 
     _longPressChatroom = (roomID) => {  // 채팅방 꾹 누르면
@@ -129,14 +120,12 @@ export default class ChatroomTab extends Component {
             {cancelable: false},
         );
     }
-
     _onPressChatroom = (item) => {
         this.props.navigation.navigate('Chatroom', {
             title: item.title,
             cr_id: item.roomID,
         });
     }
-
     FlatListItemSeparator = () => {
         return (
             <View style={{
@@ -153,7 +142,9 @@ export default class ChatroomTab extends Component {
         this.setState({isSearchVisible: !this.state.isSearchVisible});
     }
     searchRoomByKeyword(){
-        //Alert 또는 popup으로 채팅방 결과 띄워주기
+        this.searcharray.splice(0,100) //searchlist 초기화값이 100인 이유는동일한 chatlist 검색 결과가 최대 100개라고 가정
+        this.state.searcharrayHolder.splice(0,100)
+        this.setState({isSearchListVisible: !this.state.isSearchListVisible});
         var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
         fetch(url, {
             method: 'GET',
@@ -163,7 +154,22 @@ export default class ChatroomTab extends Component {
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        //.then(responseJson => console.log(responseJson));
+        .then(responseJson => {
+            for(var i=0;i<responseJson.length;i++)
+            {
+                this.searcharray.push({
+                    title: responseJson[i].interest,
+                    roomID: responseJson[i]._id
+                })
+                    
+                    
+                    
+            }
+            this.setState({searcharrayHolder: [...this.searcharray]})
+        
+        }
+        )
+
     }
 
     GetItem(item) {
@@ -191,6 +197,8 @@ export default class ChatroomTab extends Component {
                     </TouchableOpacity>
                     </View>
                 </View>
+                
+                {/*방생성 Dialog*/}
                 <DialogInput
                     isDialogVisible = {this.state.isAlertVisible}
                     title={"Create Chatroom"}
@@ -198,31 +206,45 @@ export default class ChatroomTab extends Component {
                     hintInput ={"Theme"}
                     submitInput={ (inputText) => { this.submit(inputText)}}
                     closeDialog={ (inputText) => {this.setState({isAlertVisible:false})}}/>
-                <FlatList
-                    data={this.state.arrayHolder}
-                    width='85%'
-                    extraData={this.state.arrayHolder}
-                    keyExtractor = {(item, index) => String(index)}
-                    ItemSeparatorComponent={this.FlatListItemSeparator}
-                    renderItem={({ item }) =>
-                        <TouchableOpacity activeOpacity={0.5} onLongPress={() => this._longPressChatroom(item.roomID)}
-                            onPress={() => this._onPressChatroom(item)}>
-                            <View style={styles.item}>
-                                <Text style={styles.item_font}>
-                                    # {item.title}{'\n'}# roomID: {item.roomID}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
+        
+                { (this.state.isSearchListVisible == false) ? (
+                    <FlatList
+                        data={this.state.arrayHolder}
+                        width='85%'
+                        extraData={this.state.arrayHolder}
+                        keyExtractor = {(item, index) => String(index)}
+                        ItemSeparatorComponent={this.FlatListItemSeparator}
+                        renderItem={({ item }) =>
+                            <TouchableOpacity activeOpacity={0.5} onLongPress={() => this._longPressChatroom(item.roomID)}
+                                onPress={() => this._onPressChatroom(item)}>
+                                <View style={styles.item}>
+                                    <Text style={styles.item_font}>
+                                        # {item.title}{'\n'}# roomID: {item.roomID}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
                     }
                 />
+                ):(<FlatList
+                        data={this.state.searcharrayHolder}
+                        width='85%'
+                        //extraData={this.state.searcharrayHolder}
+                        keyExtractor = {(item, index) => String(index)}
+                        ItemSeparatorComponent={this.FlatListItemSeparator}
+                        renderItem={({ item }) =>
+                            <TouchableOpacity activeOpacity={0.5} onLongPress={() => this._longPressChatroom(item.roomID)}
+                                onPress={() => this._onPressChatroom(item)}>
+                                <View style={styles.item}>
+                                    <Text style={styles.item_font}>
+                                        # {item.title}{'\n'}# roomID: {item.roomID}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                    }
+                />)
+                }
+                
                 <View style={styles.febContainer}>
-                    <TouchableOpacity    // 같은 ID로 채팅 컴포넌트 사용 위해서 임시로 만든 버튼입니다. 추후 채팅방 입장이 완료되면 삭제해주세요.
-                        onPress={()=> this.insertChatRoom('111','ADMIN')} 
-                        activeOpacity={0.7} 
-                        style={styles.button_suggest}
-                        >
-                        <Icon name='md-aperture' style={{color: '#222'}}/>
-                    </TouchableOpacity>
                     <TouchableOpacity
                         onPress={()=> this.suggestRoom()} 
                         activeOpacity={0.7} 
@@ -252,7 +274,6 @@ export default class ChatroomTab extends Component {
         );
     }
 }
-
 const styles = StyleSheet.create({
     container : {
         flex : 1,

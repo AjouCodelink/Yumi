@@ -95,7 +95,7 @@ class Foods extends Component {
                 <View style={[style.list, {display: this.state.opened}]}>
                     {
                         this.state.contactData.map( contactData => (
-                            <InterestList data={contactData} _onPress={this._onPressGroup}/>
+                            <InterestList key={contactData.key} data={contactData} _onPress={this._onPressGroup}/>
                         ))
                     }
                 </View>

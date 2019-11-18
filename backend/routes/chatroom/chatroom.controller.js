@@ -1,7 +1,6 @@
 var router = require('express').Router();
 var ChatRoom = require('../../models/chatRoom');
 var User = require('../../models/user');
-var jwt = require('jsonwebtoken');
 
 /*
     GET /chatroom/search/:keyword
@@ -65,6 +64,7 @@ exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반�
 }
 
 
+
 /*
     chatroom recommendation api
     GET /chatroom/recommend
@@ -121,4 +121,16 @@ exports.getParticipants = (req, res) => {
         res.send(chatroom.participants);
     })
 }
+
+
+// /*
+//     GET /chatroom/log/:cr_id
+// */
+// exports.getLog = (req, res) => {
+//     var cr_id = req.params.cr_id;
+    
+//     ChatRoom.findOne({_id : cr_id}, function(err, chatroom){ // TODO : 추후에 채팅 기록 소량만 가져올 수 있게끔 수정해야 함.
+//         res.json(chatroom.chatlog);
+//     })
+// }
 
