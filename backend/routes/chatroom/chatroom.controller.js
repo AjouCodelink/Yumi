@@ -53,11 +53,11 @@ exports.creation = (req, res) => {
     GET /chatroom/list
 */
 exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반환
-    var userEmail = req.decoded.email;
+    var email = req.decoded.email;
 
-    User.findOne({email:userEmail}, function(err, data){
+    User.findOne({email:email}, { chatroom : 1 }, function(err, user){
         if(err) res.json(err);
-        res.json(data.chatroom);
+        res.json(user.chatroom);
     })
 }
 
