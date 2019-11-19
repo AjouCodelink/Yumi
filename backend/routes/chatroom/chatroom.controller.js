@@ -15,7 +15,8 @@ exports.searchWord = (req, res) =>{
             {"interest.group" : {$regex : '.*'+keyword+'.*'}}
         ]).
         select('interest name').
-        then((chatroom, err)=>{
+        sort('name').
+        exec((err, chatroom)=>{
             if(err) res.json(err);
             else if(chatroom.length) res.json(chatroom);
             else res.json(({result : true, message : "no search chatroom"}));
@@ -78,9 +79,24 @@ exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반�
 */
 exports.recommend = (req, res) => {
     var userEmail = req.decoded.email;
+
     User.findOne({email:userEmail}, {email:1, interests:1}, function(err, user){
         if(err) return res.status(500).json({message : "not found user"});
-        res.json(user.interests);
+        if(user){
+            var random_num = Math.floor(Math.random() * user.interests.length);
+            console.log(user.interests[random_num]);
+            ChatRoom.find().
+                or([
+                    {"interest.section" : {$regex : '.*'+user.interests[random_num].section+'.*'}},
+                    {"interest.group" : {$regex : '.*'+user.interests[random_num].group+'.*'}}
+                ]).
+                select('interest name').
+                sort('interest.group interest.section').
+                limit(5).
+                exec((err, chatroom)=>{ // TODO : 소분류순으로 먼저 나오게 하기
+                    res.json(chatroom);
+                })
+        }
     })
 }
 
