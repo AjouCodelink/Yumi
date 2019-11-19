@@ -42,7 +42,7 @@ export default class LanguagePicker extends Component {
 const style = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#333',
+        backgroundColor: 'rgba(0,0,0,0)',
         borderColor: '#ddd',
         borderBottomWidth: 1,
     },

@@ -4,6 +4,10 @@ import * as ImagePicker from 'expo-image-picker';
 import DialogInput from 'react-native-dialog-input';
 import { Icon, Thumbnail, Spinner } from 'native-base';
 
+import EditAddress from '../ProfileEdit/EditAddress'
+import EditInterest from '../ProfileEdit/EditInterest'
+import EditLanguage from '../ProfileEdit/EditLanguage'
+
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
 
@@ -16,7 +20,10 @@ export default class ProfileTab extends Component {
         myThumbnailURL: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd', // 이후 기본 URL로 연동해야함.
         isAlertVisible: false,
         token: '',
-        spinnerOpacity: 1
+        spinnerOpacity: 1,
+        editAddrDisplay: 'none',
+        editInterDisplay: 'none',
+        editLangDisplay: 'none',
     }
 
     static navigationOptions = {
@@ -106,6 +113,18 @@ export default class ProfileTab extends Component {
         .then(responseJson => {console.log(responseJson)})
     }
 
+    _displayAddr = (display) => {
+        this.setState({editAddrDisplay: display})
+    }
+
+    _displayInter = (display) => {
+        this.setState({editInterDisplay: display})
+    }
+
+    _displayLang = (display) => {
+        this.setState({editLangDisplay: display})
+    }
+
     render() {
         return (
             <View style={style.container}>
@@ -131,16 +150,16 @@ export default class ProfileTab extends Component {
                     <Text style={style.font_email}>{this.state.myEmail}</Text>
                 </View>
                 <View style={style.febContainer}>
-                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._onPressThumbnail()}>
-                        <Icon name='md-create' style={{fontSize: 26, margin: 4, color: 'white'}} />
-                        <Text style={style.font_feb}>Interests</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._onPressThumbnail()}>
-                        <Icon name='md-pin' style={{fontSize: 26, margin: 4, color: 'white'}} />
+                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayAddr('flex')}>
+                        <Icon name='md-pin' style={{fontSize: 32, margin: 4, color: 'white'}} />
                         <Text style={style.font_feb}>Address</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._onPressThumbnail()}>
-                        <Icon name='md-sync' style={{fontSize: 26, margin: 4, color: 'white'}} />
+                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayInter('flex')}>
+                        <Icon name='md-cafe' style={{fontSize: 32, margin: 4, color: 'white'}} />
+                        <Text style={style.font_feb}>Interests</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayLang('flex')}>
+                        <Icon name='md-sync' style={{fontSize: 32, margin: 4, color: 'white'}} />
                         <Text style={style.font_feb}>Language</Text>
                     </TouchableOpacity>
                 </View>
@@ -151,6 +170,9 @@ export default class ProfileTab extends Component {
                     <Thumbnail circle backgroundColor="#ddd" style={style.thumbnail}
                         source={{ uri: this.state.myThumbnailURL }}/>
                 </TouchableOpacity>
+                <EditAddress token={this.state.token} displayChange={this._displayAddr} display={this.state.editAddrDisplay}/>
+                <EditInterest token={this.state.token} displayChange={this._displayInter} display={this.state.editInterDisplay}/>
+                <EditLanguage token={this.state.token} displayChange={this._displayLang} display={this.state.editLangDisplay}/>
                 <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#ddd'/>
             </View>
         );
@@ -161,6 +183,7 @@ const style = StyleSheet.create({
     container: {
         width: '100%',
         height: '100%',
+        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#333',
     },

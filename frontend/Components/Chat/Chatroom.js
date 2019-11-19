@@ -72,7 +72,7 @@ export default class Chatroom extends Component {
             )
         },(error) => console.error(error))
         this.db_Update();
-        //this._getParticipants();  // 방 인원 불러오기
+        this._getParticipants();  // 방 인원 불러오기
     }
 
     renderDrawer = () => {
@@ -107,8 +107,7 @@ export default class Chatroom extends Component {
             }),
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => {console.log(responseJson)})
-        // todo: 받은 유저 목록을 userlist에 전달하기
+        .then(responseJson => this.setState({userlist: responseJson}))
     }
 
     _receivePopQuiz(question, answer){ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업

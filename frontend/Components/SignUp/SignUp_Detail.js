@@ -144,7 +144,7 @@ export default class SignUp_Detail extends Component {
                         <View style={{height: 45, width: screenWidth*0.32}}>
                             <DoPicker valueChange={this.doChange}/>
                         </View>
-                        <View style={{height: 45, width: screenWidth*0.42}}>
+                        <View style={{height: 45, width: screenWidth*0.42, marginLeft: 20}}>
                             <CityPicker selectedDo={this.state.selectedDo} valueChange={this.cityChange}/>
                         </View>
                     </View>

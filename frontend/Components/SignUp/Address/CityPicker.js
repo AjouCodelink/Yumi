@@ -113,9 +113,8 @@ export default class CityPicker extends Component {
 const style = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#333',
         borderColor: '#ddd',
         borderBottomWidth: 1,
-        marginLeft: 20
+        backgroundColor: 'rgba(0,0,0,0)'
     },
 })

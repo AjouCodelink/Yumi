@@ -51,7 +51,7 @@ export default class LoadingScreen extends Component {
                 <Spinner size={80} style={{display:'flex', flex: 3, position: "absolute"}}color='#ddd'/>
                 <Text style={style.loadingFont}>Loading</Text>
                 <TouchableOpacity style={style.stopClick} onPress={() => this.goTitle()}>
-                    <Text style={style.stopClickFont}>Screen frozen more than 3 seconds, press here.</Text>
+                    <Text style={style.stopClickFont}>If screen frozen, press here.</Text>
                 </TouchableOpacity>
             </View>
         );
