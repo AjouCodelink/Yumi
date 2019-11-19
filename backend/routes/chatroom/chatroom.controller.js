@@ -8,11 +8,19 @@ var User = require('../../models/user');
 exports.searchWord = (req, res) =>{
     var keyword = req.params.keyword;
     
-    ChatRoom.findRoomByKeyword(keyword).then(function(data){
-        res.json(data);
+    ChatRoom.find({
+        $or : [
+            {"name" : {$regex : '.*'+keyword+'.*'}},
+            {"interest.section" : {$regex : '.*'+keyword+'.*'}},
+            {"interest.group" : {$regex : '.*'+keyword+'.*'}}
+        ]
+    }, function(err, chatroom){
+        if(err) return res.json(err);
+        else if(chatroom.length) res.json(chatroom);
+        else res.json({result: false, message : "no search chatroom"})
     })
-}
 
+}
 
 /*
     POST /chatroom/creation
@@ -26,6 +34,7 @@ exports.creation = (req, res) => {
     var userEmail = req.decoded.email;
 
     chatRoom.interest = req.body.interest;
+    chatRoom.name = req.body.name;
 
     User.findOne({email:userEmail}, {email:1, nickname:1, interests:1, chatroom:1}, function(err, user){
         if(err) res.send(err);
@@ -43,7 +52,7 @@ exports.creation = (req, res) => {
                     res.json({result:0});
                     return;
                 }
-                res.json({result:1, cr_id : chatRoom._id, interest : chatRoom.interest});
+                res.json({result:true, cr_name : chatRoom.name, cr_id : chatRoom._id, interest : chatRoom.interest});
             })
         }
     })
@@ -67,11 +76,11 @@ exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반�
     chatroom recommendation api
     GET /chatroom/recommend
 */
-
 exports.recommend = (req, res) => {
     var userEmail = req.decoded.email;
     User.findOne({email:userEmail}, {email:1, interests:1}, function(err, user){
-        res.json(user);
+        if(err) return res.status(500).json({message : "not found user"});
+        res.json(user.interests);
     })
 }
 
@@ -81,7 +90,7 @@ exports.recommend = (req, res) => {
 exports.getLog = (req, res) => {
     var cr_id = req.params.cr_id;
     
-    ChatRoom.findOne({_id : cr_id}, function(err, chatroom){ // TODO : 추후에 채팅 기록 소량만 가져올 수 있게끔 수정해야 함.
+    ChatRoom.findOne({_id : cr_id}, { chatlog : 1 },function(err, chatroom){ // TODO : 추후에 채팅 기록 소량만 가져올 수 있게끔 수정해야 함.
         res.json(chatroom.chatlog);
     })
 }
