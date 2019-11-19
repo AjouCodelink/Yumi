@@ -122,6 +122,38 @@ exports.getParticipants = (req, res) => {
     })
 }
 
+/*
+    POST /chatroom/exit/:cr_id
+*/
+exports.exit = (req, res) => {
+    var cr_id = req.params.cr_id;
+    var email = req.decoded.email;
+
+    ChatRoom.findOne({_id : cr_id}, function(err, chatroom){
+        if(err) res.json({result : 0, message : err});
+
+        var participants = chatroom.participants;
+        for(var i=0; i < participants.length; i++){
+            if(participants[i].email == email){
+                chatroom.participants.splice(chatroom.participants.indexOf(i), 1);
+                chatroom.save();
+
+                User.findOne({email:email}, function(err, user){
+                    if(err) res.json({result:0, message:err});
+
+                    for(var j=0; j<user.chatroom.length; j++){
+                        if(user.chatroom[j].cr_id == cr_id){
+                            user.chatroom.splice(user.chatroom.indexOf(i), 1);
+                            user.save();
+
+                            res.json({result : 1, message : "user left the room"});
+                        }
+                    }
+                })
+                
+            }
+        }
+    })
 
 // /*
 //     GET /chatroom/log/:cr_id
