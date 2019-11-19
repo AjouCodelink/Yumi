@@ -9,7 +9,7 @@ exports.nickname = function(req, res){
     User.findOne({email:email}, function(err, user){
         if(err) res.json({result : 0, message: "save failed"});
 
-        res.json({result : 1, nickname : user.nickname});
+        res.json({result : 1, nickname : user.nickname, img_path : user.img_path});
     })
 }
 
