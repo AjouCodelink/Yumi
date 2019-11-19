@@ -36,7 +36,7 @@ export default class EditAddress extends Component {
     }
 
     _onPressAdmit = () => {
-        console.log(this.state.address);
+        //todo: 서버와 연동
         this.popupClose()
     }
 

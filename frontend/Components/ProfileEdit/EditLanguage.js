@@ -33,7 +33,7 @@ export default class EditLanguage extends Component {
     }
 
     _onPressAdmit = () => {
-        console.log(this.state.language)
+        //todo: 서버와 연동
         this.popupClose()
     }
 

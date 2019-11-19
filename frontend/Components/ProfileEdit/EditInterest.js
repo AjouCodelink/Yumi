@@ -37,7 +37,7 @@ export default class EditInterest extends Component {
     }
 
     _onPressAdmit = () => {
-        console.log(this.state.interests)
+        //todo: 서버와 연동
         this.popupClose()
     }
 
