@@ -9,7 +9,10 @@ const ChatRoomSchema = mongoose.Schema({
     participants: [{
         email: { type: String},
         nickname: { type: String},
-        interests: [{ type: String }],
+        interests: [{
+            section : {type:String},
+            group:{type:String}
+        }],
         socketID: { type: String }
     }],
     chatlog:[{

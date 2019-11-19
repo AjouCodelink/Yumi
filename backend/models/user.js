@@ -15,8 +15,12 @@ const UserSchema = new Schema({
     img_path: { type: String},
     chatroom:[{
         cr_id: { type: String},
-        interest: { type: String }
-    }]
+        interest: {
+            section : { type : String},
+            group : { type : String }
+        }
+    }],
+    address:{ type: String }
 });
 
 // create new User document
