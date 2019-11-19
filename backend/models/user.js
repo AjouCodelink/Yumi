@@ -15,13 +15,17 @@ const UserSchema = new Schema({
     img_path: { type: String},
     chatroom:[{
         cr_id: { type: String},
-        interest: { type: String }
-    }]
+        interest: {
+            section : { type : String},
+            group : { type : String }
+        }
+    }],
+    address:{ type: String }
 });
 
 // create new User document
 UserSchema.statics.create = function(user_info) {
-    const {email, password, nickname, interests, language, img_path} = user_info;
+    const {email, password, nickname, interests, language, img_path, address} = user_info;
     const encrypted = crypto.createHmac('sha1', config.secret)
                       .update(password)
                       .digest('base64');
@@ -31,7 +35,8 @@ UserSchema.statics.create = function(user_info) {
         nickname,
         interests,
         language,
-        img_path
+        img_path,
+        address
     })
     // return the Promise
     return user.save()

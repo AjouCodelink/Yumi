@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, Platform } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
@@ -123,31 +124,6 @@ export default class ChatroomTab extends Component {
             cr_id: item.roomID,
         });
     }
-        searchRoomByKeyword(){
-        this.searcharray.splice(0,100) //searchlist 초기화값이 100인 이유는동일한 chatlist 검색 결과가 최대 100개라고 가정
-        this.state.searcharrayHolder.splice(0,100)
-        this.setState({isSearchListVisible: !this.state.isSearchListVisible});
-        var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
-        fetch(url, {
-            method: 'GET',
-            headers: new Headers({
-            'Content-Type' : 'application/json',
-            'x-access-token': this.token
-            })
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson => {
-            for(var i=0;i<responseJson.length;i++)
-            {
-                this.searcharray.push({
-                    title: responseJson[i].interest,
-                    roomID: responseJson[i]._id
-                })                  
-            }
-            this.setState({searcharrayHolder: [...this.searcharray]})     
-        }
-        )
-    }
     FlatListItemSeparator = () => {
         return (
             <View style={{
@@ -163,6 +139,41 @@ export default class ChatroomTab extends Component {
     searchBarShow(){
         this.setState({isSearchVisible: !this.state.isSearchVisible});
     }
+    searchRoomByKeyword(){
+        this.searcharray.splice(0,100) //searchlist 초기화값이 100인 이유는동일한 chatlist 검색 결과가 최대 100개라고 가정
+        this.state.searcharrayHolder.splice(0,100)
+        this.setState({isSearchListVisible: !this.state.isSearchListVisible});
+        var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token',
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            for(var i=0;i<responseJson.length;i++)
+            {
+                this.searcharray.push({
+                    title: responseJson[i].interest,
+                    roomID: responseJson[i]._id
+                })
+                    
+                    
+                    
+            }
+            this.setState({searcharrayHolder: [...this.searcharray]})
+        
+        }
+        )
+
+    }
+
+    GetItem(item) {
+        Alert.alert(item);
+    }
+    
 
     render() {
         {/*========헤더부분===========*/}
@@ -175,6 +186,8 @@ export default class ChatroomTab extends Component {
                     </View>
                 </Button>
                 </View>
+                
+                {/*방생성 Dialog*/}
                 <DialogInput
                     isDialogVisible = {this.state.isAlertVisible}
                     title={"Create Chatroom"}

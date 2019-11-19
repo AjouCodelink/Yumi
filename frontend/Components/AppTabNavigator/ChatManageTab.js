@@ -25,7 +25,19 @@ export default class ChatManageTab extends Component {
             <Icon name='md-search' size={300} style={{color: tintColor}} />
         ),
     }
-
+    searchRoomByKeyword(){
+        
+        var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token',
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => console.log(responseJson));
+    }
     render() {
         const {search} = this.state;
         return (

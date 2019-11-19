@@ -78,7 +78,11 @@ export default class Chatroom extends Component {
     }
 
     componentWillMount() {
+<<<<<<< HEAD
         console.log(1)
+=======
+     
+>>>>>>> 41a758aaad20a804690ca0e7ee2837e9d75ddec7
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
                 'SELECT user_email FROM token',
