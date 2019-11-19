@@ -1,7 +1,7 @@
 const User = require('../../../models/user');
 
 /*
-    GET /user/profile/nickname
+    GET /user/profile
 */
 exports.nickname = function(req, res){
     var email = req.decoded.email;

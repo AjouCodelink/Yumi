@@ -4,6 +4,6 @@ var authMiddleware = require('../../../middlewares/auth');
 
 router.use('/', authMiddleware);
 
-router.get('/nickname', controller.nickname);
+router.get('/', controller.nickname);
 router.post('/nickname/:newNickname', controller.changeNickname);
 module.exports = router;
