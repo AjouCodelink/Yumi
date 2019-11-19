@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, Platform } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
@@ -9,6 +8,7 @@ export default class ChatroomTab extends Component {
     static navigationOptions = {
         header: null,
     }
+    
     
     constructor(props) {
         super(props);
