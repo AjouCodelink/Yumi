@@ -63,7 +63,7 @@ export default class EditLanguage extends Component {
                                 </Button>
                             </TouchableOpacity>
                             <TouchableOpacity>
-                                <Button onPress={() => this._onPressAdmit()} style={{backgroundColor: '#7f7', width: 80, justifyContent: 'center', marginLeft:20}}>
+                                <Button onPress={() => this._onPressAdmit()} style={{backgroundColor: '#4d4', width: 80, justifyContent: 'center', marginLeft:20}}>
                                     <Text>Admit</Text>
                                 </Button>
                             </TouchableOpacity>
