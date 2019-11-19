@@ -1,11 +1,9 @@
-
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput,Button,Platform } from 'react-native';
+import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, Platform } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
-import {Icon} from 'native-base';
+import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail,Icon,Button,Fab} from 'native-base';
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
-
 export default class ChatroomTab extends Component {
     static navigationOptions = {
         header: null,
@@ -19,6 +17,7 @@ export default class ChatroomTab extends Component {
         this.searcharray = [],
         this.array = [],
         this.state = {
+            active : false,
             arrayHolder: [],
             searcharrayHolder: [],
             textInput_Holder_Theme: '',
@@ -54,7 +53,6 @@ export default class ChatroomTab extends Component {
             method: 'GET',
             headers: new Headers({
             'Content-Type' : 'application/json',
-            'token': 'token',
             'x-access-token': this.token
             //다른 search에서만 쓰면 안된다. 
             })
@@ -77,7 +75,6 @@ export default class ChatroomTab extends Component {
             method: 'POST',
             headers: new Headers({
             'Content-Type' : 'application/json',
-            'token': 'token',
             'x-access-token': this.token
             })
         }).then(response => response.json())
@@ -126,22 +123,7 @@ export default class ChatroomTab extends Component {
             cr_id: item.roomID,
         });
     }
-    FlatListItemSeparator = () => {
-        return (
-            <View style={{
-                height: 1,
-                width: "100%",
-                backgroundColor: "#607D8B",
-            }}/>
-        );
-    }
-    suggestRoom(){
-        Alert.alert("Room suggest Pressed");
-    }
-    searchBarShow(){
-        this.setState({isSearchVisible: !this.state.isSearchVisible});
-    }
-    searchRoomByKeyword(){
+        searchRoomByKeyword(){
         this.searcharray.splice(0,100) //searchlist 초기화값이 100인 이유는동일한 chatlist 검색 결과가 최대 100개라고 가정
         this.state.searcharrayHolder.splice(0,100)
         this.setState({isSearchListVisible: !this.state.isSearchListVisible});
@@ -150,7 +132,7 @@ export default class ChatroomTab extends Component {
             method: 'GET',
             headers: new Headers({
             'Content-Type' : 'application/json',
-            'token': 'token',
+            'x-access-token': this.token
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
@@ -160,45 +142,39 @@ export default class ChatroomTab extends Component {
                 this.searcharray.push({
                     title: responseJson[i].interest,
                     roomID: responseJson[i]._id
-                })
-                    
-                    
-                    
+                })                  
             }
-            this.setState({searcharrayHolder: [...this.searcharray]})
-        
+            this.setState({searcharrayHolder: [...this.searcharray]})     
         }
         )
-
     }
-
-    GetItem(item) {
-        Alert.alert(item);
+    FlatListItemSeparator = () => {
+        return (
+            <View style={{
+                height: 1,
+                width: "100%",
+                
+            }}/>
+        );
     }
-    
+    suggestRoom(){
+        Alert.alert("Room suggest Pressed");
+    }
+    searchBarShow(){
+        this.setState({isSearchVisible: !this.state.isSearchVisible});
+    }
 
     render() {
+        {/*========헤더부분===========*/}
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
-                <Text style={styles.font_header}>ChatRoom</Text>
+                <Button light 
+                style = {{width : "100%",height :"100%"}}>
                     <View style={styles.febContainer}>
-                        <TouchableOpacity
-                            onPress={()=> this.setState({isAlertVisible:true})} 
-                            activeOpacity={0.7} 
-                            style={styles.button_create} >
-                            <Icon name='chatbubbles' style={{color: '#FFF'}}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={()=> this.searchBarShow()} 
-                        activeOpacity={0.7} 
-                        style={styles.button_search} >
-                        <Icon name='ios-search' style={{color: '#FFF'}}/>
-                    </TouchableOpacity>
                     </View>
+                </Button>
                 </View>
-                
-                {/*방생성 Dialog*/}
                 <DialogInput
                     isDialogVisible = {this.state.isAlertVisible}
                     title={"Create Chatroom"}
@@ -206,52 +182,86 @@ export default class ChatroomTab extends Component {
                     hintInput ={"Theme"}
                     submitInput={ (inputText) => { this.submit(inputText)}}
                     closeDialog={ (inputText) => {this.setState({isAlertVisible:false})}}/>
-        
+                {/*=========flatlist 부분===========*/}
+                <Button success style ={{width: '100%'}}>
+                <Text 
+                style = {{fontSize : 16, marginLeft : 15,color :"#fff"}}>My Chatroom</Text>
+                </Button>
                 { (this.state.isSearchListVisible == false) ? (
-                    <FlatList
+                <FlatList
                         data={this.state.arrayHolder}
-                        width='85%'
+                        width='100%'
                         extraData={this.state.arrayHolder}
                         keyExtractor = {(item, index) => String(index)}
                         ItemSeparatorComponent={this.FlatListItemSeparator}
-                        renderItem={({ item }) =>
-                            <TouchableOpacity activeOpacity={0.5} onLongPress={() => this._longPressChatroom(item.roomID)}
-                                onPress={() => this._onPressChatroom(item)}>
-                                <View style={styles.item}>
-                                    <Text style={styles.item_font}>
-                                        # {item.title}{'\n'}# roomID: {item.roomID}
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
-                    }
-                />
-                ):(<FlatList
+                        renderItem={({ item }) =>(
+                                <ListItem avatar
+                                activeOpacity={0.5} onLongPress={() => this._longPressChatroom(item.roomID)}
+                                onPress={() => this._onPressChatroom(item)}
+                                >
+                                <Left>
+                                <Thumbnail
+                                style={{width: 50, height: 45}} 
+                                source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
+                                </Left>
+                                <Body>
+                                <Text>#{item.title}</Text>
+                                <Text note>chatRoom message</Text>
+                                </Body>
+                                <Right>
+                                <Text note>3:43 pm</Text>
+                                </Right>
+                                </ListItem>
+                        )}
+                />):(<FlatList
                         data={this.state.searcharrayHolder}
-                        width='85%'
-                        //extraData={this.state.searcharrayHolder}
+                        width='100%'
+                        extraData={this.state.searcharrayHolder}
                         keyExtractor = {(item, index) => String(index)}
                         ItemSeparatorComponent={this.FlatListItemSeparator}
                         renderItem={({ item }) =>
-                            <TouchableOpacity activeOpacity={0.5} onLongPress={() => this._longPressChatroom(item.roomID)}
-                                onPress={() => this._onPressChatroom(item)}>
-                                <View style={styles.item}>
-                                    <Text style={styles.item_font}>
-                                        # {item.title}{'\n'}# roomID: {item.roomID}
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
+                        <ListItem avatar
+                                activeOpacity={0.5} onLongPress={() => this._longPressChatroom(item.roomID)}
+                                onPress={() => this._onPressChatroom(item)}
+                                >
+                                <Left>
+                                <Thumbnail
+                                style={{width: 50, height: 45}} 
+                                source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
+                                </Left>
+                                <Body>
+                                <Text>#{item.title}</Text>
+                                <Text note>chatRoom message</Text>
+                                </Body>
+                                <Right>
+                                <Text note>3:43 pm</Text>
+                                </Right>
+                                </ListItem>
+                    
                     }
                 />)
-                }
-                
+                }      
+            <Button info style ={{width: '100%'}}>  
+                <Text style = {{ fontSize : 16,marginLeft : 15 , color: '#fff'}}>Chatroom Suggest</Text></Button>
+            <List style ={{width: '100%'}}>
+            <ListItem avatar>
+            <Left>
+                <Thumbnail
+                style={{width: 50, height: 45}}  
+                source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
+            </Left>
+            <Body>
+                <Text>Game-Overwatch</Text>
+                <Text note>RyusungRyoung looks happy</Text>
+            </Body>
+            <Right>
+                <Text note>3:43 pm</Text>
+            </Right>
+            </ListItem>
+            </List>
+                {/*=======아래 채팅방 추천 및 검색 창 팝업 부분=========*/}
                 <View style={styles.febContainer}>
-                    <TouchableOpacity
-                        onPress={()=> this.suggestRoom()} 
-                        activeOpacity={0.7} 
-                        style={styles.button_suggest}
-                        >
-                        <Icon name='paw' style={{color: '#222'}}/>
-                    </TouchableOpacity>
+                
                 </View>
                 {
                     (this.state.isSearchVisible == true) ? (
@@ -265,11 +275,42 @@ export default class ChatroomTab extends Component {
                         <TouchableOpacity
                             style={styles.searchButton} 
                             onPress={()=>this.searchRoomByKeyword()}>
-                            <Icon name='ios-search' style={{color: '#FFF'}}/>
+                            <Icon name='ios-search' style={{color: '#111'}}/>
                         </TouchableOpacity>
                     </View> 
                     ):(<View style = {styles.hide}></View>)
                 }
+                    <Fab
+                        active={this.state.active}
+                        direction="up"
+                        containerStyle={{ }}
+                        style={{ backgroundColor: '#5067FF' , width:  65,
+                            height: 65,borderRadius: 70}}
+                        position="bottomRight"
+                        onPress={() => this.setState({ active: !this.state.active })}>
+                        <Icon name="navigate" />
+
+                        <Button   
+                            onPress={()=> this.setState({isAlertVisible:true})} 
+                            activeOpacity={0.7} 
+                            style={styles.button_create} >
+                        <Icon name='chatbubbles' style={{color: '#FFF'}}/>
+                        </Button>
+
+                        <Button   
+                            onPress={()=> this.searchBarShow()} 
+                            activeOpacity={0.7} 
+                            style={styles.button_search} >
+                        <Icon name='ios-search' style={{color: '#FFF'}}/>
+                        </Button>
+
+                        <Button  
+                            onPress={()=> this.suggestRoom()} 
+                            activeOpacity={0.7} 
+                            style={styles.button_suggest}>
+                        <Icon name='paw' style={{color: '#222'}}/>
+                        </Button>
+                </Fab>
             </View>
         );
     }
@@ -279,7 +320,7 @@ const styles = StyleSheet.create({
         flex : 1,
         justifyContent : 'flex-start',
         alignItems : 'center',
-        backgroundColor : '#333'
+        backgroundColor : '#fff'
     },
     header: {
         flexDirection : "row",
@@ -287,15 +328,6 @@ const styles = StyleSheet.create({
         height: 74,
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
-        marginBottom: 15,
-        backgroundColor: '#888',
-    },
-    font_header: {
-        color: 'white',
-        alignItems: 'center',
-        fontSize: 42,
-        fontWeight: 'bold',
-        marginLeft: 15,
     },
     hide : {
     },
@@ -309,43 +341,50 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     button_search:{
-        width:  50,
-        height: 50,
+        width:  45,
+        height: 45,
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 30,
         borderRadius: 50,
         backgroundColor: '#33AAFF',
     },
     button_create: {
-        width:  50,
-        height: 50,
+        width:  45,
+        height: 45,
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 30,
         borderRadius: 50,
         backgroundColor: '#44DD44',
     }, 
     button_suggest : {
-        width:  50,
-        height: 50,
+        width:  45,
+        height: 45,
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight:  50,
-        marginBottom: 60,
-        borderRadius: 50,
+        borderRadius: 40,
         backgroundColor: '#eeee33',
     },
     item : {
+        flexDirection : 'row',
         padding : 10,
-        justifyContent : 'center',
+        justifyContent : 'flex-start',
         borderWidth : 1, 
         borderRadius: 7,
         borderColor : '#333',
         backgroundColor: '#fff',
     },
+        Divider : {
+        width: '100%',
+        backgroundColor : '#BDBDBD',
+    },
+    thumbnail: {
+        justifyContent : 'center',
+        alignItems: 'center',
+
+    },
     item_font : {
         fontSize : 16,
+        marginLeft : 10,
     },
     textInputStyle:{
         width: '85%',
@@ -364,15 +403,15 @@ const styles = StyleSheet.create({
         width:'100%',
         justifyContent: 'center',
         alignItems : "stretch",
-        marginTop: 90,
+        marginTop: 120,
         paddingLeft: 15,
     },
     searchBar:{
         width: "75%",
         height: 40,
         fontSize:18,
-        color: '#ddd',
-        backgroundColor:'rgba(0, 0, 0, 0.8)',
+        color: '#fff',
+        backgroundColor:'#eee',
         paddingLeft: 10,
         borderRadius: 5,
     },
@@ -384,6 +423,6 @@ const styles = StyleSheet.create({
         alignItems : 'center',
         marginLeft :15,
         marginRight: 15,
-        backgroundColor:'rgba(0, 0, 0, 0.5)',
+        backgroundColor:'#eee',
     }
 })
