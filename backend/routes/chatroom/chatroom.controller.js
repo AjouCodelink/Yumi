@@ -7,19 +7,19 @@ var User = require('../../models/user');
 */
 exports.searchWord = (req, res) =>{
     var keyword = req.params.keyword;
-    
-    ChatRoom.find({
-        $or : [
+
+    ChatRoom.find().
+        or([
             {"name" : {$regex : '.*'+keyword+'.*'}},
             {"interest.section" : {$regex : '.*'+keyword+'.*'}},
             {"interest.group" : {$regex : '.*'+keyword+'.*'}}
-        ]
-    }, function(err, chatroom){
-        if(err) return res.json(err);
-        else if(chatroom.length) res.json(chatroom);
-        else res.json({result: false, message : "no search chatroom"})
-    })
-
+        ]).
+        select('interest name').
+        then((chatroom, err)=>{
+            if(err) res.json(err);
+            else if(chatroom.length) res.json(chatroom);
+            else res.json(({result : true, message : "no search chatroom"}));
+        })
 }
 
 /*
