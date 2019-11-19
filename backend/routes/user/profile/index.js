@@ -4,6 +4,10 @@ var authMiddleware = require('../../../middlewares/auth');
 
 router.use('/', authMiddleware);
 
-router.get('/nickname', controller.nickname);
-router.post('/nickname/:newNickname', controller.changeNickname);
+router.post('/interests', controller.editInterests);
+router.post('/language/:language', controller.editLanguage);
+router.post('/address/:address', controller.editAddress);
+router.post('/nickname/:newNickname', controller.editNickname);
+router.get('/', controller.nickname);
+
 module.exports = router;
