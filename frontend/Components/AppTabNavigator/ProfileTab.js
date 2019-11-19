@@ -106,10 +106,6 @@ export default class ProfileTab extends Component {
         .then(responseJson => {console.log(responseJson)})
     }
 
-    _onPressStatusMessage() {
-        alert("you pressed Status Message Edit.") // 상메 안쓰니 곧 대체될 컴포넌트
-    }
-
     render() {
         return (
             <View style={style.container}>
@@ -129,10 +125,24 @@ export default class ProfileTab extends Component {
                     <View style={{flexDirection:'row', alignItems: 'flex-end', marginLeft: 25}}> 
                         <Text style={style.font_nickname}>{this.state.myNickname}</Text>
                         <TouchableOpacity onPress= {() => this.setState({isAlertVisible: true})}>
-                            <Icon name='md-create' style={{fontSize: 25, margin: 10, color: 'white'}} />
+                            <Icon name='md-create' style={{fontSize: 22, margin: 8, color: 'white'}} />
                         </TouchableOpacity>
                     </View>
                     <Text style={style.font_email}>{this.state.myEmail}</Text>
+                </View>
+                <View style={style.febContainer}>
+                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._onPressThumbnail()}>
+                        <Icon name='md-create' style={{fontSize: 26, margin: 4, color: 'white'}} />
+                        <Text style={style.font_feb}>Interests</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._onPressThumbnail()}>
+                        <Icon name='md-pin' style={{fontSize: 26, margin: 4, color: 'white'}} />
+                        <Text style={style.font_feb}>Address</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._onPressThumbnail()}>
+                        <Icon name='md-sync' style={{fontSize: 26, margin: 4, color: 'white'}} />
+                        <Text style={style.font_feb}>Language</Text>
+                    </TouchableOpacity>
                 </View>
                 <TouchableOpacity
                     style={style.thumbnailContainer}
@@ -170,14 +180,26 @@ const style = StyleSheet.create({
     downsideContainer: {
         width: '100%',
         height: '40%',
-        paddingTop: screenHeight*0.12,
+        paddingTop: screenHeight*0.11,
         backgroundColor: '#555',
         alignItems: 'center',
     },
     thumbnailContainer: {
         flex: 2,
         position : 'absolute',
-        top: '50%',
+        top: '49%',
+    },
+    febContainer: {
+        flex: 2,
+        position : 'absolute',
+        width: '80%',
+        top: '88%',
+        justifyContent: 'space-around',
+        flexDirection: 'row',
+    },
+    font_feb: {
+        color: '#ddd',
+        fontSize: 14,
     },
     thumbnail: {
         height: screenHeight*0.2,
