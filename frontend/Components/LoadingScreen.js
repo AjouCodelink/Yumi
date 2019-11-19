@@ -25,12 +25,6 @@ export default class LoadingScreen extends Component {
                 null,
                 (_,error) => console.error(error)
             )
-            /*tx.executeSql(          // chatlog에 answer이 없으면 추가하기
-                'ALTER TABLE chatLog ADD COLUMN answer TEXT',
-                [],
-                null,
-                (_,error) => console.error(error)
-            )*/
             tx.executeSql(          // token 확인
                 'SELECT * FROM token',
                 [],

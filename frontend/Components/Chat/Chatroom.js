@@ -23,15 +23,12 @@ export default class Chatroom extends Component {
     constructor(props){
         super(props);
         this.socket = io('http://101.101.160.185:3000');
-
         this.socket.on('RECEIVE_MESSAGE', function(data){
             db_Add(data);
         });
-
         this.socket.on('disconnect', function(){
             console.log('disconnect');
         })
-
         db_Add = (newChat) => {
             db.transaction( tx => {
                 tx.executeSql(
@@ -119,7 +116,7 @@ export default class Chatroom extends Component {
     renderDrawer = () => {
         return (
             <View>
-                <ChatroomSideMenu userlist={this.state.userlist}/>
+                <ChatroomSideMenu goBack={() => this.props.navigation.goBack(null)} userlist={this.state.userlist}/>
             </View>
         );
     };
