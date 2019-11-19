@@ -21,7 +21,7 @@ exports.creation = (req, res) => {
     var chatRoom = new ChatRoom();
     var userEmail = req.decoded.email;
 
-    chatRoom.interest = req.params.interest;
+    chatRoom.interest = req.params.interest; // TODO : 섹션이랑 그룹 두개로 나눠서 들어 올 예정
 
     User.findOne({email:userEmail}, function(err, data){
         if(err) res.send(err);
@@ -59,7 +59,8 @@ exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반�
     var userEmail = req.decoded.email;
 
     User.findOne({email:userEmail}, function(err, data){
-        res.send(data.chatroom);
+        if(err) res.json(err);
+        res.json(data.chatroom);
     })
 }
 
@@ -71,28 +72,9 @@ exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반�
 */
 
 exports.recommend = (req, res) => {
-
-    console.log(req.decoded.email);//o
-    var userEmail = req.decoded.email;//o
-    
-    User.findOne({email:userEmail}, function(err, user){
-        var length = user.interests.length;
-        var result = Math.floor(Math.random() * length);
-
-        console.log(user.interests);//o
-        console.log(user.interests[result].section);//undefined
-        console.log(user.interests[result].group);
-
-        console.log(result);
-
-        var interestSection = user.interests[result].section;
-        var interestGroup = user.interests[result].group;
-        
-        ChatRoom.find({interest: interestSection}, function(err, chatroom){
-            // console.log(chatroom);
-            res.json(chatroom);
-            // console.log('1');
-        })
+    var userEmail = req.decoded.email;
+    User.findOne({email:userEmail}, {email:1, interests:1}, function(err, user){
+        res.json(user);
     })
 }
 
@@ -154,6 +136,7 @@ exports.exit = (req, res) => {
             }
         }
     })
+}
 
 // /*
 //     GET /chatroom/log/:cr_id
