@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView } from 'react-native';
-import { Item, Label, Input, Spinner } from 'native-base';
+import { View, Text, StyleSheet, KeyboardAvoidingView, Dimensions } from 'react-native';
+import { Item, Label, Input } from 'native-base';
 
 import CustomButton from '../CustomButton';
+
+import DoPicker from './Address/DoPicker';
+import CityPicker from './Address/CityPicker';
+import LanguagePicker from './Language/LanguagePicker';
+
+const screenWidth = Math.round(Dimensions.get('window').width);
 
 export default class SignUp_Detail extends Component {
     static navigationOptions = {
@@ -15,8 +21,16 @@ export default class SignUp_Detail extends Component {
             password: '',
             password_check: '',
             nickname: '',
+            address: '',
+            language: '',
+
+            selectedDo: 'noValue',
+            selectedCity: 'noValue',
+
             passwordChecked: 0,
             nicknameChecked: 0,
+            addressChecked: 0,
+            languageChecked: 0,
             spinnerOpacity: 0,
         }
     }
@@ -28,16 +42,21 @@ export default class SignUp_Detail extends Component {
             email: this.state.email,
             password: this.state.password,
             nickname: this.state.nickname,
+            address: this.state.address,
+            language: this.state.language,
         });
     }
     pressNext(){
         this.setState({
             passwordChecked: 0,
-            nicknameChecked: 0
+            nicknameChecked: 0,
+            addressChecked: 0,
         })
         this.passwordCheck();
         this.nicknameCheck();
-        if (this.state.passwordChecked == 1 && this.state.nicknameChecked == 1) {
+        this.addressCheck();
+        this.languageCheck();
+        if (this.state.passwordChecked == 1 && this.state.nicknameChecked == 1 && this.state.addressChecked == 1) {
             this.goSignUp_Interest()
         }
     }
@@ -63,6 +82,37 @@ export default class SignUp_Detail extends Component {
             this.state.nicknameChecked = 1
         }
     }
+    addressCheck(){
+        if (this.state.selectedCity == 'noValue') {
+            alert("Please select your address.")
+        } else {
+            this.state.addressChecked = 1
+        }
+    }
+    languageCheck(){
+        if (this.state.language == '') {
+            alert("Please select your language.")
+        } else {
+            this.state.languageChecked = 1
+        }
+    }
+    doChange = (value) => {
+        this.setState({
+            selectedDo: value,
+            selectedCity: 'noValue'
+        })
+    }
+    cityChange = (value) => {
+        this.setState({
+            selectedCity: value, 
+            address: this.state.selectedDo+' '+value
+        })
+    }
+    languageChange = (value) => {
+        this.setState({
+            language: value
+        })
+    }
     render() {
         const {navigation} = this.props;
         this.state.email = navigation.getParam('email', 'No Email');
@@ -73,7 +123,7 @@ export default class SignUp_Detail extends Component {
                     <Text style={style.font_title}>Enter Details</Text>
                 </View>
                 <KeyboardAvoidingView behavior='padding' style={style.content}>
-                    <Text style={{fontSize:18, color:'#999', textAlign:'left'}}>Your Email:</Text>
+                    <Text style={{fontSize:18, color:'#999', textAlign:'left'}}>Your Email</Text>
                     <Text style={{fontSize:20, color:'white', textAlign:'left'}}> {this.state.email}{"\n"}</Text>
                     <Item style={{height: 53}} floatingLabel>
                         <Label style={{color: '#999'}}>Password</Label>
@@ -90,6 +140,21 @@ export default class SignUp_Detail extends Component {
                         <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(nickname) => this.setState({nickname})}/>
                     </Item>
                     <Text style={style.font_main}>  The nickname must be between 2 and 20 characters.{"\n"}</Text>
+                    <View style={style.pickerContainer}>
+                        <View style={{height: 45, width: screenWidth*0.32}}>
+                            <DoPicker valueChange={this.doChange}/>
+                        </View>
+                        <View style={{height: 45, width: screenWidth*0.42}}>
+                            <CityPicker selectedDo={this.state.selectedDo} valueChange={this.cityChange}/>
+                        </View>
+                    </View>
+                    <Text style={style.font_main}>   Select a place where you live.{"\n"}</Text>
+                    <View style={style.pickerContainer}>
+                        <View style={{height: 45, width: screenWidth*0.74}}>
+                            <LanguagePicker valueChange={this.languageChange} />
+                        </View>
+                    </View>
+                    <Text style={style.font_main}>   Your language only using in the translation system.{"\n"}</Text>
                 </KeyboardAvoidingView>
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
@@ -117,7 +182,7 @@ const style = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: '12%',
+        paddingTop: '4%',
         paddingBottom: '5%',
         backgroundColor: '#333',
     },
@@ -137,6 +202,13 @@ const style = StyleSheet.create({
     content: {
         flex: 1,
         width: '75%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+    },
+    pickerContainer: {
+        flexDirection : 'row',
+        width: '100%',
+        marginTop: 5,
         justifyContent: 'center',
         alignItems: 'flex-start',
     },

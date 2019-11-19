@@ -88,7 +88,7 @@ export default class SignUp_EmailAuth extends Component {
             <View style={style.container}>
                 <View style={style.header}/>
                 <View style={style.title}>
-                    <Text style={style.font_title}>E-mail authentication</Text>
+                    <Text style={style.font_title}>Email authentication</Text>
                 </View>
                 <KeyboardAvoidingView behavior='padding' style={[style.content, {display: this.state.emailHideness}]}>
                     <View style={style.input_place}>
@@ -106,7 +106,7 @@ export default class SignUp_EmailAuth extends Component {
                                 onPress={() => {this.onPressEmail();}}/>
                         </View>
                     </View>
-                    <Text style={style.font_main}>  You must use school e-mail.</Text>
+                    <Text style={style.font_main}>  You must use school email.</Text>
                     <Text style={style.font_main}>    example. example@ajou.ac.kr{"\n"}{"\n"}</Text>
                 </KeyboardAvoidingView>
                 <KeyboardAvoidingView behavior='padding' style={[style.content, {display: this.state.authHideness}]}>

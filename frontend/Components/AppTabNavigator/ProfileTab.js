@@ -87,8 +87,8 @@ export default class ProfileTab extends Component {
             newPhoto.append('uri', photo.uri)
             newPhoto.append('name', this.state.myEmail+'_thumbnail.jpg')
             newPhoto.append('type', photo.type)
-            this._uploadImage(newPhoto)
-            //this.setState({ myThumbnailURL: result.uri });
+            //this._uploadImage(newPhoto)
+            this.setState({ myThumbnailURL: result.uri });
         }
     };
 

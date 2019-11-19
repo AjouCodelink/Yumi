@@ -10,61 +10,73 @@ class Games extends Component {
         key : '0100',
         opened : 'none',
         contactData : [{
-            name : 'League Of Legends',
+            name : 'Online Game',
             selected : false,
             key : '0101',
         },{
-            name : "PlayerUnknown's Battlegrounds",
+            name : 'PC Game',
             selected : false,
             key : '0102',
         },{
-            name : 'Overwatch',
+            name : "Mobile Game",
             selected : false,
             key : '0103',
         },{
-            name : 'FIFA Online 4',
+            name : 'Console Game',
             selected : false,
             key : '0104',
         },{
-            name : 'SuddenAttack',
+            name : 'Board Game',
             selected : false,
             key : '0105',
         },{
-            name : 'Maplestory',
+            name : 'RPG',
             selected : false,
             key : '0106',
         },{
-            name : 'StarCraft',
+            name : 'FPS',
             selected : false,
             key : '0107',
         },{
-            name : 'World Of Warcraft',
+            name : 'AOS',
             selected : false,
             key : '0108',
         },{
-            name : 'Dungeon&Fighter',
+            name : 'RTS',
             selected : false,
             key : '0109',
         },{
-            name : 'Lost Ark',
+            name : 'Rhythm Game',
             selected : false,
             key : '0110',
         },{
-            name : 'Cartrider',
+            name : 'Defense Game',
             selected : false,
             key : '0111',
         },{
-            name : 'Path of Exile',
+            name : 'Racing Game',
             selected : false,
             key : '0112',
         },{
-            name : 'Blade&Soul',
+            name : 'Sandbox Game',
             selected : false,
             key : '0113',
         },{
-            name : 'Diablo III',
+            name : 'BattleRoyal',
             selected : false,
             key : '0114',
+        },{
+            name : 'Card Game',
+            selected : false,
+            key : '0115',
+        },{
+            name : 'Indie Game',
+            selected : false,
+            key : '0116',
+        },{
+            name : 'Puzzle Game',
+            selected : false,
+            key : '0117',
         },{
             name : 'etc',
             selected : false,

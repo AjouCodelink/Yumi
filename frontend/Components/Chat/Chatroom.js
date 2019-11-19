@@ -43,53 +43,13 @@ export default class Chatroom extends Component {
     };
 
     state = {
-        cr_id: 0,
+        cr_id: '1',
         cr_name: '',
         message: '',
-        myEmail:'',
+        myEmail: '',
         chatlog:[], // 채팅로그
-<<<<<<< HEAD
-        userlist:[{thumbnailURL: '', nickname: '123'},
-            {thumbnailURL: '', nickname: '12'},
-            {thumbnailURL: '', nickname: '234'},
-            {thumbnailURL: '', nickname: '43'},
-            {thumbnailURL: '', nickname: '2'},
-            {thumbnailURL: '', nickname: '654'},
-            {thumbnailURL: '', nickname: '3'},
-            {thumbnailURL: '', nickname: '5'},
-            {thumbnailURL: '', nickname: '6'},
-            {thumbnailURL: '', nickname: '756'},
-            {thumbnailURL: '', nickname: '5'},
-            {thumbnailURL: '', nickname: '77'},
-            {thumbnailURL: '', nickname: '6'},
-            {thumbnailURL: '', nickname: '84'},
-            {thumbnailURL: '', nickname: '29'},
-            {thumbnailURL: '', nickname: '97'},
-            {thumbnailURL: '', nickname: '56'},
-            {thumbnailURL: '', nickname: '123'},
-            {thumbnailURL: '', nickname: '32'},
-        ],
-=======
-        userlist:[{nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '456'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},],
->>>>>>> ef3ada48652a4e852a185281fca9bfb65e7303b2
+        userlist:[], // 유저 목록
+        token: '',
         key: 0,
     }
 
@@ -98,19 +58,21 @@ export default class Chatroom extends Component {
     }
 
     componentWillMount() {
-     
+        const { navigation } = this.props;
+        this.state.cr_id = navigation.getParam('cr_id', '-1'),
+        this.state.cr_name = navigation.getParam('title', 'No cr_name')
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
-                'SELECT user_email FROM token',
+                'SELECT * FROM token',
                 [],
                 (_, { rows: { _array }  }) => {
-                    this.state.myEmail = _array[0].user_email,
+                    this.state.token = _array[0].access_token
                     this.socket.emit('JOIN_ROOM', {cr_id : this.state.cr_id, myEmail : this.state.myEmail})},
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
         this.db_Update();
-        
+        //this._getParticipants();  // 방 인원 불러오기
     }
 
     renderDrawer = () => {
@@ -135,6 +97,20 @@ export default class Chatroom extends Component {
         }
     }
 
+    _getParticipants() {
+        var url = 'http://101.101.160.185:3000/chatroom/participants/'+this.state.cr_id;
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'x-access-token': this.state.token
+            }),
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {console.log(responseJson)})
+        // todo: 받은 유저 목록을 userlist에 전달하기
+    }
+
     _receivePopQuiz(question, answer){ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
         const newQuiz = {
             user_email: 'PopQuizBot',
@@ -143,7 +119,7 @@ export default class Chatroom extends Component {
             message: question,
             answer: answer,
         }
-        //이 부분에는 socket로 팝퀴즈 전달하도록 해야함.
+        // todo: 받은 팝퀴즈를 db에 저장
     }
 
     db_Update = () => {        // DB 내의 채팅 로그 읽어오기
@@ -182,9 +158,6 @@ export default class Chatroom extends Component {
 
     render() {
         const { goBack } = this.props.navigation;
-        const { navigation } = this.props;
-        this.state.cr_id = navigation.getParam('cr_id', '-1');
-        this.state.cr_name = navigation.getParam('title', 'No cr_name');
         return (
             <DrawerLayout
                 ref={ drawer => this.drawer = drawer }

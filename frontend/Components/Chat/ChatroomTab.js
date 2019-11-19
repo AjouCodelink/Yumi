@@ -33,13 +33,8 @@ export default class ChatroomTab extends Component {
         this.setState({isAlertVisible: false})
         this.createRoom(inputText);
     }
-<<<<<<< HEAD
-    componentDidMount() {
-        this.setState({ arrayHolder: [...this.array] })
-=======
 
     componentWillMount() {
->>>>>>> 918b04753f68b23fd31e8db9881702180c4a9c5c
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM token',
@@ -99,16 +94,6 @@ export default class ChatroomTab extends Component {
         this.setState({ arrayHolder: [...this.array] })
 
     }
-<<<<<<< HEAD
-    leaveChatRoom = (roomID) => { // 방 나가기
-        this.setState(prevState => {
-            const index = prevState.arrayHolder.findIndex(holder => holder.roomID === roomID);
-            prevState.arrayHolder.splice(index, 1);
-            return ({
-                arrayHolder: [...prevState.arrayHolder]
-            })
-        });
-=======
 
     exitChatRoom = (roomID) => { // 방 나가기
         var url = 'http://101.101.160.185:3000/chatroom/exit/'+roomID;
@@ -134,7 +119,6 @@ export default class ChatroomTab extends Component {
         //todo: 근데 arrayHolder만 건드려서 그런가 방이 추가하면 다시 돌아오는 버그가 있음ㅠ
         //나중에 유용하면 이용하시고 아니면 삭제해주세요ㅠ
         //서버와도 연동해서 방에서 나가기 구현해야함.
->>>>>>> 918b04753f68b23fd31e8db9881702180c4a9c5c
     }
 
     _longPressChatroom = (roomID) => {  // 채팅방 꾹 누르면
