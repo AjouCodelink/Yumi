@@ -16,7 +16,6 @@ exports.nickname = function(req, res){
 /*
     POST /user/profile/nickname/:newNickname
 */
-
 exports.changeNickname = function(req, res){
     var email = req.decoded.email;
     var newNickname = req.params.newNickname;
