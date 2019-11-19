@@ -51,6 +51,7 @@ export default class Chatroom extends Component {
         message: '',
         myEmail:'',
         chatlog:[], // 채팅로그
+<<<<<<< HEAD
         userlist:[{thumbnailURL: '', nickname: '123'},
             {thumbnailURL: '', nickname: '12'},
             {thumbnailURL: '', nickname: '234'},
@@ -71,6 +72,27 @@ export default class Chatroom extends Component {
             {thumbnailURL: '', nickname: '123'},
             {thumbnailURL: '', nickname: '32'},
         ],
+=======
+        userlist:[{nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '456'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},
+            {nickname: '123'},],
+>>>>>>> ef3ada48652a4e852a185281fca9bfb65e7303b2
         key: 0,
     }
 
@@ -79,6 +101,7 @@ export default class Chatroom extends Component {
     }
 
     componentWillMount() {
+     
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
                 'SELECT user_email FROM token',
