@@ -7,6 +7,7 @@ router.use('/check', authMiddleware);
 router.use('/info', authMiddleware);
 router.use('/profile', profile);
 
+router.post('/info', controller.editInfo);
 router.get('/info', controller.info);
 router.get('/check', controller.check);
 router.post('/signup', controller.signup);

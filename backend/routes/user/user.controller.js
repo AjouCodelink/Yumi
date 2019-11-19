@@ -13,6 +13,23 @@ exports.info = function(req, res){
 }
 
 /*
+    POST /user/info
+*/
+exports.editInfo = function(req, res){
+    var email = req.decoded.email;
+
+    User.findOne({email:email},{interests:1, language:1, address:1}, function(err, user){
+        if(err) res.status(500).send(err);
+        if(user){
+            user.interests = req.body.interests;
+            user.language = req.body.language;
+            user.address = req.body.address;
+            user.save();
+            res.json({result : true, message : "save success"});
+        }
+    })
+}
+/*
     POST /user/send-email/:email
 */
 exports.sendEmail = (req, res) => {
