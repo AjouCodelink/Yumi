@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, KeyboardAvoidingView,Item, Label, Input, Spinner,Button} from 'react-native';
+import { StyleSheet, View, Image, KeyboardAvoidingView} from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
+import { Item, Label, Input, Spinner } from 'native-base';
 import * as SQLite from 'expo-sqlite';
+
+import CustomButton from './CustomButton';
 
 const db = SQLite.openDatabase('db.db');
 
