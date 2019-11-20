@@ -36,7 +36,19 @@ export default class EditAddress extends Component {
     }
 
     _onPressAdmit = () => {
-        //todo: 서버와 연동
+        var url = 'http://101.101.160.185:3000/user/profile/address/'+this.state.address;
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token',
+            'x-access-token': this.props.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            console.log(responseJson);
+        })
         this.popupClose()
     }
 

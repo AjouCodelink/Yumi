@@ -170,17 +170,19 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            for(var i=0;i<responseJson.length;i++)
-            {
-                this.searcharray.push({
-                    title: responseJson[i].interest,
-                    roomID: responseJson[i]._id
-                })
+            
+            // for(var i=0;i<responseJson.length;i++)
+            // {
+            //     this.searcharray.push({
+            //         title: responseJson[i].interest,
+            //         roomID: responseJson[i]._id
+            //     })
                     
                     
                     
-            }
-            this.setState({searcharrayHolder: [...this.searcharray]})
+            // }
+            // this.setState({searcharrayHolder: [...this.searcharray]})
+            console.log(responseJson);
         
         }
         )
