@@ -1,33 +1,32 @@
 import React, { Component } from 'react';
-import { ToastAndroid, View, Text, Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
-import { Button, } from 'native-base'
+import { View, Text, Dimensions, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native'
+import { Button, Item, Label, Input } from 'native-base'
 
-import DoPicker from '../SignUp/Address/DoPicker'
-import CityPicker from '../SignUp/Address/CityPicker'
+import SectionPicker from './SectionPicker'
+import GroupPicker from './GroupPicker'
 
-export default class EditAddress extends Component {
+export default class CreateChatroom extends Component {
     constructor(props){
         super(props)
     }
 
     state = {
-        selectedDo: 'noValue',
-        selectedCity: 'noValue',
-        address: '',
+        selectedSection: 'noValue',
+        selectedGroup: 'noValue',
+        new_cr_name: '',
         display: this.props.display
     }
 
-    doChange = (value) => {
+    sectionChange = (value) => {
         this.setState({
-            selectedDo: value,
-            selectedCity: 'noValue'
+            selectedSection: value,
+            selectedGroup: 'noValue'
         })
     }
 
-    cityChange = (value) => {
+    groupChange = (value) => {
         this.setState({
-            selectedCity: value, 
-            address: this.state.selectedDo+' '+value
+            selectedGroup: value, 
         })
     }
 
@@ -36,38 +35,52 @@ export default class EditAddress extends Component {
     }
 
     _onPressAdmit = () => {
-        if (this.state.selectedCity ==  'noValue') {
-            ToastAndroid.show('Please select your address.', ToastAndroid.SHORT)
+        if (this.state.selectedGroup ==  'noValue') {
+            ToastAndroid.show('Please select interest.', ToastAndroid.SHORT)
+            return
+        } else if (this.state.new_cr_name ==  '') {
+            ToastAndroid.show('Please input Room name.', ToastAndroid.SHORT)
             return
         }
+        const new_room = {
+            section: this.state.selectedSection,
+            group: this.state.selectedGroup,
+            cr_name: this.state.new_cr_name,
+        }
         //todo: 서버와 연동
+        //this.props.(채팅목록업데이트)
+        //console.log(new_room)
+        ToastAndroid.show('The room creation is complete.', ToastAndroid.SHORT);
         this.popupClose()
-        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
     }
 
     popupClose = () => {
         this.setState({
-            selectedDo: 'noValue',
-            selectedCity: 'noValue',
-            address: '',
+            selectedSection: 'noValue',
+            selectedGroup: 'noValue',
+            new_cr_name: '',
         })
         this.props.displayChange('none');
     }
 
     render() {
         return (
-            <View style={style.container}>
+            <View style={[style.container, {display: this.props.display}]}>
                 <View style={[style.backGround, {display: this.props.display}]}>
                     <View style={style.content}>
-                        <Text style={style.font_Title}>Edit Address</Text>
+                        <Text style={style.font_Title}>Create Chatroom</Text>
                         <View style={{height: 45, width: 250, margin:10}}>
-                            <DoPicker valueChange={this.doChange}/>
+                            <SectionPicker valueChange={this.sectionChange}/>
                         </View>
                         <View style={{height: 45, width: 250}}>
-                            <CityPicker selectedDo={this.state.selectedDo} valueChange={this.cityChange}/>
+                            <GroupPicker selectedSection={this.state.selectedSection} valueChange={this.groupChange}/>
                         </View>
+                        <Item style={{height: 48, width: 250, marginTop: 15}} floatingLabel>
+                            <Label style={{color: '#aaa'}}> Room name</Label>
+                            <Input style={{fontSize: 16, color: '#ddd', paddingLeft: 8}} onChangeText={(new_cr_name) => this.setState({new_cr_name})}/>
+                        </Item>
                         <View style={style.pickerContainer}>
-                            <TouchableOpacity >
+                            <TouchableOpacity>
                                 <Button onPress={() => this._onPressCancel()} style={{backgroundColor: '#bbb', width: 80, justifyContent: 'center', marginRight:20}}>
                                     <Text>Cancel</Text>
                                 </Button>
@@ -87,10 +100,10 @@ export default class EditAddress extends Component {
 
 const style = StyleSheet.create({
     container: {
-        flex: 3,
+        flex: 4,
+        position : 'absolute',
         width: '100%',
         height: '100%',
-        position : 'absolute',
     },
     backGround: {
         width: '100%',
@@ -101,9 +114,9 @@ const style = StyleSheet.create({
     },
     content: {
         width: 300,
-        height: 350,
+        height: 400,
         borderRadius: 20,
-        backgroundColor: '#444',
+        backgroundColor: 'rgba(44,44,44,0.90)',
         justifyContent: 'center',
         alignItems: 'center',
     },

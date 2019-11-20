@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, Dimensions, TouchableOpacity, ToastAndroid } from 'react-native'
 import { Button, } from 'native-base'
 
 import Games from '../SignUp/Interest/Games';
@@ -37,11 +37,19 @@ export default class EditInterest extends Component {
     }
 
     _onPressAdmit = () => {
+        if (this.state.interests.length == 0) {
+            ToastAndroid.show('Please select your interests.', ToastAndroid.SHORT)
+            return
+        }
         //todo: 서버와 연동
         this.popupClose()
+        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
     }
 
     popupClose = () => {
+        this.setState({
+            interests: [],
+        })
         this.props.displayChange('none');
     }
 
