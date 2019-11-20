@@ -23,15 +23,12 @@ export default class Chatroom extends Component {
     constructor(props){
         super(props);
         this.socket = io('http://101.101.160.185:3000');
-
         this.socket.on('RECEIVE_MESSAGE', function(data){
             db_Add(data);
         });
-
         this.socket.on('disconnect', function(){
             console.log('disconnect');
         })
-
         db_Add = (newChat) => {
             db.transaction( tx => {
                 tx.executeSql(
@@ -46,30 +43,13 @@ export default class Chatroom extends Component {
     };
 
     state = {
-        cr_id: 0,
+        cr_id: '1',
         cr_name: '',
         message: '',
-        myEmail:'',
+        myEmail: '',
         chatlog:[], // 채팅로그
-        userlist:[{nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '456'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},
-            {nickname: '123'},],
+        userlist:[], // 유저 목록
+        token: '',
         key: 0,
     }
 
@@ -78,25 +58,27 @@ export default class Chatroom extends Component {
     }
 
     componentWillMount() {
-
+        const { navigation } = this.props;
+        this.state.cr_id = navigation.getParam('cr_id', '-1'),
+        this.state.cr_name = navigation.getParam('title', 'No cr_name')
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
-                'SELECT user_email FROM token',
+                'SELECT * FROM token',
                 [],
                 (_, { rows: { _array }  }) => {
-                    this.state.myEmail = _array[0].user_email,
+                    this.state.token = _array[0].access_token
                     this.socket.emit('JOIN_ROOM', {cr_id : this.state.cr_id, myEmail : this.state.myEmail})},
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
         this.db_Update();
-        
+        this._getParticipants();  // 방 인원 불러오기
     }
 
     renderDrawer = () => {
         return (
             <View>
-                <ChatroomSideMenu userlist={this.state.userlist}/>
+                <ChatroomSideMenu goBack={() => this.props.navigation.goBack(null)} userlist={this.state.userlist}/>
             </View>
         );
     };
@@ -115,6 +97,19 @@ export default class Chatroom extends Component {
         }
     }
 
+    _getParticipants() {
+        var url = 'http://101.101.160.185:3000/chatroom/participants/'+this.state.cr_id;
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'x-access-token': this.state.token
+            }),
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => this.setState({userlist: responseJson}))
+    }
+
     _receivePopQuiz(question, answer){ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
         const newQuiz = {
             user_email: 'PopQuizBot',
@@ -123,7 +118,7 @@ export default class Chatroom extends Component {
             message: question,
             answer: answer,
         }
-        this.db_Add(newQuiz)
+        // todo: 받은 팝퀴즈를 db에 저장
     }
 
     db_Update = () => {        // DB 내의 채팅 로그 읽어오기
@@ -162,9 +157,6 @@ export default class Chatroom extends Component {
 
     render() {
         const { goBack } = this.props.navigation;
-        const { navigation } = this.props;
-        this.state.cr_id = navigation.getParam('cr_id', '-1');
-        this.state.cr_name = navigation.getParam('title', 'No cr_name');
         return (
             <DrawerLayout
                 ref={ drawer => this.drawer = drawer }
@@ -191,10 +183,6 @@ export default class Chatroom extends Component {
                     </Right>
                 </View>
                 <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={0} style={style.container}>
-                    <TouchableOpacity        // 임시 컴포넌트입니다. 팝퀴즈 구현이 끝나면 삭제해주세요.
-                        onPress={() => this._receivePopQuiz("이곳엔 질문을 입력합니다. 정답은 현재 test이며, 꾹 누르면 팝업창이 등장합니다. (대소문자 관계X)", "test")}>
-                        <Text style={{color: "#bbb"}}>(대충 팝퀴즈 만드는 버튼)</Text>
-                    </TouchableOpacity>
                     <ScrollView
                         ref={scrollView => {
                             this.scrollView = scrollView;

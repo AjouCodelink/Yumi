@@ -25,12 +25,6 @@ export default class LoadingScreen extends Component {
                 null,
                 (_,error) => console.error(error)
             )
-            /*tx.executeSql(          // chatlog에 answer이 없으면 추가하기
-                'ALTER TABLE chatLog ADD COLUMN answer TEXT',
-                [],
-                null,
-                (_,error) => console.error(error)
-            )*/
             tx.executeSql(          // token 확인
                 'SELECT * FROM token',
                 [],
@@ -57,7 +51,7 @@ export default class LoadingScreen extends Component {
                 <Spinner size={80} style={{display:'flex', flex: 3, position: "absolute"}}color='#ddd'/>
                 <Text style={style.loadingFont}>Loading</Text>
                 <TouchableOpacity style={style.stopClick} onPress={() => this.goTitle()}>
-                    <Text style={style.stopClickFont}>Screen frozen more than 3 seconds, press here.</Text>
+                    <Text style={style.stopClickFont}>If screen frozen, press here.</Text>
                 </TouchableOpacity>
             </View>
         );

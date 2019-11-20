@@ -17,6 +17,8 @@ export default class SignUp_Interest extends Component {
             email: '',
             password: '',
             nickname: '',
+            address: '',
+            language: '',
             interests: [],
             signUpResult: -1,
             spinnerOpacity: 0,
@@ -61,6 +63,8 @@ export default class SignUp_Interest extends Component {
         user.password = this.state.password
         user.nickname = this.state.nickname
         user.interests = this.state.interests
+        user.address =  this.state.address
+        user.language = this.state.language
         var url = 'http://101.101.160.185:3000/user/signup';
         fetch(url, {
             method: 'POST',
@@ -80,6 +84,8 @@ export default class SignUp_Interest extends Component {
         this.state.email = navigation.getParam('email', 'No Email');
         this.state.password = navigation.getParam('password', 'No Password');
         this.state.nickname = navigation.getParam('nickname', 'No Nickname');
+        this.state.address = navigation.getParam('address', 'No Address');
+        this.state.language = navigation.getParam('language', 'No Language');
         return (
             <View style={style.container}>
                 <View style={style.header}/>

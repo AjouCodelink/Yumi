@@ -11,7 +11,7 @@ export default class Chatroom_SideMenu extends Component {
         this.state={
             bookmark: false,
             notification: true,
-            userlist: this.props.userlist,
+            userlist: [],
             key: 0,
         }
     }
@@ -26,7 +26,7 @@ export default class Chatroom_SideMenu extends Component {
         })
     }
     _onPressExit = () => {
-        alert("You pressed Exit.")
+        this.props.goBack()
     }
     _onPressPicture() {
         alert("You pressed Picture.")
@@ -37,8 +37,9 @@ export default class Chatroom_SideMenu extends Component {
     _onPressCamera() {
         alert("You pressed Camera.")
     }
-    
+
     render() {
+        this.userlist = this.props.userlist
         return (
             <View style={style.container}>
                 <View style={style.content}>
@@ -81,7 +82,7 @@ export default class Chatroom_SideMenu extends Component {
                     </View>
                     <View style={style.userList}>
                         <ScrollView>
-                            {this.state.userlist.map( user => (user.thumbnailURL == null || user.thumbnailURL == ''
+                            {this.userlist.map( user => (user.thumbnailURL == null || user.thumbnailURL == ''
                                 ? (<View style={style.user} key={this.state.key++}>
                                     <Thumbnail backgroundColor="#fff" style={style.user_thumbnail}
                                         source={require('../../assets/default_thumbnail.png')}/>

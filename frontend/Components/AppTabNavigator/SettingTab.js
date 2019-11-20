@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Linking, Alert } from 'react-native';
-import { Icon } from 'native-base';
+import { View, Text, StyleSheet, Linking, Alert, ScrollView } from 'react-native';
+import { Icon, ListItem, List } from 'native-base';
 
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
@@ -15,24 +15,14 @@ export default class SettingTab extends Component {
     constructor(props){
         super(props);
         this.state = {
-            data : [
+            contect: [
                 {icon :"md-text", name: "Contect Us", key: "contect"},
+            ], config: [
                 {icon :"md-document", name: "Clear Chating Logs", key: "deleteChatLog"},
                 {icon :"md-exit", name: "Log Out", key: "logout"},
                 {icon :"md-log-out", name: "Close my account", key: "leave"},
             ]
         }
-    }
-
-    _renderItem = ({item}) => {
-        return (
-            <TouchableOpacity onPress={() => this._onPress(item.key)}>
-                <View style={style.menu}>
-                    <Icon style={style.icon_menu} name={item.icon}/>
-                    <Text style={style.font_menu}>{item.name}</Text>
-                </View>
-            </TouchableOpacity>
-        )
     }
 
     _onPress(key) {
@@ -65,7 +55,7 @@ export default class SettingTab extends Component {
                             (_,error) => console.error(error)
                         )
                     },(error) => console.error(error))
-                    RootNavigator('Title')
+                    RootNavigator('Loading')
                 }},
             ],
             {cancelable: false},
@@ -73,11 +63,13 @@ export default class SettingTab extends Component {
     }
     
     onPressContect() {
-        Linking.openURL('http://google.com');   // 이후 연락 가능한 페이지로 연동해야함
+        Linking.openURL('http://google.com');
+        // todo: 이후 연락 가능한 페이지로 연동
     }
 
     onPressLeave() {
         alert("you press Leave");
+        // todo: 회원탈퇴 api 연동
     }
 
     onPressDeleteChatLog() {
@@ -92,7 +84,13 @@ export default class SettingTab extends Component {
                 {text: 'OK', onPress: () => {
                     db.transaction(tx => {
                         tx.executeSql(
-                            'DELETE FROM chatLog',
+                            'DROP TABLE chatLog',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        ),
+                        tx.executeSql(
+                            'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
                             [],
                             null,
                             (_,error) => console.error(error)
@@ -105,20 +103,37 @@ export default class SettingTab extends Component {
         );
     }
 
-    
+    _renderItem = (item) => {
+        return (
+            <ListItem style={style.menu} key={item.key}  onPress={() => this._onPress(item.key)}>
+                <Icon style={style.icon_menu} name={item.icon}/>
+                <Text style={style.font_menu}>{item.name}</Text>
+            </ListItem>
+        )
+    }
+
     render() {
         return (
             <View style={style.container}>
                 <View style={style.content}>
-                    <FlatList
-                        data={this.state.data}
-                        renderItem={this._renderItem}
-                        onEndReachedThreshold={1}/>
+                    <ScrollView style={{width: '100%'}}>
+                        <List >
+                            <ListItem itemDivider style={style.first_divider} key={'A'}>
+                                <Text style={style.font_divider}>Contact</Text>
+                            </ListItem>       
+                            {this.state.contect.map( item => this._renderItem(item))}
+                            <ListItem itemDivider style={style.divider} key={'B'}>
+                                <Text style={style.font_divider}>Account Management</Text>
+                            </ListItem>
+                            {this.state.config.map( item => this._renderItem(item))}
+                        </List>
+                    </ScrollView>
                 </View>
             </View>
         )
     }
 }
+
 
 const style = StyleSheet.create({
     container: {
@@ -137,24 +152,45 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'flex-start',
     },
+    first_divider: {
+        width: '100%',
+        flexDirection: 'row',
+        borderBottomWidth: 3,
+        borderBottomColor: "#222",
+        backgroundColor: '#383838',
+        paddingLeft: 15,
+        alignItems: 'center',
+    },
+    divider: {
+        width: '100%',
+        flexDirection: 'row',
+        borderBottomWidth: 3,
+        borderBottomColor: "#222",
+        backgroundColor: '#404040',
+        marginTop: 20,
+        paddingLeft: 15,
+        alignItems: 'center',
+    },
+    font_divider: {
+        fontSize: 25,
+        color: "#eee",
+    },
     menu: {
         width: '100%',
         flexDirection: 'row',
-        marginTop: 16,
-        marginBottom: 8,
         borderWidth: 1,
         borderColor: "#333",
+        marginLeft: 24,
         alignItems: 'center',
     },
     icon_menu: {
         width: 38,
-        marginLeft: 18,
-        fontSize: 28,
+        fontSize: 24,
         color: "#ddd",
         justifyContent: 'center',
     },
     font_menu: {
-        fontSize: 25,
+        fontSize: 20,
         color: "#eee",
     },
 });
