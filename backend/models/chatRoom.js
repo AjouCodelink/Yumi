@@ -2,11 +2,18 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 const ChatRoomSchema = mongoose.Schema({
-    interest: { type: String },
+    name : {type: String},
+    interest: {
+        section : {type : String},
+        group : {type : String}
+    },
     participants: [{
         email: { type: String},
         nickname: { type: String},
-        interests: [{ type: String }],
+        interests: [{
+            section : {type:String},
+            group:{type:String}
+        }],
         socketID: { type: String }
     }],
     chatlog:[{
@@ -15,9 +22,5 @@ const ChatRoomSchema = mongoose.Schema({
         message: { type: String}
     }]
 });
-
-ChatRoomSchema.statics.findRoomByKeyword = function(keyword) {
-    return this.find({interest: keyword});
-};
 
 module.exports = mongoose.model('chatroom', ChatRoomSchema);

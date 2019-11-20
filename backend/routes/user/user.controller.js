@@ -1,5 +1,17 @@
 var User = require('../../models/user')
 const jwt = require('jsonwebtoken')
+
+/*
+    GET /user/info
+*/
+exports.info = function(req, res){
+    var email = req.decoded.email;
+
+    User.findOne({email:email},{email:1, nickname:1, interests:1, language:1, address:1}, function(err, user){
+        res.json(user);
+    })
+}
+
 /*
     POST /user/send-email/:email
 */

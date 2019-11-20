@@ -7,38 +7,45 @@ var User = require('../../models/user');
 */
 exports.searchWord = (req, res) =>{
     var keyword = req.params.keyword;
-    
-    ChatRoom.findRoomByKeyword(keyword).then(function(data){
-        res.json(data);
-    })
+
+    ChatRoom.find().
+        or([
+            {"name" : {$regex : '.*'+keyword+'.*'}},
+            {"interest.section" : {$regex : '.*'+keyword+'.*'}},
+            {"interest.group" : {$regex : '.*'+keyword+'.*'}}
+        ]).
+        select('interest name').
+        sort('name').
+        exec((err, chatroom)=>{
+            if(err) res.json(err);
+            else if(chatroom.length) res.json(chatroom);
+            else res.json(({result : true, message : "no search chatroom"}));
+        })
 }
 
-
 /*
-    POST /chatroom/creation/:interest
+    POST /chatroom/creation
+    {
+        section,
+        group
+    }
 */
 exports.creation = (req, res) => {
     var chatRoom = new ChatRoom();
     var userEmail = req.decoded.email;
 
-    chatRoom.interest = req.params.interest;
+    chatRoom.interest = req.body.interest;
+    chatRoom.name = req.body.name;
 
-    User.findOne({email:userEmail}, function(err, data){
+    User.findOne({email:userEmail}, {email:1, nickname:1, interests:1, chatroom:1}, function(err, user){
         if(err) res.send(err);
-        if(!data) res.json({result:0, message: "email not found!"});
+        if(!user) res.json({result:0, message: "email not found!"});
         else{
-            data.chatroom.push({cr_id : chatRoom._id, interest: chatRoom.interest});
-            data.save(); // user가 속해 있는 chatroom_id 저장.
+            user.chatroom.push({cr_id : chatRoom._id, interest: chatRoom.interest});
+            user.save(); // user가 속해 있는 chatroom_id 저장.
 
-            var user_data = {};
-            user_data.email = data.email;
-            user_data.nickname = data.nickname;
-            user_data.interests = data.interests;
-            
-            chatRoom.participants.push(user_data);
-            /*
-            TODO : 이 부분에 socket.on('join room') 코드 작성 해야 됨.
-            */
+            var participant = {email : user.email, nickname : user.nickname, interests : user.interests};
+            chatRoom.participants.push(participant);
             
             chatRoom.save((err)=>{
                 if(err){
@@ -46,7 +53,7 @@ exports.creation = (req, res) => {
                     res.json({result:0});
                     return;
                 }
-                res.json({result:1, chatroom_id : chatRoom._id, interest : chatRoom.interest});
+                res.json({result:true, cr_name : chatRoom.name, cr_id : chatRoom._id, interest : chatRoom.interest});
             })
         }
     })
@@ -56,10 +63,11 @@ exports.creation = (req, res) => {
     GET /chatroom/list
 */
 exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반환
-    var userEmail = req.decoded.email;
+    var email = req.decoded.email;
 
-    User.findOne({email:userEmail}, function(err, data){
-        res.send(data.chatroom);
+    User.findOne({email:email}, { chatroom : 1 }, function(err, user){
+        if(err) res.json(err);
+        res.json(user.chatroom);
     })
 }
 
@@ -69,30 +77,26 @@ exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반�
     chatroom recommendation api
     GET /chatroom/recommend
 */
-
 exports.recommend = (req, res) => {
+    var userEmail = req.decoded.email;
 
-    console.log(req.decoded.email);//o
-    var userEmail = req.decoded.email;//o
-    
-    User.findOne({email:userEmail}, function(err, user){
-        var length = user.interests.length;
-        var result = Math.floor(Math.random() * length);
-
-        console.log(user.interests);//o
-        console.log(user.interests[result].section);//undefined
-        console.log(user.interests[result].group);
-
-        console.log(result);
-
-        var interestSection = user.interests[result].section;
-        var interestGroup = user.interests[result].group;
-        
-        ChatRoom.find({interest: interestSection}, function(err, chatroom){
-            // console.log(chatroom);
-            res.json(chatroom);
-            // console.log('1');
-        })
+    User.findOne({email:userEmail}, {email:1, interests:1}, function(err, user){
+        if(err) return res.status(500).json({message : "not found user"});
+        if(user){
+            var random_num = Math.floor(Math.random() * user.interests.length);
+            console.log(user.interests[random_num]);
+            ChatRoom.find().
+                or([
+                    {"interest.section" : {$regex : '.*'+user.interests[random_num].section+'.*'}},
+                    {"interest.group" : {$regex : '.*'+user.interests[random_num].group+'.*'}}
+                ]).
+                select('interest name').
+                sort('interest.group interest.section').
+                limit(5).
+                exec((err, chatroom)=>{ // TODO : 소분류순으로 먼저 나오게 하기
+                    res.json(chatroom);
+                })
+        }
     })
 }
 
@@ -102,7 +106,7 @@ exports.recommend = (req, res) => {
 exports.getLog = (req, res) => {
     var cr_id = req.params.cr_id;
     
-    ChatRoom.findOne({_id : cr_id}, function(err, chatroom){ // TODO : 추후에 채팅 기록 소량만 가져올 수 있게끔 수정해야 함.
+    ChatRoom.findOne({_id : cr_id}, { chatlog : 1 },function(err, chatroom){ // TODO : 추후에 채팅 기록 소량만 가져올 수 있게끔 수정해야 함.
         res.json(chatroom.chatlog);
     })
 }
@@ -122,6 +126,39 @@ exports.getParticipants = (req, res) => {
     })
 }
 
+/*
+    POST /chatroom/exit/:cr_id
+*/
+exports.exit = (req, res) => {
+    var cr_id = req.params.cr_id;
+    var email = req.decoded.email;
+
+    ChatRoom.findOne({_id : cr_id}, function(err, chatroom){
+        if(err) res.json({result : 0, message : err});
+
+        var participants = chatroom.participants;
+        for(var i=0; i < participants.length; i++){
+            if(participants[i].email == email){
+                chatroom.participants.splice(chatroom.participants.indexOf(i), 1);
+                chatroom.save();
+
+                User.findOne({email:email}, function(err, user){
+                    if(err) res.json({result:0, message:err});
+
+                    for(var j=0; j<user.chatroom.length; j++){
+                        if(user.chatroom[j].cr_id == cr_id){
+                            user.chatroom.splice(user.chatroom.indexOf(i), 1);
+                            user.save();
+
+                            res.json({result : 1, message : "user left the room"});
+                        }
+                    }
+                })
+                
+            }
+        }
+    })
+}
 
 // /*
 //     GET /chatroom/log/:cr_id
