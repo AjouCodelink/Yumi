@@ -59,10 +59,10 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            for(var i=0; i<responseJson.length; i++){ // TODO : 이거 포문으로 했는데 혹시 map으로 할 수 있으면 수정 좀 해주셈
+            for(var i=0; i<responseJson.length; i++){
                 this.array.push({
                     title: responseJson[i].name,
-                    roomID: responseJson[i].interest.section
+                    roomID: responseJson[i].cr_id // TODO : 
                 })
                 console.log(responseJson);
                 this.setState({arrayHolder: [...this.array]})
@@ -138,6 +138,7 @@ export default class ChatroomTab extends Component {
         this.props.navigation.navigate('Chatroom', {
             title: item.title,
             cr_id: item.roomID,
+            myEmail : this.email
         });
     }
     FlatListItemSeparator = () => {

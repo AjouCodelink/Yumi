@@ -61,6 +61,8 @@ export default class Chatroom extends Component {
         const { navigation } = this.props;
         this.state.cr_id = navigation.getParam('cr_id', '-1'),
         this.state.cr_name = navigation.getParam('title', 'No cr_name')
+        this.state.myEmail = navigation.getParam('myEmail', '');
+
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
                 'SELECT * FROM token',
@@ -107,7 +109,8 @@ export default class Chatroom extends Component {
             }),
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => this.setState({userlist: responseJson}))
+        .then(responseJson => this.setState({userlist: responseJson})
+        )
     }
 
     _receivePopQuiz(question, answer){ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
