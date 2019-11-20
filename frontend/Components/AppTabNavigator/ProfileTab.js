@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+//import * as ImagePicker from 'expo-image-picker';
 import DialogInput from 'react-native-dialog-input';
 import { Icon, Thumbnail, Spinner } from 'native-base';
 
@@ -84,20 +84,20 @@ export default class ProfileTab extends Component {
         alert("you pressed Thumbnail Edit.")
     }
 
-    _pickImage = async () => {
-        let photo = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
-        });
-        if (!photo.cancelled) {
-            const newPhoto = new FormData();
-            newPhoto.append('uri', photo.uri)
-            newPhoto.append('name', this.state.myEmail+'_thumbnail.jpg')
-            newPhoto.append('type', photo.type)
-            //this._uploadImage(newPhoto)
-            this.setState({ myThumbnailURL: result.uri });
-        }
-    };
+    // _pickImage = async () => {
+    //     let photo = await ImagePicker.launchImageLibraryAsync({
+    //         allowsEditing: true,
+    //         aspect: [1, 1],
+    //     });
+    //     if (!photo.cancelled) {
+    //         const newPhoto = new FormData();
+    //         newPhoto.append('uri', photo.uri)
+    //         newPhoto.append('name', this.state.myEmail+'_thumbnail.jpg')
+    //         newPhoto.append('type', photo.type)
+    //         //this._uploadImage(newPhoto)
+    //         this.setState({ myThumbnailURL: result.uri });
+    //     }
+    // };
 
     _uploadImage = (newPhoto) => {
         var url = 'http://101.101.160.185:3000/user/profile/upload';

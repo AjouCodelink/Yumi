@@ -55,18 +55,17 @@ export default class ChatroomTab extends Component {
             headers: new Headers({
             'Content-Type' : 'application/json',
             'x-access-token': this.token
-            //다른 search에서만 쓰면 안된다. 
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             for(var i=0; i<responseJson.length; i++){ // TODO : 이거 포문으로 했는데 혹시 map으로 할 수 있으면 수정 좀 해주셈
                 this.array.push({
-                    title: responseJson[i].interest,
-                    roomID: responseJson[i].cr_id
+                    title: responseJson[i].name,
+                    roomID: responseJson[i].interest.section
                 })
-                this.setState({arrayHolder: [...this.array]}
-                )
+                console.log(responseJson);
+                this.setState({arrayHolder: [...this.array]})
             }
         })
     }
@@ -235,7 +234,7 @@ export default class ChatroomTab extends Component {
                                 source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
                                 </Left>
                                 <Body>
-                                <Text>#{item.title}</Text>
+                                <Text># {item.title}</Text>
                                 <Text note>chatRoom message</Text>
                                 </Body>
                                 <Right>
