@@ -47,7 +47,7 @@ export default class CreateChatroom extends Component {
                 section: this.state.selectedSection,
                 group: this.state.selectedGroup,
             },
-            cr_name: this.state.new_cr_name,
+            name: this.state.new_cr_name,
         }
         var url = 'http://101.101.160.185:3000/chatroom/creation';
         fetch(url, {
@@ -59,7 +59,9 @@ export default class CreateChatroom extends Component {
             body: JSON.stringify(new_room)
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(this.props.getChatRoomList())
+        .then(responseJson=>{
+            this.props.pushNewRoom(responseJson)
+        })
         //todo: 서버와 연동
         //this.props.(채팅목록업데이트)
         //console.log(new_room)

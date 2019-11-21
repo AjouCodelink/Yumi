@@ -37,8 +37,19 @@ export default class EditLanguage extends Component {
             ToastAndroid.show('Please select language.', ToastAndroid.SHORT)
             return
         }
-        //todo: 서버와 연동
-        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
+        var url = 'http://101.101.160.185:3000/user/profile/language/'+this.state.language;
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token',
+            'x-access-token': this.props.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            console.log(responseJson); // TODO : responseJson의 결과에 맞춰 알림 메세지 띄우기
+        })
         this.popupClose()
     }
 
@@ -47,6 +58,7 @@ export default class EditLanguage extends Component {
             language: "NoValue"
         })
         this.props.displayChange('none');
+        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
     }
 
     languageChange = (value) => {

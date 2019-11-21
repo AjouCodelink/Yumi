@@ -52,28 +52,33 @@ export default class ChatroomTab extends Component {
             );
         },(error) => console.error(error))
     }
-    getChatRoomList(){
+    getChatRoomList = () => {
         var url = 'http://101.101.160.185:3000/chatroom/list';
         fetch(url, {
             method: 'GET',
             headers: new Headers({
             'Content-Type' : 'application/json',
             'x-access-token': this.token
-            //다른 search에서만 쓰면 안된다. 
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            for(var i=0; i<responseJson.length; i++){ // TODO : 이거 포문으로 했는데 혹시 map으로 할 수 있으면 수정 좀 해주셈
+            for(var i=0; i<responseJson.length; i++){
                 this.array.push({
-                    title: responseJson[i].interest,
+                    title: responseJson[i].name,
                     roomID: responseJson[i].cr_id
                 })
-                this.setState({arrayHolder: [...this.array]}
-                )
+                this.setState({arrayHolder: [...this.array]})
             }
             this.setState({spinnerOpacity: 0});
         })
+    }
+    pushNewRoom = (newRoom) => {
+        this.array.push({
+            title: newRoom.cr_name,
+            roomID: newRoom.cr_id
+        })
+        this.setState({arrayHolder: [...this.array]})
     }
     createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
         var url = 'http://101.101.160.185:3000/chatroom/creation/'+inputText;
@@ -95,7 +100,6 @@ export default class ChatroomTab extends Component {
             title : interest,
             roomID: chatroom_id});
         this.setState({ arrayHolder: [...this.array] })
-
     }
 
     exitChatRoom = (roomID) => { // 방 나가기
@@ -144,6 +148,7 @@ export default class ChatroomTab extends Component {
         this.props.navigation.navigate('Chatroom', {
             title: item.title,
             cr_id: item.roomID,
+            myEmail : this.email
         });
     }
     FlatListItemSeparator = () => {
@@ -175,14 +180,16 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            for(var i=0;i<responseJson.length;i++)
-            {
-                this.searcharray.push({
-                    title: responseJson[i].interest,
-                    roomID: responseJson[i]._id
-                })
-            }
-            this.setState({searcharrayHolder: [...this.searcharray]})
+            // for(var i=0;i<responseJson.length;i++)
+            // {
+            //     this.searcharray.push({
+            //         title: responseJson[i].interest,
+            //         roomID: responseJson[i]._id
+            //     })  
+                    
+            // }
+            // this.setState({searcharrayHolder: [...this.searcharray]})
+            console.log(responseJson);
         })
     }
 
@@ -236,7 +243,7 @@ export default class ChatroomTab extends Component {
                                 source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
                                 </Left>
                                 <Body>
-                                <Text>#{item.title}</Text>
+                                <Text># {item.title}</Text>
                                 <Text note>chatRoom message</Text>
                                 </Body>
                                 <Right>
@@ -342,7 +349,7 @@ export default class ChatroomTab extends Component {
                         <Icon name='paw' style={{color: '#222'}}/>
                         </Button>
                 </Fab>
-                <CreateChatroom token={this.token} getChatRoomList={this.getChatRoomList} displayChange={this._displayCreateCR} display={this.state.createChatroomDisplay}/>
+                <CreateChatroom token={this.token} pushNewRoom={this.pushNewRoom} displayChange={this._displayCreateCR} display={this.state.createChatroomDisplay}/>
                 <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#999'/>
             </View>
         );
