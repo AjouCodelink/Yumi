@@ -171,6 +171,7 @@ export default class ChatroomTab extends Component {
         this.setState({isSearchVisible: !this.state.isSearchVisible});
     }
     searchRoomByKeyword(){
+        this.textInput.clear()
         if (this.state.search ==  '') {
             ToastAndroid.show('Please input keyword.', ToastAndroid.SHORT)
             return
@@ -248,17 +249,21 @@ export default class ChatroomTab extends Component {
                         <ListItem avatar
                             activeOpacity={0.5}
                             onLongPress={() => this._longPressChatroom(item.roomID)}
-                            onPress={() => this._onPressChatroom(item)}>
+                            onPress={() => this._onPressChatroom(item)}
+                            key={item.roomID}>
                             <Left style={{justifyContent: 'center'}}>
                                 <Thumbnail style={{width: 50, height: 45}} 
                                     source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
                             </Left>
                             <Body>
                                 <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.title}</Text>
-                                <Text style={{fontSize: 10, color: '#333'}}> #{item.interest.section}  #{item.interest.group}</Text>
-                                <Text style={{fontSize: 13}}> chatRoom message</Text>
+                                <Text style={{fontSize: 10, color: '#333'}}>  #{item.interest.section}  #{item.interest.group}</Text>
+                                <Text style={{fontSize: 13}}>  chatRoom message</Text>
                             </Body>
-                            <Right style={{justifyContent: 'flex-end'}}>
+                            <Right style={{justifyContent: 'flex-end', alignItems:'flex-end'}}>
+                                <Icon name='md-people' style={{marginBottom: 10, fontSize: 16, color: '#333'}}>
+                                    <Text style={{fontSize: 14, color: '#333'}}> 14</Text>
+                                </Icon>
                                 <Text style={{fontSize: 12}}>3:43 pm</Text>
                             </Right>
                         </ListItem>
@@ -291,7 +296,9 @@ export default class ChatroomTab extends Component {
                     (this.state.isSearchVisible == true) ? (
                     <View style = {styles.searchBarConatiner}>
                         <TextInput
+                            ref={input => { this.textInput = input }}
                             style={styles.searchBar}
+                            onSubmitEditing={() => {this.searchRoomByKeyword();}}  // 엔터눌러도 입력되도록 함
                             placeholder="Search..."
                             value={this.state.search}
                             onChangeText={(search) => this.setState({search})}

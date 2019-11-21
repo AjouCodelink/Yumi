@@ -59,8 +59,8 @@ export default class SearchedChatrooms extends Component {
                         <ScrollView style={{width: '90%', height: '50%'}}>
                             {this.props.array.length != 0
                                 ? (this.props.array.map( chatroom => (
-                                    <TouchableOpacity onPress={() => this._onPressChatroom(chatroom)}> 
-                                        <View style={style.chatroom} key={chatroom.cr_id}>
+                                    <TouchableOpacity key={chatroom.cr_id} onPress={() => this._onPressChatroom(chatroom)}> 
+                                        <View style={style.chatroom}>
                                             <Text style={style.font_cr_name}>{chatroom.cr_name}</Text>
                                             <Text style={style.font_cr_intertest}> #{chatroom.interest.section} #{chatroom.interest.group}</Text>
                                             <Icon name='md-people' style={{position : 'absolute', right:10, fontSize: 14, color: '#333'}}>

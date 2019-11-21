@@ -50,6 +50,7 @@ export default class EditLanguage extends Component {
         .then(responseJson => {
             console.log(responseJson); // TODO : responseJson의 결과에 맞춰 알림 메세지 띄우기
         })
+        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
         this.popupClose()
     }
 
@@ -58,7 +59,6 @@ export default class EditLanguage extends Component {
             language: "NoValue"
         })
         this.props.displayChange('none');
-        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
     }
 
     languageChange = (value) => {

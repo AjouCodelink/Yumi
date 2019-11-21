@@ -35,7 +35,7 @@ const style = StyleSheet.create({
     },
     text_time: {
         fontSize : 12,
-        color: '#ddd',
+        color: '#000',
     },
     text_message: {
         fontSize: 15,
