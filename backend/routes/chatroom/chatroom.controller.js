@@ -41,7 +41,7 @@ exports.creation = (req, res) => {
         if(err) res.send(err);
         if(!user) res.json({result:0, message: "email not found!"});
         else{
-            user.chatroom.push({cr_id : chatRoom._id, interest: chatRoom.interest});
+            user.chatroom.push({cr_id : chatRoom._id, interest: chatRoom.interest, name: chatRoom.name});
             user.save(); // user가 속해 있는 chatroom_id 저장.
 
             var participant = {email : user.email, nickname : user.nickname, interests : user.interests};

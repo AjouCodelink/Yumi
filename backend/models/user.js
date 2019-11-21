@@ -15,6 +15,7 @@ const UserSchema = new Schema({
     img_path: { type: String},
     chatroom:[{
         cr_id: { type: String},
+        name:{ type: String},
         interest: {
             section : { type : String},
             group : { type : String }

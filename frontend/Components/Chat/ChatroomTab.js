@@ -59,16 +59,16 @@ export default class ChatroomTab extends Component {
             headers: new Headers({
             'Content-Type' : 'application/json',
             'x-access-token': this.token
-            //다른 search에서만 쓰면 안된다. 
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            for(var i=0; i<responseJson.length; i++){ // TODO : 이거 포문으로 했는데 혹시 map으로 할 수 있으면 수정 좀 해주셈
+            for(var i=0; i<responseJson.length; i++){
                 this.array.push({
-                    title: responseJson[i].interest,
+                    title: responseJson[i].name,
                     roomID: responseJson[i].cr_id
                 })
+
                 this.setState({arrayHolder: [...this.array], spinnerOpacity: 0}
                 )
             }
@@ -143,6 +143,7 @@ export default class ChatroomTab extends Component {
         this.props.navigation.navigate('Chatroom', {
             title: item.title,
             cr_id: item.roomID,
+            myEmail : this.email
         });
     }
     FlatListItemSeparator = () => {
@@ -174,14 +175,16 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            for(var i=0;i<responseJson.length;i++)
-            {
-                this.searcharray.push({
-                    title: responseJson[i].interest,
-                    roomID: responseJson[i]._id
-                })
-            }
-            this.setState({searcharrayHolder: [...this.searcharray]})
+            // for(var i=0;i<responseJson.length;i++)
+            // {
+            //     this.searcharray.push({
+            //         title: responseJson[i].interest,
+            //         roomID: responseJson[i]._id
+            //     })  
+                    
+            // }
+            // this.setState({searcharrayHolder: [...this.searcharray]})
+            console.log(responseJson);
         })
     }
 
@@ -235,7 +238,7 @@ export default class ChatroomTab extends Component {
                                 source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
                                 </Left>
                                 <Body>
-                                <Text>#{item.title}</Text>
+                                <Text># {item.title}</Text>
                                 <Text note>chatRoom message</Text>
                                 </Body>
                                 <Right>

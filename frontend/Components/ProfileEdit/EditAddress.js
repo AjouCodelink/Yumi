@@ -40,9 +40,21 @@ export default class EditAddress extends Component {
             ToastAndroid.show('Please select your address.', ToastAndroid.SHORT)
             return
         }
-        //todo: 서버와 연동
+        var url = 'http://101.101.160.185:3000/user/profile/address/'+this.state.address;
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token',
+            'x-access-token': this.props.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            console.log(responseJson); // TODO : responseJson의 결과에 맞춰서 알림 띄우기
+        })
         this.popupClose()
-        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
+
     }
 
     popupClose = () => {
@@ -52,6 +64,7 @@ export default class EditAddress extends Component {
             address: '',
         })
         this.props.displayChange('none');
+        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
     }
 
     render() {
