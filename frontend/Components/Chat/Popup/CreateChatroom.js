@@ -62,9 +62,6 @@ export default class CreateChatroom extends Component {
         .then(responseJson=>{
             this.props.pushNewRoom(responseJson)
         })
-        //todo: 서버와 연동
-        //this.props.(채팅목록업데이트)
-        //console.log(new_room)
         ToastAndroid.show('The room creation is complete.', ToastAndroid.SHORT);
         this.popupClose()
     }

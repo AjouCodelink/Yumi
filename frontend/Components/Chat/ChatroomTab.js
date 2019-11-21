@@ -4,6 +4,7 @@ import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnai
 import DialogInput from 'react-native-dialog-input';
 
 import CreateChatroom from './Popup/CreateChatroom'
+import SearchChatroom from './Popup/SearchChatroom'
 
 import * as SQLite from 'expo-sqlite';
 
@@ -30,6 +31,7 @@ export default class ChatroomTab extends Component {
             isSearchListVisible : false,
             search : '',
             createChatroomDisplay: 'none',
+            searchChatroomDisplay: 'none',
             spinnerOpacity: 1,
         }
     }
@@ -167,9 +169,8 @@ export default class ChatroomTab extends Component {
         this.setState({isSearchVisible: !this.state.isSearchVisible});
     }
     searchRoomByKeyword(){
-        this.searcharray.splice(0,100) //searchlist 초기화값이 100인 이유는동일한 chatlist 검색 결과가 최대 100개라고 가정
         this.state.searcharrayHolder.splice(0,100)
-        this.setState({isSearchListVisible: !this.state.isSearchListVisible});
+        this.setState({spinnerOpacity: 1});
         var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
         fetch(url, {
             method: 'GET',
@@ -180,16 +181,19 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            // for(var i=0;i<responseJson.length;i++)
-            // {
-            //     this.searcharray.push({
-            //         title: responseJson[i].interest,
-            //         roomID: responseJson[i]._id
-            //     })  
-                    
-            // }
-            // this.setState({searcharrayHolder: [...this.searcharray]})
-            console.log(responseJson);
+            for(var i=0;i<responseJson.length;i++)
+            {
+                newItem = {
+                    cr_name: responseJson[i].name,
+                    cr_id: responseJson[i]._id,
+                    interest: responseJson[i].interest
+                }
+                this.setState({searcharrayHolder: [...this.state.searcharrayHolder, newItem]})
+            }
+            this.setState({
+                searchChatroomDisplay: 'flex',
+                spinnerOpacity: 0
+            })
         })
     }
 
@@ -199,6 +203,10 @@ export default class ChatroomTab extends Component {
 
     _displayCreateCR = (display) => {
         this.setState({createChatroomDisplay: display})
+    }
+
+    _displaySearchCR = (display) => {
+        this.setState({searchChatroomDisplay: display})
     }
 
     render() {
@@ -349,6 +357,7 @@ export default class ChatroomTab extends Component {
                         </Button>
                 </Fab>
                 <CreateChatroom token={this.token} pushNewRoom={this.pushNewRoom} displayChange={this._displayCreateCR} display={this.state.createChatroomDisplay}/>
+                <SearchChatroom token={this.token} array={this.state.searcharrayHolder} displayChange={this._displaySearchCR} display={this.state.searchChatroomDisplay}/>
                 <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#999'/>
             </View>
         );
