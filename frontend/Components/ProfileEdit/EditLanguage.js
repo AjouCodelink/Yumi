@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native'
 import { Button, } from 'native-base'
 
 import LanguagePicker from '../SignUp/Language/LanguagePicker'
@@ -33,6 +33,10 @@ export default class EditLanguage extends Component {
     }
 
     _onPressAdmit = () => {
+        if (this.state.language == "NoValue") {
+            ToastAndroid.show('Please select language.', ToastAndroid.SHORT)
+            return
+        }
         var url = 'http://101.101.160.185:3000/user/profile/language/'+this.state.language;
         fetch(url, {
             method: 'POST',
@@ -46,11 +50,16 @@ export default class EditLanguage extends Component {
         .then(responseJson => {
             console.log(responseJson); // TODO : responseJson의 결과에 맞춰 알림 메세지 띄우기
         })
+      
         this.popupClose()
     }
 
     popupClose = () => {
+        this.setState({
+            language: "NoValue"
+        })
         this.props.displayChange('none');
+        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
     }
 
     languageChange = (value) => {
@@ -65,6 +74,7 @@ export default class EditLanguage extends Component {
                 <View style={[style.backGround, {display: this.props.display}]}>
                     <View style={style.content}>
                         <Text style={style.font_Title}>Edit Language</Text>
+                        <Text style={style.font_main}>Language is only used in translation.</Text>
                         <View style={{height: 45, width: 250, margin:10}}>
                             <LanguagePicker valueChange={this.languageChange}/>
                         </View>
@@ -113,7 +123,12 @@ const style = StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold',
         color: '#ddd',
-        margin: 15,
+        margin: 5,
+    },
+    font_main: {
+        fontSize: 15,
+        color: '#ddd',
+        marginBottom: 10,
     },
     pickerContainer: {
         flexDirection : 'row',

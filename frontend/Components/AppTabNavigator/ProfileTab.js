@@ -173,7 +173,7 @@ export default class ProfileTab extends Component {
                 <EditAddress token={this.state.token} displayChange={this._displayAddr} display={this.state.editAddrDisplay}/>
                 <EditInterest token={this.state.token} displayChange={this._displayInter} display={this.state.editInterDisplay}/>
                 <EditLanguage token={this.state.token} displayChange={this._displayLang} display={this.state.editLangDisplay}/>
-                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#ddd'/>
+                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#999'/>
             </View>
         );
     }

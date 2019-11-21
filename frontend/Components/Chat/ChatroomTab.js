@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, Platform } from 'react-native';
+import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail,Icon,Button,Fab, Spinner} from 'native-base';
 import DialogInput from 'react-native-dialog-input';
-import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail,Icon,Button,Fab} from 'native-base';
+
+import CreateChatroom from './Popup/CreateChatroom'
+
 import * as SQLite from 'expo-sqlite';
+
 const db = SQLite.openDatabase('db.db');
 export default class ChatroomTab extends Component {
     static navigationOptions = {
         header: null,
     }
-    
     
     constructor(props) {
         super(props);
@@ -26,7 +29,8 @@ export default class ChatroomTab extends Component {
             isSearchVisible: false,
             isSearchListVisible : false,
             search : '',
-        
+            createChatroomDisplay: 'none',
+            spinnerOpacity: 1,
         }
     }
     submit(inputText){
@@ -64,7 +68,9 @@ export default class ChatroomTab extends Component {
                     title: responseJson[i].name,
                     roomID: responseJson[i].cr_id
                 })
-                this.setState({arrayHolder: [...this.array]})
+
+                this.setState({arrayHolder: [...this.array], spinnerOpacity: 0}
+                )
             }
         })
     }
@@ -169,7 +175,6 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            
             // for(var i=0;i<responseJson.length;i++)
             // {
             //     this.searcharray.push({
@@ -180,16 +185,16 @@ export default class ChatroomTab extends Component {
             // }
             // this.setState({searcharrayHolder: [...this.searcharray]})
             console.log(responseJson);
-        
-        }
-        )
-
+        })
     }
 
     GetItem(item) {
         Alert.alert(item);
     }
-    
+
+    _displayCreateCR = (display) => {
+        this.setState({createChatroomDisplay: display})
+    }
 
     render() {
         {/*========헤더부분===========*/}
@@ -202,7 +207,6 @@ export default class ChatroomTab extends Component {
                     </View>
                 </Button>
                 </View>
-                
                 {/*방생성 Dialog*/}
                 <DialogInput
                     isDialogVisible = {this.state.isAlertVisible}
@@ -320,7 +324,7 @@ export default class ChatroomTab extends Component {
                         <Icon name="navigate" />
 
                         <Button   
-                            onPress={()=> this.setState({isAlertVisible:true})} 
+                            onPress={() => this._displayCreateCR('flex')}
                             activeOpacity={0.7} 
                             style={styles.button_create} >
                         <Icon name='chatbubbles' style={{color: '#FFF'}}/>
@@ -340,10 +344,13 @@ export default class ChatroomTab extends Component {
                         <Icon name='paw' style={{color: '#222'}}/>
                         </Button>
                 </Fab>
+                <CreateChatroom token={this.token} displayChange={this._displayCreateCR} display={this.state.createChatroomDisplay}/>
+                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#999'/>
             </View>
         );
     }
 }
+
 const styles = StyleSheet.create({
     container : {
         flex : 1,
@@ -354,7 +361,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection : "row",
         width:'100%',
-        height: 74,
+        height: 24,
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
     },
