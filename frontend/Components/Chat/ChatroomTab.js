@@ -221,36 +221,34 @@ export default class ChatroomTab extends Component {
                     submitInput={ (inputText) => { this.submit(inputText)}}
                     closeDialog={ (inputText) => {this.setState({isAlertVisible:false})}}/>
                 {/*=========flatlist 부분===========*/}
-                <Button success style ={{width: '100%'}}>
-                <Text 
-                style = {{fontSize : 16, marginLeft : 15,color :"#fff"}}>My Chatroom</Text>
-                </Button>
+                <View style ={{width: '100%', backgroundColor: '#00e600'}}>
+                    <Text style = {{fontSize : 16, margin : 15,color :"#fff"}}>My Chatroom</Text>
+                </View>
                 { (this.state.isSearchListVisible == false) ? (
                 <FlatList
-                        data={this.state.arrayHolder}
-                        width='100%'
-                        extraData={this.state.arrayHolder}
-                        keyExtractor = {(item, index) => String(index)}
-                        ItemSeparatorComponent={this.FlatListItemSeparator}
-                        renderItem={({ item }) =>(
-                                <ListItem avatar
-                                activeOpacity={0.5} onLongPress={() => this._longPressChatroom(item.roomID)}
-                                onPress={() => this._onPressChatroom(item)}
-                                >
-                                <Left>
-                                <Thumbnail
-                                style={{width: 50, height: 45}} 
-                                source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
-                                </Left>
-                                <Body>
+                    data={this.state.arrayHolder}
+                    width='100%'
+                    extraData={this.state.arrayHolder}
+                    keyExtractor = {(item, index) => String(index)}
+                    ItemSeparatorComponent={this.FlatListItemSeparator}
+                    renderItem={({ item }) =>(
+                        <ListItem avatar
+                            activeOpacity={0.5}
+                            onLongPress={() => this._longPressChatroom(item.roomID)}
+                            onPress={() => this._onPressChatroom(item)}>
+                            <Left>
+                                <Thumbnail style={{width: 50, height: 45}} 
+                                    source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
+                            </Left>
+                            <Body>
                                 <Text># {item.title}</Text>
                                 <Text note>chatRoom message</Text>
-                                </Body>
-                                <Right>
+                            </Body>
+                            <Right>
                                 <Text note>3:43 pm</Text>
-                                </Right>
-                                </ListItem>
-                        )}
+                            </Right>
+                        </ListItem>
+                    )}
                 />):(<FlatList
                         data={this.state.searcharrayHolder}
                         width='100%'
@@ -279,8 +277,9 @@ export default class ChatroomTab extends Component {
                     }
                 />)
                 }      
-            <Button info style ={{width: '100%'}}>  
-                <Text style = {{ fontSize : 16,marginLeft : 15 , color: '#fff'}}>Chatroom Suggest</Text></Button>
+            <View style ={{width: '100%', backgroundColor: '#9cf'}}>
+                <Text style = {{fontSize : 16, margin : 15,color :"#fff"}}>Chatroom Suggest</Text>
+            </View>
             <List style ={{width: '100%'}}>
             <ListItem avatar>
             <Left>
