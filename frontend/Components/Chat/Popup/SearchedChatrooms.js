@@ -8,7 +8,7 @@ export default class SearchChatroom extends Component {
     }
 
     state = {
-        display: this.props.display
+        display: this.props.display,
     }
 
     sectionChange = (value) => {
@@ -71,7 +71,7 @@ export default class SearchChatroom extends Component {
                                         <Text style={style.font_cr_intertest}>{chatroom.interest.section} - {chatroom.interest.group}</Text>
                                     </View>
                                 ))) : (
-                                    <View>
+                                    <View style={{alignItems: 'center', justifyContent: 'center'}}>
                                         <Text style={style.font_cr_name}>No Room Found.</Text>
                                     </View>
                                 )
@@ -105,7 +105,7 @@ const style = StyleSheet.create({
     },
     content: {
         width: '80%',
-        height: '70%',
+        height: '80%',
         borderRadius: 20,
         backgroundColor: 'rgba(44,44,44,0.90)',
         justifyContent: 'center',
@@ -113,12 +113,12 @@ const style = StyleSheet.create({
     },
     chatroom: {
         width: '100%',
-        height: 50,
+        height: 65,
         borderRadius: 20,
         backgroundColor: 'rgba(44,44,44,0.90)',
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 5,
+        marginBottom: 14,
     },
     font_Title: {
         fontSize: 30,
