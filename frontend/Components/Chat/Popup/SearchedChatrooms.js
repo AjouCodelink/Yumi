@@ -29,7 +29,6 @@ export default class SearchedChatrooms extends Component {
     }
 
     _onPressChatroom = (new_room) => {
-        console.log(new_room)
         var url = 'http://101.101.160.185:3000/chatroom/entrance/'+new_room.cr_id;
         fetch(url, {
             method: 'POST',
