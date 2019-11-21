@@ -175,7 +175,7 @@ export default class Chatroom extends Component {
                     </Left>
                     <View style={{justifyContent: 'flex-start'}}>
                         <Text style={[style.font_header]}>{this.state.cr_name}
-                            <Text style={{fontSize:15, color: '#ee0'}}>  인원수</Text>
+                            <Text style={{fontSize:15, color: '#ee0'}}>  {this.state.userlist.length}</Text>
                         </Text>
                     </View>
                     <Right>

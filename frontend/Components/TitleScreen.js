@@ -106,7 +106,7 @@ export default class TitleScreen extends Component {
                     </Item>
                     <Item style={{height: 53, marginTop: 10}} floatingLabel>
                         <Label style={{color: '#999'}}>Password</Label>
-                        <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(password) => this.setState({password})}/>
+                        <Input secureTextEntry={true} style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(password) => this.setState({password})}/>
                     </Item>
                 </KeyboardAvoidingView>
                 <View style={style.footer}>

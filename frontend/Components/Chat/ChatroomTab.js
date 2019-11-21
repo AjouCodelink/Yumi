@@ -255,8 +255,8 @@ export default class ChatroomTab extends Component {
                             </Left>
                             <Body>
                                 <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.title}</Text>
-                                <Text style={{fontSize: 10, color: '#333'}}>#{item.interest.section}  #{item.interest.group}</Text>
-                                <Text style={{fontSize: 12}}>chatRoom message</Text>
+                                <Text style={{fontSize: 10, color: '#333'}}> #{item.interest.section}  #{item.interest.group}</Text>
+                                <Text style={{fontSize: 13}}> chatRoom message</Text>
                             </Body>
                             <Right style={{justifyContent: 'flex-end'}}>
                                 <Text style={{fontSize: 12}}>3:43 pm</Text>
@@ -336,7 +336,7 @@ export default class ChatroomTab extends Component {
                         </Button>
                 </Fab>
                 <CreateChatroom token={this.token} pushNewRoom={this.pushNewRoom} displayChange={this._displayCreateCR} display={this.state.createChatroomDisplay}/>
-                <SearchedChatrooms token={this.token} array={this.state.searcharrayHolder} displayChange={this._displaySearchCR} display={this.state.searchChatroomDisplay}/>
+                <SearchedChatrooms token={this.token} pushNewRoom={this.pushNewRoom} array={this.state.searcharrayHolder} displayChange={this._displaySearchCR} display={this.state.searchChatroomDisplay}/>
                 <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#999'/>
             </View>
         );
