@@ -69,9 +69,10 @@ export default class ChatroomTab extends Component {
                     title: responseJson[i].interest,
                     roomID: responseJson[i].cr_id
                 })
-                this.setState({arrayHolder: [...this.array], spinnerOpacity: 0}
+                this.setState({arrayHolder: [...this.array]}
                 )
             }
+            this.setState({spinnerOpacity: 0});
         })
     }
     createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
@@ -341,7 +342,7 @@ export default class ChatroomTab extends Component {
                         <Icon name='paw' style={{color: '#222'}}/>
                         </Button>
                 </Fab>
-                <CreateChatroom token={this.token} displayChange={this._displayCreateCR} display={this.state.createChatroomDisplay}/>
+                <CreateChatroom token={this.token} getChatRoomList={this.getChatRoomList} displayChange={this._displayCreateCR} display={this.state.createChatroomDisplay}/>
                 <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#999'/>
             </View>
         );

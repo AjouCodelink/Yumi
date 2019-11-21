@@ -38,6 +38,7 @@ export default class EditLanguage extends Component {
             return
         }
         //todo: 서버와 연동
+        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
         this.popupClose()
     }
 
@@ -46,7 +47,6 @@ export default class EditLanguage extends Component {
             language: "NoValue"
         })
         this.props.displayChange('none');
-        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
     }
 
     languageChange = (value) => {
