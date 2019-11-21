@@ -82,6 +82,9 @@ exports.entrance = (req, res)=>{
         if(err) res.json(err);
         User.findOne({email:email},{email:1, nickname: 1, interests: 1, chatroom:1}, function(err, user){
             if(err) res.json(err);
+            for(var i=0; i<chatroom.participants.length; i++){
+                if(chatroom.participants[i].email == user.email) return res.json({result:false, message : "user already entrance"});
+            }
             chatroom.participants.push({
                 email : user.email,
                 nickname : user.nickname,
@@ -94,7 +97,7 @@ exports.entrance = (req, res)=>{
                     interest: chatroom.interest
                 })
                 user.save(function(){
-                    res.json(user);
+                    res.json({result: true, message: "success entrance!"});
                 });
             });
         })
