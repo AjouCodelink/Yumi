@@ -97,12 +97,13 @@ export default class CityPicker extends Component {
                     style={{ color: '#ddd', width: this.props.width }}
                     selectedValue={this.state.selected}
                     onValueChange={this.onValueChange.bind(this)}>
-                    <Picker.Item label={'City'} value={'noValue'}/>
                     { this.props.selectedDo == '서울특별시'
                     ? this.state.seoul.map( city => (<Picker.Item label={city.label} value={city.value} key={city.value}/>))
                     : this.props.selectedDo == '경기도'
                         ? this.state.gyeonggi.map( city => (<Picker.Item label={city.label} value={city.value} key={city.value}/>))
-                        : this.state.incheon.map( city => (<Picker.Item label={city.label} value={city.value} key={city.value}/>))
+                        : this.props.selectedDo == '인천광역시'
+                            ? this.state.incheon.map( city => (<Picker.Item label={city.label} value={city.value} key={city.value}/>))
+                            : <Picker.Item label={'City'} value={'noValue'}/>
                     } 
                 </Picker>
             </View>
