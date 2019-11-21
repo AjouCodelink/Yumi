@@ -44,9 +44,8 @@ export default class EditLanguage extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            console.log(responseJson);
+            console.log(responseJson); // TODO : responseJson의 결과에 맞춰 알림 메세지 띄우기
         })
-        this.popupClose()
         this.popupClose()
     }
 

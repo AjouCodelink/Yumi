@@ -62,9 +62,8 @@ export default class ChatroomTab extends Component {
             for(var i=0; i<responseJson.length; i++){
                 this.array.push({
                     title: responseJson[i].name,
-                    roomID: responseJson[i].cr_id // TODO : 
+                    roomID: responseJson[i].cr_id
                 })
-                console.log(responseJson);
                 this.setState({arrayHolder: [...this.array]})
             }
         })
@@ -176,9 +175,7 @@ export default class ChatroomTab extends Component {
             //     this.searcharray.push({
             //         title: responseJson[i].interest,
             //         roomID: responseJson[i]._id
-            //     })
-                    
-                    
+            //     })  
                     
             // }
             // this.setState({searcharrayHolder: [...this.searcharray]})

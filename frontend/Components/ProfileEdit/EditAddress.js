@@ -47,7 +47,7 @@ export default class EditAddress extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            console.log(responseJson);
+            console.log(responseJson); // TODO : responseJson의 결과에 맞춰서 알림 띄우기
         })
         this.popupClose()
     }

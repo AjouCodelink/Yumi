@@ -109,8 +109,7 @@ export default class Chatroom extends Component {
             }),
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => this.setState({userlist: responseJson})
-        )
+        .then(responseJson => this.setState({userlist: responseJson}))
     }
 
     _receivePopQuiz(question, answer){ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
