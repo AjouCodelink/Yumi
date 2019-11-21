@@ -19,7 +19,7 @@ const ChatContainet = createAppContainer(chatNavigator)
 export default class ChatScreen extends Component {
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
-            <Icon name='md-chatboxes' style={{color: tintColor}} />
+            <Icon name='md-chatboxes' style={{color: "#FFBB00"}} />
         ),
     }
     render() {

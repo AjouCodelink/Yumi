@@ -10,9 +10,7 @@ import EditLanguage from '../ProfileEdit/EditLanguage'
 
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
-
 const screenHeight = Math.round(Dimensions.get('window').height);
-
 export default class ProfileTab extends Component {
     state = {
         myEmail: '',
@@ -28,7 +26,7 @@ export default class ProfileTab extends Component {
 
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
-            <Icon name='md-person' style={{color: tintColor}}/>
+            <Icon name='md-person' style={{color: "#00D8FF"}}/>
         ),
     }
 
