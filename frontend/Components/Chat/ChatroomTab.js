@@ -198,7 +198,7 @@ export default class ChatroomTab extends Component {
                 {/*=========flatlist 부분===========*/}
                 <Button success style ={{width: '100%'}}>
                 <Text 
-                style = {{fontSize : 16, marginLeft : 15,color :"#fff"}}>My Chatroom</Text>
+                style = {{fontSize : 15, marginLeft : 15,color :"#fff"}}>My Chatroom</Text>
                 </Button>
                 { (this.state.isSearchListVisible == false) ? (
                 <FlatList
