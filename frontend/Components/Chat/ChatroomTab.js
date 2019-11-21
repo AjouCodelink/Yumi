@@ -18,12 +18,12 @@ export default class ChatroomTab extends Component {
         this.token = '',
         this.email = '',
         this._id = '',
-        this.searcharray = [],
         this.array = [],
         this.state = {
             active : false,
             arrayHolder: [],
             searcharrayHolder: [],
+            suggestArrayHolder:[],
             textInput_Holder_Theme: '',
             isAlertVisible: false,
             isSearchVisible: false,
@@ -47,13 +47,14 @@ export default class ChatroomTab extends Component {
                     this.token = _array[0].access_token;
                     this.email = _array[0].user_email;
                     this.getChatRoomList();
+                    this.getSuggestRoomList();
                 },
                 (_,error) => console.error(error)
             );
         },(error) => console.error(error))
     }
     getChatRoomList(){
-        var url = 'http://101.101.160.185:3000/chatroom/list';
+        var url = 'http://101.101.160.185:3389/chatroom/list';
         fetch(url, {
             method: 'GET',
             headers: new Headers({
@@ -68,10 +69,36 @@ export default class ChatroomTab extends Component {
                     title: responseJson[i].name,
                     roomID: responseJson[i].cr_id
                 })
-
-                this.setState({arrayHolder: [...this.array], spinnerOpacity: 0}
-                )
             }
+            this.setState({arrayHolder: [...this.array], spinnerOpacity: 0}, function(){
+                this.array.splice(0,100);
+            })
+        })
+    }
+    abc(){
+        console.log(this.array);
+    }
+    getSuggestRoomList(){
+        var url = 'http://101.101.160.185:3389/chatroom/recommend';
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'x-access-token': this.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            console.log(responseJson);
+            for(var i=0; i<responseJson.length; i++){
+                this.array.push({
+                    title: responseJson[i].name,
+                    roomID: responseJson[i].cr_id
+                })
+            }
+            this.setState({suggestArrayHolder: [...this.array], spinnerOpacity: 0}, function(){
+                this.array.splice(0,100);
+            })
         })
     }
     createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
@@ -85,6 +112,7 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
+            console.log(responseJson);
             this.insertChatRoom(responseJson.chatroom_id, responseJson.interest);
         })
     };
@@ -312,7 +340,7 @@ export default class ChatroomTab extends Component {
                         </TouchableOpacity>
                     </View> 
                     ):(<View style = {styles.hide}></View>)
-                }
+                } 
                     <Fab
                         active={this.state.active}
                         direction="up"
