@@ -64,21 +64,21 @@ export default class ChatroomTab extends Component {
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             for(var i=0; i<responseJson.length; i++){
-                this.array.push({
+                newItem = {
                     title: responseJson[i].name,
                     roomID: responseJson[i].cr_id
-                })
-                this.setState({arrayHolder: [...this.array]})
+                }
+                this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
             }
             this.setState({spinnerOpacity: 0});
         })
     }
     pushNewRoom = (newRoom) => {
-        this.array.push({
+        newItem = {
             title: newRoom.cr_name,
             roomID: newRoom.cr_id
-        })
-        this.setState({arrayHolder: [...this.array]})
+        }
+        this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
     }
     createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
         var url = 'http://101.101.160.185:3000/chatroom/creation/'+inputText;
