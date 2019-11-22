@@ -142,6 +142,29 @@ export default class ChatroomTab extends Component {
     suggestRoom(){
         
     }
+
+    getSuggestedChatRoomList = () => {
+        var url = 'http://101.101.160.185:3000/chatroom/recommend';
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'x-access-token': this.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            this.setState({suggestArrayHolder:[]});
+            for(var i=0; i<responseJson.length; i++){
+                newItem = {
+                    title: responseJson[i].name,
+                    roomID: responseJson[i]._id,
+                    interest: responseJson[i].interest
+                }
+                this.setState({suggestArrayHolder:[...this.state.suggestArrayHolder, newItem]})
+            }
+        })
+    }
     searchBarShow(){
         this.setState({isSearchVisible: !this.state.isSearchVisible});
     }
@@ -184,11 +207,11 @@ export default class ChatroomTab extends Component {
     }
 
     _displayCreateCR = (display) => {
-        this.setState({createChatroomDisplay: display})
+        this.setState({createChatroomDisplay: display, active: false})
     }
 
     _displaySearchCR = (display) => {
-        this.setState({searchChatroomDisplay: display})
+        this.setState({searchChatroomDisplay: display, active: false})
     }
 
     render() {
@@ -239,22 +262,36 @@ export default class ChatroomTab extends Component {
             <View style ={{width: '100%', backgroundColor: '#9cf'}}>
                 <Text style = {{fontSize : 16, margin : 15,color :"#fff"}}>Chatroom Suggest</Text>
             </View>
-            <List style ={{width: '100%'}}>
-            <ListItem avatar>
-            <Left>
-                <Thumbnail
-                style={{width: 50, height: 45}}  
-                source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
-            </Left>
-            <Body>
-                <Text>Game-Overwatch</Text>
-                <Text note>RyusungRyoung looks happy</Text>
-            </Body>
-            <Right>
-                <Text note>3:43 pm</Text>
-            </Right>
-            </ListItem>
-            </List>
+            <FlatList
+                    data={this.state.suggestArrayHolder}
+                    width='100%'
+                    extraData={this.state.suggestArrayHolder}
+                    keyExtractor = {(item, index) => String(index)}
+                    ItemSeparatorComponent={this.FlatListItemSeparator}
+                    renderItem={({ item }) =>(
+                        <ListItem avatar
+                            activeOpacity={0.5}
+                            onLongPress={() => this._longPressChatroom(item.roomID)}
+                            onPress={() => this._onPressChatroom(item)}
+                            key={item.roomID}>
+                            <Left style={{justifyContent: 'center'}}>
+                                <Thumbnail style={{width: 50, height: 45}} 
+                                    source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
+                            </Left>
+                            <Body>
+                                <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.title}</Text>
+                                <Text style={{fontSize: 10, color: '#333'}}>  #{item.interest.section}  #{item.interest.group}</Text>
+                                <Text style={{fontSize: 13}}>  chatRoom message</Text>
+                            </Body>
+                            <Right style={{justifyContent: 'flex-end', alignItems:'flex-end'}}>
+                                <Icon name='md-people' style={{marginBottom: 10, fontSize: 16, color: '#333'}}>
+                                    <Text style={{fontSize: 14, color: '#333'}}> 14</Text>
+                                </Icon>
+                                <Text style={{fontSize: 12}}>3:43 pm</Text>
+                            </Right>
+                        </ListItem>
+                    )}
+                />
                 {/*=======아래 채팅방 추천 및 검색 창 팝업 부분=========*/}
                 <View style={styles.febContainer}>
                 
@@ -303,7 +340,7 @@ export default class ChatroomTab extends Component {
                         </Button>
 
                         <Button  
-                            onPress={()=> this.suggestRoom()} 
+                            onPress={()=> this.getSuggestedChatRoomList()} 
                             activeOpacity={0.7} 
                             style={styles.button_suggest}>
                         <Icon name='paw' style={{color: '#222'}}/>

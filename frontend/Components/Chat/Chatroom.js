@@ -25,6 +25,7 @@ export default class Chatroom extends Component {
         this.messageInput = React.createRef();
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
+            console.log(data);
             translate_api(data); // TODO : 자동번역을 할지 말지 선택하게 만들어서 자동번역 해주기
         });
 
@@ -155,7 +156,7 @@ export default class Chatroom extends Component {
     }
 
 
-    db_Update = () => {        // DB 내의 채팅 로그 읽어오기
+    db_Update = () => {   // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
@@ -167,7 +168,7 @@ export default class Chatroom extends Component {
         )
     };
 
-    db_Rebuild = () => {        // DB attribute가 다른 이유로 input에 실패 할 때, 디비를 다시 build시킴
+    db_Rebuild = () => {   // DB attribute가 다른 이유로 input에 실패 할 때, 디비를 다시 build시킴
         db.transaction( tx => {
             tx.executeSql(
                 'DROP TABLE chatLog',
