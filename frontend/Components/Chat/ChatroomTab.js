@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, Platform, ToastAndroid } from 'react-native';
 import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail,Icon,Button,Fab, Spinner} from 'native-base';
-import DialogInput from 'react-native-dialog-input';
 import CreateChatroom from './Popup/CreateChatroom'
 import SearchedChatrooms from './Popup/SearchedChatrooms'
 
@@ -218,6 +217,7 @@ export default class ChatroomTab extends Component {
                     <Text style = {{fontSize : 16, margin : 15,color :"#fff"}}>My Chatroom</Text>
                 </View>
                 <FlatList
+                    style = {{height : '30%'}}
                     data={this.state.arrayHolder}
                     width='100%'
                     extraData={this.state.arrayHolder}
@@ -417,11 +417,7 @@ const styles = StyleSheet.create({
         width:'100%',
         justifyContent: 'center',
         alignItems : "stretch",
-<<<<<<< HEAD
-        marginTop: 75,
-=======
         marginTop: 40,
->>>>>>> 1446c81038a5dc7f9d36b5ab74989a84d698dacd
         paddingLeft: 15,
     },
     searchBar:{
