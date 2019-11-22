@@ -53,6 +53,18 @@ export default class SettingTab extends Component {
                             [],
                             null,
                             (_,error) => console.error(error)
+                        ),
+                        tx.executeSql(
+                            'DELETE FROM userInfo',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        ),
+                        tx.executeSql(
+                            'DELETE FROM crList',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
                         )
                     },(error) => console.error(error))
                     RootNavigator('Loading')

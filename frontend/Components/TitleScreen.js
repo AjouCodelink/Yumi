@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image, KeyboardAvoidingView} from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { Item, Label, Input, Button, Spinner } from 'native-base';
+
 import * as SQLite from 'expo-sqlite';
-
-import CustomButton from './CustomButton';
-
 const db = SQLite.openDatabase('db.db');
 
 export default class TitleScreen extends Component {
@@ -18,7 +16,6 @@ export default class TitleScreen extends Component {
             email: '',
             password: '',
             loginResult: -1,
-            token:'',
             spinnerOpacity: 0,
         }
     }
@@ -27,17 +24,36 @@ export default class TitleScreen extends Component {
             email: '',
             password: '',
             loginResult: -1,
-            token:''})
+        })
     }
-    dbSaveToken(token){
+    dbSaveUserData(responseJson){
+        token = responseJson.token
+        userInfo = responseJson.userInfo
+        crList = responseJson.userInfo.chatroom
         db.transaction( tx => {
-            tx.executeSql(
+            tx.executeSql(          // token 저장
                 'INSERT INTO token (access_token, user_email) values (?,?);',
                 [token, this.state.email],
                 null,
-                (_,error) => console.error(error)   // sql문 실패 에러
-            );
-        },(error) => console.error(error))   // 트랜젝션 에러
+                (_,error) => console.error(error)
+            ),
+            tx.executeSql(          // 유저정보 저장
+                'INSERT INTO userInfo (email, nickname, address, language, thumbnailURL) values (?,?,?,?,?);',
+                [this.state.email, userInfo.nickname, userInfo.address, userInfo.language, userInfo.img_path],
+                null,
+                (_,error) => console.error(error)
+            )
+        }),(error) => console.error(error);   // 트랜젝션 에러
+        for(var i=0; i<crList.length; i++)
+            db.transaction( tx => {
+                tx.executeSql(          // 채팅방목록 저장
+                    'INSERT INTO crList (cr_id, cr_name, section, _group, memNum) values (?,?,?,?,?);',
+                    [crList[i]._id, crList[i].name, crList[i].interest.section, crList[i].interest.group, crList[i].memNum],
+                    null,
+                    (_,error) => console.error(error)
+                );
+            },(error) => console.error(error))   // 트랜젝션 에러
+        console.log('저장됨')
     }
     onPressLogin(){
         if (this.state.email == ''){
@@ -48,7 +64,7 @@ export default class TitleScreen extends Component {
         } else {
             this.setState({spinnerOpacity: 1})
             this.submit();
-            setTimeout(() => {this.checkLoginResult();}, 500);
+            setTimeout(() => {this.checkLoginResult();}, 1000);
         }
     }
     checkLoginResult(){
@@ -57,7 +73,6 @@ export default class TitleScreen extends Component {
             alert("Email or password is incorrect.")
             this.state.loginResult = -1
         } else if (this.state.loginResult == 1) {    // 로그인 성공
-            this.dbSaveToken(this.state.token);
             this.goMain();
         } else {                                     // 서버 전송 오류
             alert("Failed to login. Please try again.")
@@ -87,17 +102,18 @@ export default class TitleScreen extends Component {
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => this.setState({
-            loginResult: responseJson.result,       // 실패시0 성공시1 
-            token: responseJson.token
-        }));
+        .then(responseJson => {
+            this.setState({loginResult: responseJson.result}),
+            console.log(responseJson),
+            this.dbSaveUserData(responseJson)
+        });
     }
     
     render() {
         return (
             <View style={style.container}>
                 <Image
-                    style={{height: '65%', width:'80%', resizeMode:'contain'}}
+                    style={{ height: '60%', width: '70%', resizeMode:'contain'}}
                     source={require('../assets/Titleimage.png')}/>
                 <KeyboardAvoidingView behavior='padding' style={style.content}>
                     <Item style={{height: 53, borderColor:'#222'}} floatingLabel>
@@ -110,7 +126,7 @@ export default class TitleScreen extends Component {
                     </Item>
                 </KeyboardAvoidingView>
                 <View style={style.footer}>
-                    <Button style={[style.button, {backgroundColor: '#999'}]} onPress={() => this.goSignup_Welcome()}>
+                    <Button style={[style.button, {backgroundColor: '#bbb'}]} onPress={() => this.goSignup_Welcome()}>
                         <Text style={style.text_button}>Sign Up</Text>
                     </Button>
                     <Button style={[style.button, {backgroundColor: '#36ee36'}]} onPress={() => this.onPressLogin()}>
