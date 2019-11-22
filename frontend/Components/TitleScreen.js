@@ -44,16 +44,17 @@ export default class TitleScreen extends Component {
                 (_,error) => console.error(error)
             )
         }),(error) => console.error(error);   // 트랜젝션 에러
-        for(var i=0; i<crList.length; i++)
+        for(var i=0; i<crList.length; i++){
+            const cr = crList[i]
             db.transaction( tx => {
                 tx.executeSql(          // 채팅방목록 저장
                     'INSERT INTO crList (cr_id, cr_name, section, _group, memNum) values (?,?,?,?,?);',
-                    [crList[i]._id, crList[i].name, crList[i].interest.section, crList[i].interest.group, crList[i].memNum],
+                    [cr.cr_id, cr.name, cr.interest.section, cr.interest.group, cr.memNum],
                     null,
                     (_,error) => console.error(error)
                 );
             },(error) => console.error(error))   // 트랜젝션 에러
-        console.log('저장됨')
+        }
     }
     onPressLogin(){
         if (this.state.email == ''){
@@ -104,7 +105,6 @@ export default class TitleScreen extends Component {
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             this.setState({loginResult: responseJson.result}),
-            console.log(responseJson),
             this.dbSaveUserData(responseJson)
         });
     }
@@ -122,7 +122,7 @@ export default class TitleScreen extends Component {
                     </Item>
                     <Item style={{height: 53, borderColor:'#222', marginTop: 20}} floatingLabel>
                         <Label style={{color: '#555'}}>Password</Label>
-                        <Input secureTextEntry={true} style={{fontSize: 18, color: '#000', paddingLeft: 5}} onChangeText={(password) => this.setState({password})}/>
+                        <Input secureTextEntry={true} style={{fontSize: 18, color: '#000', paddingLeft: 5}} onSubmitEditing={() => {this.submit();}} onChangeText={(password) => this.setState({password})}/>
                     </Item>
                 </KeyboardAvoidingView>
                 <View style={style.footer}>

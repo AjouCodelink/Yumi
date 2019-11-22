@@ -39,7 +39,8 @@ export default class SearchedChatrooms extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson=>{
-            this.props.pushNewRoom(new_room)
+            console.log(new_room),
+            this.props.pushNewRoom(new_room.cr_name, new_room.cr_id, new_room.interest)
         })
         ToastAndroid.show('Chat room join complete.', ToastAndroid.SHORT);
         this.popupClose()
@@ -69,7 +70,7 @@ export default class SearchedChatrooms extends Component {
                                     </TouchableOpacity> 
                                 ))) : (
                                     <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={style.font_cr_name}>No Room Found.</Text>
+                                        <Text style={style.font_foundNoCR}>No Room Found.</Text>
                                     </View>
                                 )
                             }
@@ -129,6 +130,11 @@ const style = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#000',
+    },
+    font_foundNoCR: {
+        fontSize: 26,
+        fontWeight: 'bold',
+        color: '#ddd',
     },
     font_cr_intertest: {
         fontSize: 12,

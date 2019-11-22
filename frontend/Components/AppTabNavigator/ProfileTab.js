@@ -53,7 +53,6 @@ export default class ProfileTab extends Component {
                 'SELECT * FROM userInfo',
                 [],
                 (_, { rows: { _array }  }) => {
-                    console.log('array:',_array)
                     if(_array != []) (
                         this.setState({
                             myNickname: _array[0].nickname,
@@ -95,7 +94,7 @@ export default class ProfileTab extends Component {
         //this._pickImage()
         alert("you pressed Thumbnail Edit.")
     }
-    
+
     // _pickImage = async () => {
     //     let photo = await ImagePicker.launchImageLibraryAsync({
     //         allowsEditing: true,

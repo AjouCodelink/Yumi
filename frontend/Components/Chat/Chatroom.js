@@ -40,6 +40,14 @@ export default class Chatroom extends Component {
                 );
             },(error) => console.error(error))          // 트랜젝션 에러
             this.db_Update()
+            db.transaction(tx => {
+                tx.executeSql(  
+                    'UPDATE crList SET lastMessage = ?, lastTime = ? WHERE cr_id = ?',
+                    [newChat.message, newChat.Time, this.state.cr_id],
+                    null,
+                    (_,error) => console.error(error)
+                )
+            })
         }
     };
 
@@ -61,7 +69,7 @@ export default class Chatroom extends Component {
     componentWillMount() {
         const { navigation } = this.props;
         this.state.cr_id = navigation.getParam('cr_id', '-1'),
-        this.state.cr_name = navigation.getParam('title', 'No cr_name')
+        this.state.cr_name = navigation.getParam('cr_name', 'No cr_name')
         this.state.myEmail = navigation.getParam('myEmail', '');
 
         db.transaction(tx => {
@@ -75,7 +83,7 @@ export default class Chatroom extends Component {
             )
         },(error) => console.error(error))
         this.db_Update();
-        this._getParticipants();  // 방 인원 불러오기
+        this._getParticipants();
     }
 
     renderDrawer = () => {
@@ -111,7 +119,10 @@ export default class Chatroom extends Component {
             }),
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => this.setState({userlist: responseJson}))
+        .then(responseJson => {
+            this.setState({userlist: responseJson}),
+            this.db_cr_memNumUpdate(responseJson.length)
+        })
     }
 
     _receivePopQuiz(question, answer){ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
@@ -123,6 +134,17 @@ export default class Chatroom extends Component {
             answer: answer,
         }
         // todo: 받은 팝퀴즈를 db에 저장
+    }
+
+    db_cr_memNumUpdate = (new_memNum) => {      // DB에 바뀐 인원 수 저장 
+        db.transaction(tx => {
+            tx.executeSql(  
+                'UPDATE crList SET memNum = ? WHERE cr_id = ?',
+                [new_memNum, this.state.cr_id],
+                null,
+                (_,error) => console.error(error)
+            )
+        })
     }
 
     db_Update = () => {        // DB 내의 채팅 로그 읽어오기
@@ -156,6 +178,7 @@ export default class Chatroom extends Component {
     };
 
     handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
+        this.props.crList_reload()
         goback()
     };
 
@@ -171,7 +194,7 @@ export default class Chatroom extends Component {
                 renderNavigationView={this.renderDrawer}>
                 <View style={style.header}>
                     <Left>
-                        <TouchableOpacity onPress={() => goBack(null)}>
+                        <TouchableOpacity onPress={() => this.props.crList_reload(), goBack(null)}>
                             <Icon name='md-arrow-round-back' style={{color: '#999', fontSize: 30}}/>
                         </TouchableOpacity>
                     </Left>
