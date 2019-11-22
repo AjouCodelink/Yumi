@@ -53,8 +53,8 @@ export default class EditAddress extends Component {
         .then(responseJson => {
             console.log(responseJson); // TODO : responseJson의 결과에 맞춰서 알림 띄우기
         })
+        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
         this.popupClose()
-
     }
 
     popupClose = () => {
@@ -64,7 +64,6 @@ export default class EditAddress extends Component {
             address: '',
         })
         this.props.displayChange('none');
-        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
     }
 
     render() {

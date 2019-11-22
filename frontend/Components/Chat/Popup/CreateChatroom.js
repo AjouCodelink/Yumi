@@ -43,14 +43,26 @@ export default class CreateChatroom extends Component {
             return
         }
         const new_room = {
-            section: this.state.selectedSection,
-            group: this.state.selectedGroup,
-            cr_name: this.state.new_cr_name,
+            interest: {
+                section: this.state.selectedSection,
+                group: this.state.selectedGroup,
+            },
+            name: this.state.new_cr_name,
         }
-        //todo: 서버와 연동
-        //this.props.(채팅목록업데이트)
-        //console.log(new_room)
-        ToastAndroid.show('The room creation is complete.', ToastAndroid.SHORT);
+        var url = 'http://101.101.160.185:3000/chatroom/creation';
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+            'Content-Type': 'application/json',
+            'x-access-token': this.props.token
+            }),
+            body: JSON.stringify(new_room)
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson=>{
+            this.props.pushNewRoom(responseJson)
+        })
+        ToastAndroid.show('Chat room creation complete.', ToastAndroid.SHORT);
         this.popupClose()
     }
 

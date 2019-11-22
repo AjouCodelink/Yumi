@@ -22,6 +22,7 @@ YellowBox.ignoreWarnings([  // 강제로 에러 안뜨게 하기
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
+        this.messageInput = React.createRef();
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
             db_Add(data);
@@ -86,7 +87,8 @@ export default class Chatroom extends Component {
     };
 
     _onPressSend(){
-        if (this.state.message != ''){
+        this.messageInput.current._root.clear();
+        if (this.state.message.length != 0){
             const newChat = {
                 user_email: this.state.myEmail,
                 cr_id: this.state.cr_id,
@@ -94,8 +96,8 @@ export default class Chatroom extends Component {
                 message: this.state.message,
                 //answer: null
             }
+            this.setState({message: ''});    
             this.socket.emit('SEND_MESSAGE', newChat);
-            this.setState({message: null});    
         }
     }
 
@@ -175,7 +177,7 @@ export default class Chatroom extends Component {
                     </Left>
                     <View style={{justifyContent: 'flex-start'}}>
                         <Text style={[style.font_header]}>{this.state.cr_name}
-                            <Text style={{fontSize:15, color: '#ee0'}}>  인원수</Text>
+                            <Text style={{fontSize:15, color: '#ee0'}}>  {this.state.userlist.length}</Text>
                         </Text>
                     </View>
                     <Right>
@@ -213,12 +215,13 @@ export default class Chatroom extends Component {
                     </ScrollView>
                     <View style={style.inputPlace}>
                         <Input onChangeText={(message) => this.setState({message})}
+                            ref={this.messageInput}
                             onSubmitEditing={() => {this._onPressSend();}}  // 엔터눌러도 입력되도록 함
                             value={this.state.message}
                             placeholder='Enter message'
                             style={{marginLeft: 6, fontSize: 16}}/>
                         <TouchableOpacity onPress={() => this._onPressSend()}>
-                            <Icon name='md-send' style={{color: '#333', marginRight: 10, fontSize: 30}}/>
+                            <Icon name='md-send' style={{color: '#555', marginRight: 10, fontSize: 30}}/>
                         </TouchableOpacity>
                     </View>
                 </KeyboardAvoidingView>
@@ -230,7 +233,7 @@ export default class Chatroom extends Component {
 const style = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#333',
+        backgroundColor: '#ddd',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -244,7 +247,7 @@ const style = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         paddingBottom: 8,
-        backgroundColor: '#555',
+        backgroundColor: '#333',
     },
     font_header: {
         color: 'white',
@@ -274,7 +277,7 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#888',
+        backgroundColor: '#f6f6f6',
         borderWidth: 0,
     },
     font_main: {
