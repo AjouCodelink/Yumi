@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Image, KeyboardAvoidingView} from 'react-native';
+import { StyleSheet, Text, View, Image, KeyboardAvoidingView} from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
-import { Item, Label, Input, Spinner } from 'native-base';
+import { Item, Label, Input, Button, Spinner } from 'native-base';
 import * as SQLite from 'expo-sqlite';
 
 import CustomButton from './CustomButton';
@@ -100,30 +100,22 @@ export default class TitleScreen extends Component {
                     style={{height: '65%', width:'80%', resizeMode:'contain'}}
                     source={require('../assets/Titleimage.png')}/>
                 <KeyboardAvoidingView behavior='padding' style={style.content}>
-                    <Item style={{height: 53}} floatingLabel>
-                        <Label style={{color: '#999'}}>Email Address</Label>
-                        <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(email) => this.setState({email})}/>
+                    <Item style={{height: 53, borderColor:'#222'}} floatingLabel>
+                        <Label style={{color: '#555'}}>Email Address</Label>
+                        <Input style={{fontSize: 18, color: '#000', paddingLeft: 5}} onChangeText={(email) => this.setState({email})}/>
                     </Item>
-                    <Item style={{height: 53, marginTop: 10}} floatingLabel>
-                        <Label style={{color: '#999'}}>Password</Label>
-                        <Input style={{fontSize: 18, color: '#ddd', paddingLeft: 5}} onChangeText={(password) => this.setState({password})}/>
+                    <Item style={{height: 53, borderColor:'#222', marginTop: 20}} floatingLabel>
+                        <Label style={{color: '#555'}}>Password</Label>
+                        <Input secureTextEntry={true} style={{fontSize: 18, color: '#000', paddingLeft: 5}} onChangeText={(password) => this.setState({password})}/>
                     </Item>
                 </KeyboardAvoidingView>
                 <View style={style.footer}>
-                    <View style={style.footer_backbutton}>
-                        <CustomButton
-                            title={'Sign up'}
-                            titleColor={'#ddd'}
-                            buttonColor={'#000'}
-                            onPress={() => this.goSignup_Welcome()}/>
-                    </View>
-                    <View style={style.footer_nextbutton}>
-                    <CustomButton
-                            title={'Log In'}
-                            titleColor={'#000'}
-                            buttonColor={'#ddd'}
-                            onPress={ () => this.onPressLogin()}/>
-                    </View>
+                    <Button style={[style.button, {backgroundColor: '#999'}]} onPress={() => this.goSignup_Welcome()}>
+                        <Text style={style.text_button}>Sign Up</Text>
+                    </Button>
+                    <Button style={[style.button, {backgroundColor: '#36ee36'}]} onPress={() => this.onPressLogin()}>
+                        <Text style={style.text_button}>Log In</Text>
+                    </Button>
                 </View>
                 <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 3, position: "absolute", bottom: '50%'}}color='#ddd'/>
             </View>
@@ -137,7 +129,7 @@ const style = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         paddingBottom: '12%',
-        backgroundColor: '#444',
+        backgroundColor: '#fff',
     },
     header: {
         width:'100%',
@@ -164,20 +156,17 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#444'
     },
-    footer_backbutton: {
-        width:'43%',
-        height:'100%',
+    button: {
+        width: 100,
+        height: 40,
         justifyContent: 'center',
-        alignItems: 'flex-end',
-        paddingRight: '13%',
+        marginLeft: '13%',
+        marginRight: '13%',
+        borderRadius: 20,
     },
-    footer_nextbutton: {
-        width:'43%',
-        height:'100%',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        paddingLeft: '13%',
+    text_button: {
+        padding: 10,
+        fontSize: 18,
     },
     });

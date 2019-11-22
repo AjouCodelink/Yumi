@@ -63,21 +63,21 @@ const style = StyleSheet.create({
     messageBox: {
         paddingLeft: 5,
         paddingRight: 5,
-        backgroundColor: "#aaa",
+        backgroundColor: "#ccc",
         borderRadius: 6
     },
     text_name: {
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
         fontSize : 16,
-        color: '#fff',
+        color: '#000',
         paddingLeft: 65,
         paddingTop: 5,
         marginBottom: 5,
     },
     text_time: {
         fontSize : 12,
-        color: '#ddd',
+        color: '#222',
     },
     text_message: {
         fontSize: 15,
