@@ -19,14 +19,12 @@ export default class ChatroomTab extends Component {
         this.token = '',
         this.email = '',
         this._id = '',
-        this.array = [],
         this.state = {
             active : false,
             arrayHolder: [],
             searcharrayHolder: [],
             suggestArrayHolder:[],
             textInput_Holder_Theme: '',
-            isAlertVisible: false,
             isSearchVisible: false,
             isSearchListVisible : false,
             search : '',
@@ -34,10 +32,6 @@ export default class ChatroomTab extends Component {
             searchChatroomDisplay: 'none',
             spinnerOpacity: 1,
         }
-    }
-    submit(inputText){
-        this.setState({isAlertVisible: false})
-        this.createRoom(inputText);
     }
 
     componentWillMount() {
@@ -85,28 +79,6 @@ export default class ChatroomTab extends Component {
             interest: newRoom.interest
         }
         this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
-    }
-    createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
-        var url = 'http://101.101.160.185:3000/chatroom/creation/'+inputText;
-        fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-            'Content-Type' : 'application/json',
-            'x-access-token': this.token
-            })
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson => {
-            console.log(responseJson);
-            this.insertChatRoom(responseJson.chatroom_id, responseJson.interest);
-        })
-    };
-
-    insertChatRoom = (chatroom_id, interest) => { // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정
-        this.array.push({
-            title : interest,
-            roomID: chatroom_id});
-        this.setState({ arrayHolder: [...this.array] })
     }
 
     exitChatRoom = (roomID) => { // 방 나가기
@@ -230,14 +202,6 @@ export default class ChatroomTab extends Component {
                     </View>
                 </Button>
                 </View>
-                {/*방생성 Dialog*/}
-                <DialogInput
-                    isDialogVisible = {this.state.isAlertVisible}
-                    title={"Create Chatroom"}
-                    message={"Type Theme"}
-                    hintInput ={"Theme"}
-                    submitInput={ (inputText) => { this.submit(inputText)}}
-                    closeDialog={ (inputText) => {this.setState({isAlertVisible:false})}}/>
                 {/*=========flatlist 부분===========*/}
                 <View style ={{width: '100%', backgroundColor: '#00e600'}}>
                     <Text style = {{fontSize : 16, margin : 15,color :"#fff"}}>My Chatroom</Text>

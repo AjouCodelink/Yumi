@@ -54,7 +54,7 @@ export default class Chatroom extends Component {
             .then(responseJson => {
                 var responseMessage = responseJson.message.result.translatedText;
                 console.log(responseMessage);
-                data.message = responseMessage;
+                data.message = data.message + responseMessage;
                 db_Add(data);
             })
         }
