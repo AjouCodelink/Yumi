@@ -24,12 +24,13 @@ module.exports = function (server) {
                         if(chatroom.participants[i].socketID == undefined){
                             chatroom.participants[i].socketID = socket.id;
                             chatroom.save();
-                            console.log('socketID is undefined');
                             socket.join(data.cr_id);
+                            break;
                         } else{
-                            console.log('socketID already exists');
+                            socket.leave(chatroom.participants[i].socketID);
                             socket.id = chatroom.participants[i].socketID;
                             socket.join(data.cr_id);
+                            break;
                         }
                     }
                 }
