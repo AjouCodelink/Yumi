@@ -49,7 +49,6 @@ export default class ChatroomTab extends Component {
                     this.token = _array[0].access_token;
                     this.email = _array[0].user_email;
                     this.getChatRoomList();
-                    this.getSuggestRoomList();
                 },
                 (_,error) => console.error(error)
             );
@@ -169,7 +168,7 @@ export default class ChatroomTab extends Component {
         );
     }
     suggestRoom(){
-        Alert.alert("Room suggest Pressed");
+        
     }
     searchBarShow(){
         this.setState({isSearchVisible: !this.state.isSearchVisible});

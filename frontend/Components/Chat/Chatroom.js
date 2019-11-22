@@ -25,11 +25,40 @@ export default class Chatroom extends Component {
         this.messageInput = React.createRef();
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            db_Add(data);
+            ab(data);
+            //db_Add(data);
+            console.log(data);
         });
         this.socket.on('disconnect', function(){
             console.log('disconnect');
         })
+        
+        ab = (data) =>{
+            var url = 'https://openapi.naver.com/v1/language/translate';
+            fetch(url, {
+                method: 'POST',
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                    'token': 'token',
+                    'X-Naver-Client-Id': 'ejNDp9aQ1y_evnFX0gTg',
+                    'X-Naver-Client-Secret': 'E1xo6lz3Yx'
+                }),
+                body: JSON.stringify({
+                    "source": "ko",
+                    "target": "en",
+                    "text": data.message
+                })
+            })
+            .then(response => response.json())
+            .catch(error => console.error('Error: ', error))
+            .then(responseJson => {
+                var responseMessage = responseJson.message.result.translatedText;
+                console.log(responseMessage);
+                data.message = responseMessage;
+                db_Add(data);
+            })
+        }
+
         db_Add = (newChat) => {
             db.transaction( tx => {
                 tx.executeSql(
