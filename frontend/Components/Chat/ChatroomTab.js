@@ -19,12 +19,12 @@ export default class ChatroomTab extends Component {
         this.token = '',
         this.email = '',
         this._id = '',
-        this.searcharray = [],
         this.array = [],
         this.state = {
             active : false,
             arrayHolder: [],
             searcharrayHolder: [],
+            suggestArrayHolder:[],
             textInput_Holder_Theme: '',
             isAlertVisible: false,
             isSearchVisible: false,
@@ -49,11 +49,13 @@ export default class ChatroomTab extends Component {
                     this.token = _array[0].access_token;
                     this.email = _array[0].user_email;
                     this.getChatRoomList();
+                    this.getSuggestRoomList();
                 },
                 (_,error) => console.error(error)
             );
         },(error) => console.error(error))
     }
+
     getChatRoomList = () => {
         var url = 'http://101.101.160.185:3000/chatroom/list';
         fetch(url, {
@@ -76,6 +78,7 @@ export default class ChatroomTab extends Component {
             this.setState({spinnerOpacity: 0});
         })
     }
+    
     pushNewRoom = (newRoom) => {
         newItem = {
             title: newRoom.cr_name,
@@ -95,6 +98,7 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
+            console.log(responseJson);
             this.insertChatRoom(responseJson.chatroom_id, responseJson.interest);
         })
     };
@@ -310,7 +314,7 @@ export default class ChatroomTab extends Component {
                         </TouchableOpacity>
                     </View> 
                     ):(<View style = {styles.hide}></View>)
-                }
+                } 
                     <Fab
                         active={this.state.active}
                         direction="up"
