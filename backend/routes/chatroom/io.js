@@ -49,11 +49,11 @@ module.exports = function (server) {
             if(err) return err;
             var randomQuizNumber = Math.floor(Math.random() * datas.length); // 팝퀴즈 중 하나 랜덤으로 찾음
 
-            data.author = datas[randomQuizNumber].question; // TODO : 이거 나중에 프론트엔드에 RECEIVE_QUIZ 작성 되면 author -> question으로 수정
-            data.message = datas[randomQuizNumber].answer;
-
+            data.question = datas[randomQuizNumber].question; // TODO : 이거 나중에 프론트엔드에 RECEIVE_QUIZ 작성 되면 author -> question으로 수정
+            data.answer = datas[randomQuizNumber].answer;
+                
             console.log(data);
-            io.emit('RECEIVE_MESSAGE', data); // TODO : RECEIVE_QUIZ로 나중에 수정 예정
+            io.emit('RECEIVE_QUIZ', data); // TODO : RECEIVE_QUIZ로 나중에 수정 예정
         })
     }, 2000000); // 시간 주기 설정 (2000 -> 2초)
 

@@ -25,15 +25,11 @@ export default class Chatroom extends Component {
         this.messageInput = React.createRef();
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            ab(data);
-            //db_Add(data);
+            translate_api(data);
             console.log(data);
         });
-        this.socket.on('disconnect', function(){
-            console.log('disconnect');
-        })
-        
-        ab = (data) =>{
+
+        translate_api = (data) =>{
             var url = 'https://openapi.naver.com/v1/language/translate';
             fetch(url, {
                 method: 'POST',
@@ -70,6 +66,30 @@ export default class Chatroom extends Component {
             },(error) => console.error(error))          // 트랜젝션 에러
             this.db_Update()
         }
+
+        this.socket.on('disconnect', function(){
+            console.log('disconnect');
+        })
+        
+        this.socket.on('RECEIVE_QUIZ', function(quiz){
+            console.log(1);
+            receivePopQuiz(quiz.question, quiz.answer);
+        })
+
+        receivePopQuiz= (question, answer)=>{ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
+            const newQuiz = {
+                user_email: 'PopQuizBot',
+                cr_id: this.state.cr_id,
+                Time: Date(),
+                message: question,
+                answer: answer,
+            }
+            console.log(newQuiz);
+            
+            // TODO: 받은 팝퀴즈를 db에 저장
+        }
+    
+        
     };
 
     state = {
@@ -123,7 +143,6 @@ export default class Chatroom extends Component {
                 cr_id: this.state.cr_id,
                 Time: Date(),
                 message: this.state.message,
-                //answer: null
             }
             this.setState({message: ''});    
             this.socket.emit('SEND_MESSAGE', newChat);
@@ -143,16 +162,6 @@ export default class Chatroom extends Component {
         .then(responseJson => this.setState({userlist: responseJson}))
     }
 
-    _receivePopQuiz(question, answer){ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
-        const newQuiz = {
-            user_email: 'PopQuizBot',
-            cr_id: this.state.cr_id,
-            Time: Date(),
-            message: question,
-            answer: answer,
-        }
-        // todo: 받은 팝퀴즈를 db에 저장
-    }
 
     db_Update = () => {        // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
