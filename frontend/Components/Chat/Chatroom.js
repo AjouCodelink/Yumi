@@ -25,8 +25,7 @@ export default class Chatroom extends Component {
         this.messageInput = React.createRef();
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            translate_api(data);
-            console.log(data);
+            translate_api(data); // TODO : 자동번역을 할지 말지 선택하게 만들어서 자동번역 해주기
         });
 
         translate_api = (data) =>{
@@ -40,7 +39,7 @@ export default class Chatroom extends Component {
                     'X-Naver-Client-Secret': 'E1xo6lz3Yx'
                 }),
                 body: JSON.stringify({
-                    "source": "ko",
+                    "source": "ko", // TODO : 사용자의 언어 가져와서 넣기
                     "target": "en",
                     "text": data.message
                 })
@@ -49,8 +48,7 @@ export default class Chatroom extends Component {
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
                 var responseMessage = responseJson.message.result.translatedText;
-                console.log(responseMessage);
-                data.message = data.message + responseMessage;
+                data.message = data.message + responseMessage; // 이건 동기가 요청해서 번역전, 번역후 둘다 보여주기 위해 추가한 코드임
                 db_Add(data);
             })
         }
@@ -64,15 +62,11 @@ export default class Chatroom extends Component {
                     (_,error) => console.error(error)   // sql문 실패 에러
                 );
             },(error) => console.error(error))          // 트랜젝션 에러
+            
             this.db_Update()
         }
-
-        this.socket.on('disconnect', function(){
-            console.log('disconnect');
-        })
         
         this.socket.on('RECEIVE_QUIZ', function(quiz){
-            console.log(1);
             receivePopQuiz(quiz.question, quiz.answer);
         })
 
@@ -88,8 +82,6 @@ export default class Chatroom extends Component {
             
             // TODO: 받은 팝퀴즈를 db에 저장
         }
-    
-        
     };
 
     state = {
