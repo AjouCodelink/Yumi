@@ -14,7 +14,9 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 export default class ProfileTab extends Component {
     state = {
         myEmail: '',
-        myNickname: 'LOADING',
+        myNickname: '',
+        myAddress: '',
+        myLanguage: '',
         myThumbnailURL: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd', // 이후 기본 URL로 연동해야함.
         isAlertVisible: false,
         token: '',
@@ -40,30 +42,31 @@ export default class ProfileTab extends Component {
                         this.setState({
                             myEmail: _array[0].user_email, 
                             token: _array[0].access_token
-                        }),
-                        this._getNickname()
+                        })
+                    )
+                },
+                (_,error) => console.error(error)
+            ),
+            tx.executeSql(  // userInfo에서 정보
+                'SELECT * FROM userInfo',
+                [],
+                (_, { rows: { _array }  }) => {
+                    if(_array != []) (
+                        this.setState({
+                            myNickname: _array[0].nickname,
+                            myAddress: _array[0].address,
+                            myLanguage: _array[0].language,
+                            //myThumbnailURL: _array[0].thumbnailURL //이후 썸네일 구현되면 연동
+                        })
                     )
                 },
                 (_,error) => console.error(error)
             )
-        },(error) => console.error(error))
+        },(error) => console.error(error)),
+        this.setState({spinnerOpacity: 0})
     }
 
-    _getNickname() {
-        var url = 'http://101.101.160.185:3000/user/profile';
-        fetch(url, {
-            method: 'GET',
-            headers: new Headers({
-            'Content-Type' : 'application/json',
-            'x-access-token': this.state.token
-            })
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson => {this.setState({myNickname : responseJson.nickname, spinnerOpacity: 0})})
-    }//
-
     _changeNickname = (newNickname) => {
-        this.setState({spinnerOpacity: 1})
         var url = 'http://101.101.160.185:3000/user/profile/nickname/'+newNickname;
         fetch(url, {
             method: 'POST',
@@ -73,12 +76,20 @@ export default class ProfileTab extends Component {
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => {this.setState({myNickname : responseJson.nickname})})
-        this.setState({spinnerOpacity: 0})
+        .then(responseJson => {this.setState({myNickname : responseJson.nickname}),
+            db.transaction(tx => {
+                tx.executeSql(  // DB에 바뀐 닉네임 저장
+                    'UPDATE userInfo SET nickname = ?',
+                    [responseJson.nickname],
+                    null,
+                    (_,error) => console.error(error)
+                )
+            })
+        })
     }
 
     _onPressThumbnail() {
-        this._pickImage()
+        //this._pickImage()
         alert("you pressed Thumbnail Edit.")
     }
 
@@ -97,19 +108,19 @@ export default class ProfileTab extends Component {
     //     }
     // };
 
-    _uploadImage = (newPhoto) => {
-        var url = 'http://101.101.160.185:3000/user/profile/upload';
-        fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-                'Content-Type': 'application/json',
-                'x-access-token': this.state.token
-            }),
-            body: newPhoto
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson => {console.log(responseJson)})
-    }
+    // _uploadImage = (newPhoto) => {
+    //     var url = 'http://101.101.160.185:3000/user/profile/upload';
+    //     fetch(url, {
+    //         method: 'POST',
+    //         headers: new Headers({
+    //             'Content-Type': 'application/json',
+    //             'x-access-token': this.state.token
+    //         }),
+    //         body: newPhoto
+    //     }).then(response => response.json())
+    //     .catch(error => console.error('Error: ', error))
+    //     .then(responseJson => {console.log(responseJson)})
+    // }
 
     _displayAddr = (display) => {
         this.setState({editAddrDisplay: display})

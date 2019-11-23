@@ -18,13 +18,30 @@ export default class LoadingScreen extends Component {
                 [],
                 null,
                 (_,error) => console.error(error)
-            )
-            tx.executeSql(          // chatlog 저장하는 table 생성하기
+            ),
+            tx.executeSql(          // userInfo 저장하는 table 생성하기 // 이메일, 닉네임, 주소, 언어, 프사URL
+                'CREATE TABLE if not exists userInfo (email TEXT NOT NULL, nickname TEXT NOT NULL, address TEXT NOT NULL, language TEXT NOT NULL, thumbnailURL TEXT, PRIMARY KEY("email"))',
+                [],
+                null,
+                (_,error) => console.error(error)
+            ),
+            tx.executeSql(          // 채팅방 목록 저장하는 table 생성하기 // 채팅방ID, 채팅방이름, 대분류, 소분류, 인원, 마지막 메세지, 마지막 메세지 시간
+                'CREATE TABLE if not exists crList (cr_id TEXT NOT NULL, cr_name TEXT NOT NULL, section TEXT NOT NULL, _group TEXT NOT NULL, memNum INTEGER, lastMessage TEXT, lastTime TEXT, PRIMARY KEY("cr_id"))',
+                [],
+                null,
+                (_,error) => console.error(error)
+            ),
+            tx.executeSql(          // 채팅 로그 저장하는 table 생성하기 /// 말한 사람 이메일, 채팅방 ID, 시간, 메세지, (팝퀴즈일경우)정답
                 'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
                 [],
                 null,
                 (_,error) => console.error(error)
             )
+        },(error) => console.error(error))
+    }
+
+    componentWillMount(){
+        db.transaction(tx => {
             tx.executeSql(          // token 확인
                 'SELECT * FROM token',
                 [],

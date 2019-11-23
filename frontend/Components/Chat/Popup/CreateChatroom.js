@@ -60,7 +60,7 @@ export default class CreateChatroom extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson=>{
-            this.props.pushNewRoom(responseJson)
+            this.props.pushNewRoom(responseJson.cr_name, responseJson.cr_id, responseJson.interest)
         })
         ToastAndroid.show('Chat room creation complete.', ToastAndroid.SHORT);
         this.popupClose()

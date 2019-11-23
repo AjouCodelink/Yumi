@@ -36,6 +36,7 @@ export default class MainScreen extends Component {
     constructor (props) {
         super(props);
         RootNavigator = (route) => {this.props.navigation.navigate(route)}
+        initNavigator = () => {this.props.init}
     }
     static navigationOptions = {    // 상단바 안보이게 하기
         header: null

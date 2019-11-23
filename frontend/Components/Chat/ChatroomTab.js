@@ -41,17 +41,64 @@ export default class ChatroomTab extends Component {
                 (_, { rows: { _array }  }) => { 
                     this.token = _array[0].access_token;
                     this.email = _array[0].user_email;
-                    this.getChatRoomList();
                 },
                 (_,error) => console.error(error)
-            );
+            )
+        },(error) => console.error(error))
+        this.crList_reload()
+        this.setState({spinnerOpacity: 0});
+        //this.getSuggestRoomList();
+    }
+
+    crList_reload = () => {
+        this.state.arrayHolder.splice(0,100)
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM crList',
+                [],
+                (_, { rows: { _array }  }) => {
+                    for(var i=0;i<_array.length;i++)
+                    {
+                        newItem = {
+                            cr_name: _array[i].cr_name,
+                            cr_id: _array[i].cr_id,
+                            interest: {
+                                section: _array[i].section,
+                                group: _array[i]._group
+                            },
+                            memNum: _array[i].memNum,
+                            lastMessage: _array[i].lastMessage,
+                            lastTime: _array[i].lastTime,
+                        }
+                        this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
+                    }
+                },
+                (_,error) => console.error(error)
+            )
         },(error) => console.error(error))
     }
 
-    getChatRoomList = () => {
-        var url = 'http://101.101.160.185:3000/chatroom/list';
+    insertArrayHolder = (cr_name, cr_id, interest) => {       // 새로운 방을 arrayholder이나 DB에 넣는 함수
+        newItem = {
+            cr_name: cr_name,
+            cr_id: cr_id,
+            interest: interest
+        }
+        db.transaction( tx => {
+            tx.executeSql(
+                'INSERT INTO crList (cr_id, cr_name, section, _group, memNum) VALUES (?,?,?,?,?);',
+                [cr_id, cr_name, interest.section, interest.group, '?'],
+                null,
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error));
+        this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
+    }
+
+    createRoom = (new_cr_name) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
+        var url = 'http://101.101.160.185:3000/chatroom/creation/'+new_cr_name;
         fetch(url, {
-            method: 'GET',
+            method: 'POST',
             headers: new Headers({
             'Content-Type' : 'application/json',
             'x-access-token': this.token
@@ -59,18 +106,10 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            for(var i=0; i<responseJson.length; i++){
-                newItem = {
-                    title: responseJson[i].name,
-                    roomID: responseJson[i].cr_id,
-                    interest: responseJson[i].interest
-                }
-                this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
-            }
-            this.setState({spinnerOpacity: 0});
+            this.insertArrayHolder(new_cr_name, responseJson.chatroom_id, responseJson.interest);
         })
-    }
-
+    };
+      
     getSuggestedChatRoomList = () => {
         var url = 'http://101.101.160.185:3000/chatroom/recommend';
         fetch(url, {
@@ -93,39 +132,9 @@ export default class ChatroomTab extends Component {
             }
         })
     }
-    
-    pushNewRoom = (newRoom) => {
-        newItem = {
-            title: newRoom.cr_name,
-            roomID: newRoom.cr_id,
-            interest: newRoom.interest
-        }
-        this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
-    }
 
-    createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
-        var url = 'http://101.101.160.185:3000/chatroom/creation/'+inputText;
-        fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-            'Content-Type' : 'application/json',
-            'x-access-token': this.token
-            })
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson => {
-            this.insertChatRoom(responseJson.chatroom_id, responseJson.interest);
-        })
-    };
-    insertChatRoom = (chatroom_id, interest) => { // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정
-        this.array.push({
-            title : interest,
-            roomID: chatroom_id});
-        this.setState({ arrayHolder: [...this.array] })
-    }
-
-    exitChatRoom = (roomID) => { // 방 나가기
-        var url = 'http://101.101.160.185:3000/chatroom/exit/'+roomID;
+    exitChatRoom = (cr_id) => { // 방 나가기
+        var url = 'http://101.101.160.185:3000/chatroom/exit/'+cr_id;
         fetch(url, {
             method: 'POST',
             headers: new Headers({
@@ -137,18 +146,27 @@ export default class ChatroomTab extends Component {
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             this.setState(prevState => {
-                const index = prevState.arrayHolder.findIndex(holder => holder.roomID === roomID);
+                const index = prevState.arrayHolder.findIndex(holder => holder.cr_id === cr_id);
                 prevState.arrayHolder.splice(index, 1);
                 return ({
                     arrayHolder: [...prevState.arrayHolder]
                 })
-            });
+            })
+            db.transaction( tx => {
+                tx.executeSql(
+                    'DELETE FROM crList WHERE cr_id = ?);',
+                    [cr_id],
+                    null,
+                    (_,error) => console.error(error)
+                )
+            },(error) => console.error(error));
         })
         //todo: 근데 arrayHolder만 건드려서 그런가 방이 추가하면 다시 돌아오는 버그가 있음ㅠ
         //나중에 유용하면 이용하시고 아니면 삭제해주세요ㅠ
         //서버와도 연동해서 방에서 나가기 구현해야함.
     }
-    _longPressChatroom = (roomID) => {  // 채팅방 꾹 누르면
+
+    _longPressChatroom = (cr_id) => {  // 채팅방 꾹 누르면
         Alert.alert(
             'Exit?',
             'Press the OK button to exit the chat room.',
@@ -158,7 +176,7 @@ export default class ChatroomTab extends Component {
                     style: 'cancel',
                 },
                 {text: 'OK', onPress: () => {
-                    this.exitChatRoom(roomID);
+                    this.exitChatRoom(cr_id);
                 }},
             ],
             {cancelable: false},
@@ -166,21 +184,22 @@ export default class ChatroomTab extends Component {
     }
     _onPressChatroom = (item) => {
         this.props.navigation.navigate('Chatroom', {
-            title: item.title,
-            cr_id: item.roomID,
-            myEmail : this.email
+            cr_name: item.cr_name,
+            cr_id: item.cr_id,
+            myEmail: this.email,
+            crList_reload: this.crList_reload()
         });
     }
+
     FlatListItemSeparator = () => {
         return (
             <View style={{
                 height: 1,
                 width: "100%",
-                
             }}/>
         );
     }
-    
+
     suggestRoom(){
         
     }
@@ -188,6 +207,12 @@ export default class ChatroomTab extends Component {
     searchBarShow(){
         this.setState({isSearchVisible: !this.state.isSearchVisible});
     }
+
+    _onPressScarch(inputText){
+        this.setState({isAlertVisible: false})
+        this.createRoom(inputText);
+    }
+
     searchRoomByKeyword(){
         this.textInput.clear()
         if (this.state.search ==  '') {
@@ -257,23 +282,29 @@ export default class ChatroomTab extends Component {
                     renderItem={({ item }) =>(
                         <ListItem avatar
                             activeOpacity={0.5}
-                            onLongPress={() => this._longPressChatroom(item.roomID)}
+                            onLongPress={() => this._longPressChatroom(item.cr_id)}
                             onPress={() => this._onPressChatroom(item)}
-                            key={item.roomID}>
+                            key={item.cr_id}>
                             <Left style={{justifyContent: 'center'}}>
                                 <Thumbnail style={{width: 50, height: 45}} 
                                     source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
                             </Left>
                             <Body>
-                                <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.title}</Text>
+                                <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.cr_name}</Text>
                                 <Text style={{fontSize: 10, color: '#333'}}>  #{item.interest.section}  #{item.interest.group}</Text>
-                                <Text style={{fontSize: 13}}>  chatRoom message</Text>
+                                <Text style={{fontSize: 13}}>  {item.lastMessage!=null 
+                                    ? (item.lastMessage)
+                                    : ('No message')}
+                                </Text>
                             </Body>
                             <Right style={{justifyContent: 'flex-end', alignItems:'flex-end'}}>
                                 <Icon name='md-people' style={{marginBottom: 10, fontSize: 16, color: '#333'}}>
-                                    <Text style={{fontSize: 14, color: '#333'}}> 14</Text>
+                                    <Text style={{fontSize: 14, color: '#333'}}> {item.memNum}</Text>
                                 </Icon>
-                                <Text style={{fontSize: 12}}>3:43 pm</Text>
+                                <Text style={{fontSize: 12}}>{item.lastTime!=null ?
+                                    (item.lastTime.toString().substr(16, 5))
+                                    :null}
+                                </Text>
                             </Right>
                         </ListItem>
                     )}
@@ -361,8 +392,8 @@ export default class ChatroomTab extends Component {
                         <Icon name='paw' style={{color: '#222'}}/>
                         </Button>
                 </Fab>
-                <CreateChatroom token={this.token} pushNewRoom={this.pushNewRoom} displayChange={this._displayCreateCR} display={this.state.createChatroomDisplay}/>
-                <SearchedChatrooms token={this.token} pushNewRoom={this.pushNewRoom} array={this.state.searcharrayHolder} displayChange={this._displaySearchCR} display={this.state.searchChatroomDisplay}/>
+                <CreateChatroom token={this.token} pushNewRoom={this.insertArrayHolder} displayChange={this._displayCreateCR} display={this.state.createChatroomDisplay}/>
+                <SearchedChatrooms token={this.token} pushNewRoom={this.insertArrayHolder} array={this.state.searcharrayHolder} displayChange={this._displaySearchCR} display={this.state.searchChatroomDisplay}/>
                 <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#999'/>
             </View>
         );
