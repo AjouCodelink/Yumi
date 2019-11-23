@@ -8,7 +8,7 @@ const db = SQLite.openDatabase('db.db');
 export default class SettingTab extends Component {
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
-            <Icon name='md-settings' style={{color: tintColor}} />
+            <Icon name='md-settings' style={{color: "#646464"}} />
         ),
     }
 

@@ -2,31 +2,28 @@ import React, { Component } from 'react';
 import { ToastAndroid, BackHandler } from 'react-native';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs'; 
 import { createAppContainer } from 'react-navigation';
-
-
-import ChatManageTab from './AppTabNavigator/ChatManageTab'
 import ChatScreen from './AppTabNavigator/ChatScreen'
 import ProfileTab from './AppTabNavigator/ProfileTab'
 import SettingTab from './AppTabNavigator/SettingTab'
-
+import SupportersTab from './AppTabNavigator/SupportersTab'
 const AppTabNavigator = createMaterialTopTabNavigator({
     Profile: ProfileTab,
     Chatroom: ChatScreen, 
-    ChatManage: ChatManageTab,
-    Setting: SettingTab,
+    Supporters : SupportersTab,
+    Setting: SettingTab
 }, {
     animationEnabled: true,
     swipeEnabled: true,
     tabBarPosition: "bottom",
     tabBarOptions: {
     style: {
-        backgroundColor: '#888',
-        borderTopColor: '#333',
+        backgroundColor: '#F6F6F6',
+        borderTopColor: '#EAEAEA',
         borderTopWidth: 1.5,
     },
     iconStyle: {height:25, paddingTop: -5},
     activeTintColor: '#222',
-    inactiveTintColor: '#ddd',
+    inactiveTintColor: '#FFF',
     upperCaseLabel: false,
     showLabel: false,   // 하단바 탭 이름 안보이게 하기
     showIcon: true,   // 하단바 아이콘으로 보이게 하기

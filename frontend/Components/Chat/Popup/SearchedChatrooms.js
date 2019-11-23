@@ -52,7 +52,7 @@ export default class SearchedChatrooms extends Component {
 
     render() {
         return (
-            <View style={[style.container, {display: this.props.display}]}>
+            <View style={[style.container]}>
                 <View style={[style.backGround, {display: this.props.display}]}>
                     <View style={style.content}>
                         <Text style={style.font_Title}>Searched Chatrooms</Text>
