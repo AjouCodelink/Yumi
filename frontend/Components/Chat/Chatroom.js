@@ -26,10 +26,30 @@ export default class Chatroom extends Component {
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
             console.log(data);
-            translate_api(data); // TODO : 자동번역을 할지 말지 선택하게 만들어서 자동번역 해주기
+            //translate_api(data); // TODO : 자동번역을 할지 말지 선택하게 만들어서 자동번역 해주기
+            detection(data);
         });
-
-        translate_api = (data) =>{
+        detection=(data)=>{
+            var url = 'https://openapi.naver.com/v1/papago/detectLangs';
+            fetch(url, {
+                method: 'POST',
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                    'token': 'token',
+                    'X-Naver-Client-Id': 'IuGRSsZ3UK4K5zUzgFfl',
+                    'X-Naver-Client-Secret': 'GnNTiflknE'
+                }),
+                body: JSON.stringify({
+                    "query":data.message
+                })
+            })
+            .then(response => response.json())
+            .catch(error => console.error('Error: ', error))
+            .then(responseJson => {
+                translate_api(data, responseJson.langCode);
+            })
+        }
+        translate_api = (data, code) =>{
             var url = 'https://openapi.naver.com/v1/language/translate';
             fetch(url, {
                 method: 'POST',
@@ -40,14 +60,19 @@ export default class Chatroom extends Component {
                     'X-Naver-Client-Secret': 'E1xo6lz3Yx'
                 }),
                 body: JSON.stringify({
-                    "source": "ko", // TODO : 사용자의 언어 가져와서 넣기
-                    "target": "en",
+                    "source": code,
+                    "target": this.state.myLanguage,
                     "text": data.message
                 })
             })
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
-            .then(responseJson => {
+            .then(responseJson => { //errorCode TR05 : source, target 동일
+                console.log(responseJson)
+                if (responseJson.message == undefined) {
+                    db_Add(data);
+                    return;
+                }
                 var responseMessage = responseJson.message.result.translatedText;
                 data.message = data.message + responseMessage; // 이건 동기가 요청해서 번역전, 번역후 둘다 보여주기 위해 추가한 코드임
                 db_Add(data);
@@ -94,10 +119,11 @@ export default class Chatroom extends Component {
     };
 
     state = {
-        cr_id: '1',
+        cr_id: '',
         cr_name: '',
         message: '',
         myEmail: '',
+        myLanguage: '',
         chatlog:[], // 채팅로그
         userlist:[], // 유저 목록
         token: '',
@@ -114,6 +140,7 @@ export default class Chatroom extends Component {
         this.state.cr_name = navigation.getParam('cr_name', 'No cr_name')
         this.state.memNum = navigation.getParam('memNum', '?')
         this.state.myEmail = navigation.getParam('myEmail', '');
+        this.state.myLanguage = navigation.getParam('myLanguage', 'en');
 
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
