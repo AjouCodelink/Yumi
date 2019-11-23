@@ -71,6 +71,29 @@ export default class ChatroomTab extends Component {
             this.setState({spinnerOpacity: 0});
         })
     }
+
+    getSuggestedChatRoomList = () => {
+        var url = 'http://101.101.160.185:3000/chatroom/recommend';
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'x-access-token': this.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            this.setState({suggestArrayHolder:[]});
+            for(var i=0; i<responseJson.length; i++){
+                newItem = {
+                    title: responseJson[i].name,
+                    roomID: responseJson[i]._id,
+                    interest: responseJson[i].interest
+                }
+                this.setState({suggestArrayHolder: [...this.state.suggestArrayHolder, newItem]})
+            }
+        })
+    }
     
     pushNewRoom = (newRoom) => {
         newItem = {
@@ -139,32 +162,7 @@ export default class ChatroomTab extends Component {
             }}/>
         );
     }
-    suggestRoom(){
-        
-    }
 
-    getSuggestedChatRoomList = () => {
-        var url = 'http://101.101.160.185:3000/chatroom/recommend';
-        fetch(url, {
-            method: 'GET',
-            headers: new Headers({
-            'Content-Type' : 'application/json',
-            'x-access-token': this.token
-            })
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson => {
-            this.setState({suggestArrayHolder:[]});
-            for(var i=0; i<responseJson.length; i++){
-                newItem = {
-                    title: responseJson[i].name,
-                    roomID: responseJson[i]._id,
-                    interest: responseJson[i].interest
-                }
-                this.setState({suggestArrayHolder:[...this.state.suggestArrayHolder, newItem]})
-            }
-        })
-    }
     searchBarShow(){
         this.setState({isSearchVisible: !this.state.isSearchVisible});
     }
