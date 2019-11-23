@@ -102,7 +102,7 @@ export default class SettingTab extends Component {
                             (_,error) => console.error(error)
                         ),
                         tx.executeSql(
-                            'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
+                            'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, transMessage TEXT, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
                             [],
                             null,
                             (_,error) => console.error(error)

@@ -32,7 +32,7 @@ export default class LoadingScreen extends Component {
                 (_,error) => console.error(error)
             ),
             tx.executeSql(          // 채팅 로그 저장하는 table 생성하기 /// 말한 사람 이메일, 채팅방 ID, 시간, 메세지, (팝퀴즈일경우)정답
-                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
+                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, transMessage TEXT, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
                 [],
                 null,
                 (_,error) => console.error(error)

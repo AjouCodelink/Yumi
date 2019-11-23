@@ -70,8 +70,8 @@ const style = StyleSheet.create({
         borderRadius: 45 * 0.4,
     },
     messageBox: {
-        paddingLeft: 5,
-        paddingRight: 5,
+        paddingLeft: 8,
+        paddingRight: 8,
         backgroundColor: "#fff",
         borderRadius: 6
     },

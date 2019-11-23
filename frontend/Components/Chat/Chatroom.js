@@ -25,7 +25,6 @@ export default class Chatroom extends Component {
         this.messageInput = React.createRef();
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            console.log(data);
             //translate_api(data); // TODO : 자동번역을 할지 말지 선택하게 만들어서 자동번역 해주기
             detection(data);
         });
@@ -46,10 +45,15 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
-                translate_api(data, responseJson.langCode);
+                if (data.user_email == this.state.myEmail || data.user_email == 'PopQuizBot') {
+                    db_Add(data);
+                } else {
+                    translate(data, responseJson.langCode);
+                }
             })
         }
-        translate_api = (data, code) =>{
+
+        translate = (data, code) =>{
             var url = 'https://openapi.naver.com/v1/language/translate';
             fetch(url, {
                 method: 'POST',
@@ -67,29 +71,26 @@ export default class Chatroom extends Component {
             })
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
-            .then(responseJson => { //errorCode TR05 : source, target 동일
-                console.log(responseJson)
+            .then(responseJson => {
                 if (responseJson.message == undefined) {
                     db_Add(data);
-                    return;
+                } else {
+                    data.transMessage = responseJson.message.result.translatedText;
+                    db_Add(data);
                 }
-                var responseMessage = responseJson.message.result.translatedText;
-                data.message = data.message + responseMessage; // 이건 동기가 요청해서 번역전, 번역후 둘다 보여주기 위해 추가한 코드임
-                db_Add(data);
             })
         }
 
         db_Add = (newChat) => {
+            this.chatLogAdd(newChat)
             db.transaction( tx => {
                 tx.executeSql(
-                    'INSERT INTO chatLog (user_email, cr_id, Time, message, answer) values (?, ?, ?, ?, ?);',
-                    [newChat.user_email, newChat.cr_id, newChat.Time, newChat.message, newChat.answer],
+                    'INSERT INTO chatLog (user_email, cr_id, Time, message, transMessage, answer) values (?, ?, ?, ?, ?, ?);',
+                    [newChat.user_email, newChat.cr_id, newChat.Time, newChat.message, newChat.transMessage, newChat.answer],
                     null,
                     (_,error) => console.error(error)   // sql문 실패 에러
                 );
             },(error) => console.error(error))          // 트랜젝션 에러
-            
-            this.db_Update()
             db.transaction(tx => {
                 tx.executeSql(  
                     'UPDATE crList SET lastMessage = ?, lastTime = ? WHERE cr_id = ?',
@@ -124,7 +125,7 @@ export default class Chatroom extends Component {
         message: '',
         myEmail: '',
         myLanguage: '',
-        chatlog:[], // 채팅로그
+        chatLog:[], // 채팅로그
         userlist:[], // 유저 목록
         token: '',
         key: 0,
@@ -152,7 +153,7 @@ export default class Chatroom extends Component {
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
-        this.db_Update();
+        this.db_read_chatLog();
         this._getParticipants();
     }
 
@@ -205,35 +206,24 @@ export default class Chatroom extends Component {
         })
     }
 
-    db_Update = () => {        // DB 내의 채팅 로그 읽어오기
+    db_read_chatLog = () => {        // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
                 [this.state.cr_id],
-                (_, { rows: { _array }  }) => this.setState({ chatlog: _array }),
+                (_, { rows: { _array }  }) => this.setState({ chatLog: _array }),
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error)
         )
     };
 
-    db_Rebuild = () => {   // DB attribute가 다른 이유로 input에 실패 할 때, 디비를 다시 build시킴
-        db.transaction( tx => {
-            tx.executeSql(
-                'DROP TABLE chatLog',
-                [this.state.cr_id],
-                (_, { rows: { _array }  }) => this.setState({ chatlog: _array }),
-                (_,error) => console.error(error)
-            )
-            tx.executeSql(
-                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
-                [],
-                null,
-                (_,error) => console.error(error)
-            )
-        },(error) => console.error(error)
-        )
-    };
+    chatLogAdd = (newChat) => {
+        this.setState({
+            chatLog: [...this.state.chatLog, newChat],
+        })
+    }
+
 
     handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
         this.props.crList_reload()
@@ -280,16 +270,16 @@ export default class Chatroom extends Component {
                             })
                         }}
                         style={{width: '100%'}}>
-                        {this.state.chatlog.map( chatlog => (chatlog.user_email == this.state.myEmail    // 말풍선 만들기
+                        {this.state.chatLog.map( chat => (chat.user_email == this.state.myEmail    // 말풍선 만들기
                             ? (<View key={this.state.key++} style={style.my_chat}>
-                                <Chatbox_my data={chatlog}/>
+                                <Chatbox_my data={chat}/>
                             </View>)
-                            : ( chatlog.user_email != 'PopQuizBot' 
+                            : ( chat.user_email != 'PopQuizBot' 
                                 ? (<View key={this.state.key++} style={style.other_chat}>
-                                    <Chatbox_other data={chatlog}/>
+                                    <Chatbox_other data={chat}/>
                                 </View>)
                                 : (<View key={this.state.key++} style={style.other_chat}>
-                                    <Chatbox_quizbot data={chatlog}/>
+                                    <Chatbox_quizbot data={chat}/>
                                 </View>)
                             )
                         ))}
