@@ -19,14 +19,12 @@ export default class ChatroomTab extends Component {
         this.token = '',
         this.email = '',
         this._id = '',
-        this.array = [],
         this.state = {
             active : false,
             arrayHolder: [],
             searcharrayHolder: [],
             suggestArrayHolder:[],
             textInput_Holder_Theme: '',
-            isAlertVisible: false,
             isSearchVisible: false,
             isSearchListVisible : false,
             search : '',
@@ -34,10 +32,6 @@ export default class ChatroomTab extends Component {
             searchChatroomDisplay: 'none',
             spinnerOpacity: 1,
         }
-    }
-    submit(inputText){
-        this.setState({isAlertVisible: false})
-        this.createRoom(inputText);
     }
 
     componentWillMount() {
@@ -49,7 +43,6 @@ export default class ChatroomTab extends Component {
                     this.token = _array[0].access_token;
                     this.email = _array[0].user_email;
                     this.getChatRoomList();
-                    this.getSuggestRoomList();
                 },
                 (_,error) => console.error(error)
             );
@@ -86,28 +79,6 @@ export default class ChatroomTab extends Component {
             interest: newRoom.interest
         }
         this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
-    }
-    createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
-        var url = 'http://101.101.160.185:3000/chatroom/creation/'+inputText;
-        fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-            'Content-Type' : 'application/json',
-            'x-access-token': this.token
-            })
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson => {
-            console.log(responseJson);
-            this.insertChatRoom(responseJson.chatroom_id, responseJson.interest);
-        })
-    };
-
-    insertChatRoom = (chatroom_id, interest) => { // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정
-        this.array.push({
-            title : interest,
-            roomID: chatroom_id});
-        this.setState({ arrayHolder: [...this.array] })
     }
 
     exitChatRoom = (roomID) => { // 방 나가기
@@ -169,7 +140,30 @@ export default class ChatroomTab extends Component {
         );
     }
     suggestRoom(){
-        Alert.alert("Room suggest Pressed");
+        
+    }
+
+    getSuggestedChatRoomList = () => {
+        var url = 'http://101.101.160.185:3000/chatroom/recommend';
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'x-access-token': this.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            this.setState({suggestArrayHolder:[]});
+            for(var i=0; i<responseJson.length; i++){
+                newItem = {
+                    title: responseJson[i].name,
+                    roomID: responseJson[i]._id,
+                    interest: responseJson[i].interest
+                }
+                this.setState({suggestArrayHolder:[...this.state.suggestArrayHolder, newItem]})
+            }
+        })
     }
     searchBarShow(){
         this.setState({isSearchVisible: !this.state.isSearchVisible});
@@ -213,11 +207,11 @@ export default class ChatroomTab extends Component {
     }
 
     _displayCreateCR = (display) => {
-        this.setState({createChatroomDisplay: display})
+        this.setState({createChatroomDisplay: display, active: false})
     }
 
     _displaySearchCR = (display) => {
-        this.setState({searchChatroomDisplay: display})
+        this.setState({searchChatroomDisplay: display, active: false})
     }
 
     render() {
@@ -231,14 +225,6 @@ export default class ChatroomTab extends Component {
                     </View>
                 </Button>
                 </View>
-                {/*방생성 Dialog*/}
-                <DialogInput
-                    isDialogVisible = {this.state.isAlertVisible}
-                    title={"Create Chatroom"}
-                    message={"Type Theme"}
-                    hintInput ={"Theme"}
-                    submitInput={ (inputText) => { this.submit(inputText)}}
-                    closeDialog={ (inputText) => {this.setState({isAlertVisible:false})}}/>
                 {/*=========flatlist 부분===========*/}
                 <View style ={{width: '100%', backgroundColor: '#00e600'}}>
                     <Text style = {{fontSize : 16, margin : 15,color :"#fff"}}>My Chatroom</Text>
@@ -276,22 +262,36 @@ export default class ChatroomTab extends Component {
             <View style ={{width: '100%', backgroundColor: '#9cf'}}>
                 <Text style = {{fontSize : 16, margin : 15,color :"#fff"}}>Chatroom Suggest</Text>
             </View>
-            <List style ={{width: '100%'}}>
-            <ListItem avatar>
-            <Left>
-                <Thumbnail
-                style={{width: 50, height: 45}}  
-                source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
-            </Left>
-            <Body>
-                <Text>Game-Overwatch</Text>
-                <Text note>RyusungRyoung looks happy</Text>
-            </Body>
-            <Right>
-                <Text note>3:43 pm</Text>
-            </Right>
-            </ListItem>
-            </List>
+            <FlatList
+                    data={this.state.suggestArrayHolder}
+                    width='100%'
+                    extraData={this.state.suggestArrayHolder}
+                    keyExtractor = {(item, index) => String(index)}
+                    ItemSeparatorComponent={this.FlatListItemSeparator}
+                    renderItem={({ item }) =>(
+                        <ListItem avatar
+                            activeOpacity={0.5}
+                            onLongPress={() => this._longPressChatroom(item.roomID)}
+                            onPress={() => this._onPressChatroom(item)}
+                            key={item.roomID}>
+                            <Left style={{justifyContent: 'center'}}>
+                                <Thumbnail style={{width: 50, height: 45}} 
+                                    source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
+                            </Left>
+                            <Body>
+                                <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.title}</Text>
+                                <Text style={{fontSize: 10, color: '#333'}}>  #{item.interest.section}  #{item.interest.group}</Text>
+                                <Text style={{fontSize: 13}}>  chatRoom message</Text>
+                            </Body>
+                            <Right style={{justifyContent: 'flex-end', alignItems:'flex-end'}}>
+                                <Icon name='md-people' style={{marginBottom: 10, fontSize: 16, color: '#333'}}>
+                                    <Text style={{fontSize: 14, color: '#333'}}> 14</Text>
+                                </Icon>
+                                <Text style={{fontSize: 12}}>3:43 pm</Text>
+                            </Right>
+                        </ListItem>
+                    )}
+                />
                 {/*=======아래 채팅방 추천 및 검색 창 팝업 부분=========*/}
                 <View style={styles.febContainer}>
                 
@@ -340,7 +340,7 @@ export default class ChatroomTab extends Component {
                         </Button>
 
                         <Button  
-                            onPress={()=> this.suggestRoom()} 
+                            onPress={()=> this.getSuggestedChatRoomList()} 
                             activeOpacity={0.7} 
                             style={styles.button_suggest}>
                         <Icon name='paw' style={{color: '#222'}}/>

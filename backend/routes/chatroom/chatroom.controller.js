@@ -117,7 +117,7 @@ exports.recommend = (req, res) => {
         if(err) return res.status(500).json({message : "not found user"});
         if(user){
             var random_num = Math.floor(Math.random() * user.interests.length);
-            console.log(user.interests[random_num]);
+
             ChatRoom.find().
                 or([
                     {"interest.section" : {$regex : '.*'+user.interests[random_num].section+'.*'}},
