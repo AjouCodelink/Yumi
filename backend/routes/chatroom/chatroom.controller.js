@@ -118,20 +118,32 @@ exports.recommend = (req, res) => {
         if(user){
             var random_num = Math.floor(Math.random() * user.interests.length);
 
-            ChatRoom.find().
+            if(user.interests.length == 0)
+            {
+                var random = Math.floor(Math.random() * 100);
+                ChatRoom.find().skip(random).limit(1).exec((err, chatroom) => {
+                    res.json(chatroom);
+                })      
+            }
+            else{
+                ChatRoom.find().
                 or([
                     {"interest.section" : {$regex : '.*'+user.interests[random_num].section+'.*'}},
                     {"interest.group" : {$regex : '.*'+user.interests[random_num].group+'.*'}}
                 ]).
                 select('interest name').
                 sort('interest.group interest.section').
-                limit(5).
+                limit(10).
                 exec((err, chatroom)=>{ // TODO : 소분류순으로 먼저 나오게 하기
-                    res.json(chatroom);
+                    var random = Math.floor(Math.random() * chatroom.length);
+                    var a = chatroom[random];
+                    res.json(a);
                 })
+            }
         }
     })
 }
+
 
 /*
     GET /chatroom/log/:cr_id
