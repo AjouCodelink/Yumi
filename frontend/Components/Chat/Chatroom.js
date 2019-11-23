@@ -25,11 +25,35 @@ export default class Chatroom extends Component {
         this.messageInput = React.createRef();
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            db_Add(data);
+            console.log(data);
+            translate_api(data); // TODO : 자동번역을 할지 말지 선택하게 만들어서 자동번역 해주기
         });
-        this.socket.on('disconnect', function(){
-            console.log('disconnect');
-        })
+
+        translate_api = (data) =>{
+            var url = 'https://openapi.naver.com/v1/language/translate';
+            fetch(url, {
+                method: 'POST',
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                    'token': 'token',
+                    'X-Naver-Client-Id': 'ejNDp9aQ1y_evnFX0gTg',
+                    'X-Naver-Client-Secret': 'E1xo6lz3Yx'
+                }),
+                body: JSON.stringify({
+                    "source": "ko", // TODO : 사용자의 언어 가져와서 넣기
+                    "target": "en",
+                    "text": data.message
+                })
+            })
+            .then(response => response.json())
+            .catch(error => console.error('Error: ', error))
+            .then(responseJson => {
+                var responseMessage = responseJson.message.result.translatedText;
+                data.message = data.message + responseMessage; // 이건 동기가 요청해서 번역전, 번역후 둘다 보여주기 위해 추가한 코드임
+                db_Add(data);
+            })
+        }
+
         db_Add = (newChat) => {
             db.transaction( tx => {
                 tx.executeSql(
@@ -39,7 +63,25 @@ export default class Chatroom extends Component {
                     (_,error) => console.error(error)   // sql문 실패 에러
                 );
             },(error) => console.error(error))          // 트랜젝션 에러
+            
             this.db_Update()
+        }
+        
+        this.socket.on('RECEIVE_QUIZ', function(quiz){
+            receivePopQuiz(quiz.question, quiz.answer);
+        })
+
+        receivePopQuiz= (question, answer)=>{ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
+            const newQuiz = {
+                user_email: 'PopQuizBot',
+                cr_id: this.state.cr_id,
+                Time: Date(),
+                message: question,
+                answer: answer,
+            }
+            console.log(newQuiz);
+            
+            // TODO: 받은 팝퀴즈를 db에 저장
         }
     };
 
@@ -94,7 +136,6 @@ export default class Chatroom extends Component {
                 cr_id: this.state.cr_id,
                 Time: Date(),
                 message: this.state.message,
-                //answer: null
             }
             this.setState({message: ''});    
             this.socket.emit('SEND_MESSAGE', newChat);
@@ -114,18 +155,8 @@ export default class Chatroom extends Component {
         .then(responseJson => this.setState({userlist: responseJson}))
     }
 
-    _receivePopQuiz(question, answer){ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
-        const newQuiz = {
-            user_email: 'PopQuizBot',
-            cr_id: this.state.cr_id,
-            Time: Date(),
-            message: question,
-            answer: answer,
-        }
-        // todo: 받은 팝퀴즈를 db에 저장
-    }
 
-    db_Update = () => {        // DB 내의 채팅 로그 읽어오기
+    db_Update = () => {   // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
@@ -137,7 +168,7 @@ export default class Chatroom extends Component {
         )
     };
 
-    db_Rebuild = () => {        // DB attribute가 다른 이유로 input에 실패 할 때, 디비를 다시 build시킴
+    db_Rebuild = () => {   // DB attribute가 다른 이유로 input에 실패 할 때, 디비를 다시 build시킴
         db.transaction( tx => {
             tx.executeSql(
                 'DROP TABLE chatLog',

@@ -167,17 +167,22 @@ exports.login = (req, res) => {
 
     // respond the token 
     const respond = (token) => {
-        res.json({
-            result:1,
-            message: 'logged in successfully',
-            token
+        User.findOne({email:email},{email:1, nickname:1, address:1, language:1, img_path:1, chatroom:1}, function(err, user){
+            if(err) res.json(err);
+            res.json({
+                result:1,
+                message: 'logged in successfully',
+                userInfo:user,
+                token
+            })
         })
     }
 
     // error occured
     const onError = (error) => {
         res.status(403).json({
-            message: error.message
+            message: error.message,
+            result:0
         })
     }
 
