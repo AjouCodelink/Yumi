@@ -6,6 +6,7 @@ import ChatScreen from './AppTabNavigator/ChatScreen'
 import ProfileTab from './AppTabNavigator/ProfileTab'
 import SettingTab from './AppTabNavigator/SettingTab'
 import SupportersTab from './AppTabNavigator/SupportersTab'
+
 const AppTabNavigator = createMaterialTopTabNavigator({
     Profile: ProfileTab,
     Chatroom: ChatScreen, 

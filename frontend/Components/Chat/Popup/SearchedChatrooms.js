@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native'
 import { Button, Item, Icon, Label, Input, Left, Body, Right} from 'native-base'
 
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
+
 export default class SearchedChatrooms extends Component {
     constructor(props){
         super(props)
@@ -29,20 +32,33 @@ export default class SearchedChatrooms extends Component {
     }
 
     _onPressChatroom = (new_room) => {
-        var url = 'http://101.101.160.185:3000/chatroom/entrance/'+new_room.cr_id;
-        fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-            'Content-Type': 'application/json',
-            'x-access-token': this.props.token
-            }),
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson=>{
-            this.props.pushNewRoom(new_room.cr_name, new_room.cr_id, new_room.interest, new_room.memNum)
-        })
-        ToastAndroid.show('Chat room join complete.', ToastAndroid.SHORT);
-        this.popupClose()
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM crList WHERE cr_id = ?;',
+                [new_room.cr_id],
+                (_, { rows: { _array }  }) => {
+                    {if(_array.length != 0) {
+                        ToastAndroid.show('You already join this room.', ToastAndroid.SHORT);
+                    } else {
+                        var url = 'http://101.101.160.185:3000/chatroom/entrance/'+new_room.cr_id;
+                        fetch(url, {
+                            method: 'POST',
+                            headers: new Headers({
+                            'Content-Type': 'application/json',
+                            'x-access-token': this.props.token
+                            }),
+                        }).then(response => response.json())
+                        .catch(error => console.error('Error: ', error))
+                        .then(responseJson=>{
+                            this.props.pushNewRoom(new_room.cr_name, new_room.cr_id, new_room.interest, new_room.memNum)
+                            ToastAndroid.show('Chat room join complete.', ToastAndroid.SHORT);
+                            this.popupClose()
+                        })
+                    }}
+                },
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error));
     }
 
     popupClose = () => {

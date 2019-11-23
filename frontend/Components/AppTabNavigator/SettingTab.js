@@ -151,7 +151,7 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 25,
-        backgroundColor: '#ddd',
+        backgroundColor: '#fff',
     },
     font_header: {
         color: 'white',
@@ -169,7 +169,7 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         borderBottomWidth: 3,
         borderColor: "#bbb",
-        backgroundColor: '#ddd',
+        backgroundColor: '#eee',
         paddingLeft: 15,
         alignItems: 'center',
     },
@@ -178,7 +178,7 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         borderBottomWidth: 3,
         borderColor: "#bbb",
-        backgroundColor: '#ddd',
+        backgroundColor: '#eee',
         marginTop: 20,
         paddingLeft: 15,
         alignItems: 'center',
@@ -197,11 +197,11 @@ const style = StyleSheet.create({
     icon_menu: {
         width: 38,
         fontSize: 24,
-        color: "#333",
+        color: "#555",
         justifyContent: 'center',
     },
     font_menu: {
         fontSize: 20,
-        color: "#222",
+        color: "#444",
     },
 });

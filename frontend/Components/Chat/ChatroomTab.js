@@ -17,16 +17,14 @@ export default class ChatroomTab extends Component {
         super(props);
         this.token = '',
         this.email = '',
-        this._id = '',
-        this.array = [],
         this.state = {
             active : false,
+            myLanguage : '',
+            search : '',
             arrayHolder: [],
             searcharrayHolder: [],
             suggestArrayHolder:[],
-            textInput_Holder_Theme: '',
             isSearchVisible: false,
-            search : '',
             createChatroomDisplay: 'none',
             searchChatroomDisplay: 'none',
             spinnerOpacity: 1,
@@ -41,6 +39,14 @@ export default class ChatroomTab extends Component {
                 (_, { rows: { _array }  }) => { 
                     this.token = _array[0].access_token;
                     this.email = _array[0].user_email;
+                },
+                (_,error) => console.error(error)
+            )
+            tx.executeSql(
+                'SELECT * FROM userInfo',
+                [],
+                (_, { rows: { _array }  }) => { 
+                    this.state.myLanguage = _array[0].language;
                 },
                 (_,error) => console.error(error)
             )
@@ -98,6 +104,7 @@ export default class ChatroomTab extends Component {
     }
 
     getSuggestedChatRoomList = () => {
+        this.setState({spinnerOpacity: 1});
         var url = 'http://101.101.160.185:3000/chatroom/recommend';
         fetch(url, {
             method: 'GET',
@@ -109,9 +116,16 @@ export default class ChatroomTab extends Component {
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             this.setState({suggestArrayHolder:[]});
-            for(var i=0; i<responseJson.length; i++){
-                insertArrayHolder(responseJson[i].name, responseJson[i]._id, responseJson[i].interest, responseJson[i].memNum)
+            console.log(responseJson)
+            newItem = {
+                title: responseJson.name,
+                roomID: responseJson._id,
+                interest: responseJson.interest
             }
+            this.setState({
+                suggestArrayHolder: [...this.state.suggestArrayHolder, newItem],
+                spinnerOpacity: 0
+            })
         })
     }
 
@@ -143,9 +157,6 @@ export default class ChatroomTab extends Component {
                 )
             },(error) => console.error(error));
         })
-        //todo: 근데 arrayHolder만 건드려서 그런가 방이 추가하면 다시 돌아오는 버그가 있음ㅠ
-        //나중에 유용하면 이용하시고 아니면 삭제해주세요ㅠ
-        //서버와도 연동해서 방에서 나가기 구현해야함.
     }
 
     _longPressChatroom = (cr_id) => {  // 채팅방 꾹 누르면
@@ -168,7 +179,9 @@ export default class ChatroomTab extends Component {
         this.props.navigation.navigate('Chatroom', {
             cr_name: item.cr_name,
             cr_id: item.cr_id,
+            memNum: item.memNum,
             myEmail: this.email,
+            myLanguage: this.state.myLanguage,
             crList_reload: this.crList_reload()
         });
     }
@@ -180,10 +193,6 @@ export default class ChatroomTab extends Component {
                 width: "100%",
             }}/>
         );
-    }
-
-    suggestRoom(){
-        
     }
 
     searchBarShow(){
@@ -363,7 +372,7 @@ export default class ChatroomTab extends Component {
                         <Icon name='ios-search' style={{color: '#FFF'}}/>
                         </Button>
                         <Button  
-                            onPress={()=> this.suggestRoom()} 
+                            onPress={()=> this.getSuggestedChatRoomList()} 
                             activeOpacity={0.5} 
                             style={styles.button_suggest}>
                         <Icon name='paw' style={{color: '#222'}}/>

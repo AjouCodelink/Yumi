@@ -88,12 +88,12 @@ export default class Chatroom_SideMenu extends Component {
                                         source={require('../../assets/default_thumbnail.png')}/>
                                     <Text style={style.user_name}>{user.nickname}</Text>
                                     </View>
-                                )
-                                : (<View style={style.user} key={this.state.key++}>
+                                ) : (<View style={style.user} key={this.state.key++}>
                                     <Thumbnail backgroundColor="#fff" style={style.user_thumbnail}
                                         source={{ uri: this.state.thumbnailURL }}/>
                                     <Text style={style.user_name}>{user.nickname}</Text>
-                                </View>)
+                                    </View>
+                                )
                             ))}
                         </ScrollView>
                     </View>
