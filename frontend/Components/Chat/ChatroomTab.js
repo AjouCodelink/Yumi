@@ -72,22 +72,24 @@ export default class ChatroomTab extends Component {
                         }
                         this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
                     }
+                    this.setState({spinnerOpacity: 0})
                 },
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error))
     }
 
-    insertArrayHolder = (cr_name, cr_id, interest) => {       // 새로운 방을 arrayholder이나 DB에 넣는 함수
+    insertArrayHolder = (cr_name, cr_id, interest, memNum) => {       // 새로운 방을 arrayholder이나 DB에 넣는 함수
         newItem = {
             cr_name: cr_name,
             cr_id: cr_id,
-            interest: interest
+            interest: interest,
+            memNum: memNum
         }
         db.transaction( tx => {
             tx.executeSql(
                 'INSERT INTO crList (cr_id, cr_name, section, _group, memNum) VALUES (?,?,?,?,?);',
-                [cr_id, cr_name, interest.section, interest.group, '?'],
+                [cr_id, cr_name, interest.section, interest.group, memNum],
                 null,
                 (_,error) => console.error(error)
             )
@@ -95,21 +97,6 @@ export default class ChatroomTab extends Component {
         this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
     }
 
-    createRoom = (new_cr_name) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
-        var url = 'http://101.101.160.185:3000/chatroom/creation/'+new_cr_name;
-        fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-            'Content-Type' : 'application/json',
-            'x-access-token': this.token
-            })
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson => {
-            this.insertArrayHolder(new_cr_name, responseJson.chatroom_id, responseJson.interest);
-        })
-    };
-      
     getSuggestedChatRoomList = () => {
         var url = 'http://101.101.160.185:3000/chatroom/recommend';
         fetch(url, {
@@ -123,12 +110,7 @@ export default class ChatroomTab extends Component {
         .then(responseJson => {
             this.setState({suggestArrayHolder:[]});
             for(var i=0; i<responseJson.length; i++){
-                newItem = {
-                    title: responseJson[i].name,
-                    roomID: responseJson[i]._id,
-                    interest: responseJson[i].interest
-                }
-                this.setState({suggestArrayHolder: [...this.state.suggestArrayHolder, newItem]})
+                insertArrayHolder(responseJson[i].name, responseJson[i]._id, responseJson[i].interest, responseJson[i].memNum)
             }
         })
     }
@@ -206,11 +188,6 @@ export default class ChatroomTab extends Component {
 
     searchBarShow(){
         this.setState({isSearchVisible: !this.state.isSearchVisible});
-    }
-
-    _onPressScarch(inputText){
-        this.setState({isAlertVisible: false})
-        this.createRoom(inputText);
     }
 
     searchRoomByKeyword(){

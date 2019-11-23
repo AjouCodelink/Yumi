@@ -39,8 +39,7 @@ export default class SearchedChatrooms extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson=>{
-            console.log(new_room),
-            this.props.pushNewRoom(new_room.cr_name, new_room.cr_id, new_room.interest)
+            this.props.pushNewRoom(new_room.cr_name, new_room.cr_id, new_room.interest, new_room.memNum)
         })
         ToastAndroid.show('Chat room join complete.', ToastAndroid.SHORT);
         this.popupClose()

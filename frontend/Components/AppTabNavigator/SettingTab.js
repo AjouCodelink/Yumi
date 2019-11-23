@@ -129,7 +129,7 @@ export default class SettingTab extends Component {
             <View style={style.container}>
                 <View style={style.content}>
                     <ScrollView style={{width: '100%'}}>
-                        <List >
+                        <List>
                             <ListItem itemDivider style={style.first_divider} key={'A'}>
                                 <Text style={style.font_divider}>Contact</Text>
                             </ListItem>       
@@ -151,7 +151,7 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 25,
-        backgroundColor: '#333',
+        backgroundColor: '#ddd',
     },
     font_header: {
         color: 'white',
@@ -168,8 +168,8 @@ const style = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         borderBottomWidth: 3,
-        borderColor: "#222",
-        backgroundColor: '#383838',
+        borderColor: "#bbb",
+        backgroundColor: '#ddd',
         paddingLeft: 15,
         alignItems: 'center',
     },
@@ -177,32 +177,31 @@ const style = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         borderBottomWidth: 3,
-        borderColor: "#222",
-        backgroundColor: '#404040',
+        borderColor: "#bbb",
+        backgroundColor: '#ddd',
         marginTop: 20,
         paddingLeft: 15,
         alignItems: 'center',
     },
     font_divider: {
         fontSize: 25,
-        color: "#eee",
+        color: "#000",
     },
     menu: {
         width: '100%',
+        borderBottomWidth: 2,
+        borderColor: "#bbb",
         flexDirection: 'row',
-        borderWidth: 1,
-        borderColor: "#333",
-        marginLeft: 24,
         alignItems: 'center',
     },
     icon_menu: {
         width: 38,
         fontSize: 24,
-        color: "#ddd",
+        color: "#333",
         justifyContent: 'center',
     },
     font_menu: {
         fontSize: 20,
-        color: "#eee",
+        color: "#222",
     },
 });

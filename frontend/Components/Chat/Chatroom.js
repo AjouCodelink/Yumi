@@ -112,6 +112,7 @@ export default class Chatroom extends Component {
         const { navigation } = this.props;
         this.state.cr_id = navigation.getParam('cr_id', '-1'),
         this.state.cr_name = navigation.getParam('cr_name', 'No cr_name')
+        this.state.memNum = navigation.getParam('memNum', '?')
         this.state.myEmail = navigation.getParam('myEmail', '');
 
         db.transaction(tx => {
@@ -224,7 +225,7 @@ export default class Chatroom extends Component {
                 renderNavigationView={this.renderDrawer}>
                 <View style={style.header}>
                     <Left>
-                        <TouchableOpacity onPress={() => this.props.crList_reload(), goBack(null)}>
+                        <TouchableOpacity onPress={() => goBack(null)}>
                             <Icon name='md-arrow-round-back' style={{color: '#999', fontSize: 30}}/>
                         </TouchableOpacity>
                     </Left>

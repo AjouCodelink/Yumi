@@ -56,14 +56,14 @@ export default class ProfileTab extends Component {
                             myNickname: _array[0].nickname,
                             myAddress: _array[0].address,
                             myLanguage: _array[0].language,
-                            //myThumbnailURL: _array[0].thumbnailURL //이후 썸네일 구현되면 연동
+                            //myThumbnailURL: _array[0].thumbnailURL, //이후 썸네일 구현되면 연동
+                            spinnerOpacity: 0
                         })
                     )
                 },
                 (_,error) => console.error(error)
             )
-        },(error) => console.error(error)),
-        this.setState({spinnerOpacity: 0})
+        },(error) => console.error(error))
     }
 
     _changeNickname = (newNickname) => {
