@@ -1,24 +1,24 @@
 import React, { Component } from 'react';
 import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, Platform, ToastAndroid } from 'react-native';
 import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail,Icon,Button,Fab, Spinner} from 'native-base';
-import DialogInput from 'react-native-dialog-input';
-
 import CreateChatroom from './Popup/CreateChatroom'
 import SearchedChatrooms from './Popup/SearchedChatrooms'
 
 import * as SQLite from 'expo-sqlite';
-
 const db = SQLite.openDatabase('db.db');
 export default class ChatroomTab extends Component {
     static navigationOptions = {
+        tabBarIcon: ({tintColor}) => (
+            <Icon name='chatboxes' style={{color: "#FFE400"}}/>
+        ),
         header: null,
     }
-    
     constructor(props) {
         super(props);
         this.token = '',
         this.email = '',
         this._id = '',
+        this.array = [],
         this.state = {
             active : false,
             arrayHolder: [],
@@ -26,7 +26,6 @@ export default class ChatroomTab extends Component {
             suggestArrayHolder:[],
             textInput_Holder_Theme: '',
             isSearchVisible: false,
-            isSearchListVisible : false,
             search : '',
             createChatroomDisplay: 'none',
             searchChatroomDisplay: 'none',
@@ -104,6 +103,27 @@ export default class ChatroomTab extends Component {
         this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
     }
 
+    createRoom = (inputText) => { // 키워드를 입력하여 버튼을 누르면 서버에 방을 만들고 방 번호를 출력해줌.
+        var url = 'http://101.101.160.185:3000/chatroom/creation/'+inputText;
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'x-access-token': this.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            this.insertChatRoom(responseJson.chatroom_id, responseJson.interest);
+        })
+    };
+    insertChatRoom = (chatroom_id, interest) => { // 여기에다 ROOMtitle 이냐 RoomID냐에 따라 push 를 다르게 지정
+        this.array.push({
+            title : interest,
+            roomID: chatroom_id});
+        this.setState({ arrayHolder: [...this.array] })
+    }
+
     exitChatRoom = (roomID) => { // 방 나가기
         var url = 'http://101.101.160.185:3000/chatroom/exit/'+roomID;
         fetch(url, {
@@ -124,12 +144,10 @@ export default class ChatroomTab extends Component {
                 })
             });
         })
-
         //todo: 근데 arrayHolder만 건드려서 그런가 방이 추가하면 다시 돌아오는 버그가 있음ㅠ
         //나중에 유용하면 이용하시고 아니면 삭제해주세요ㅠ
         //서버와도 연동해서 방에서 나가기 구현해야함.
     }
-
     _longPressChatroom = (roomID) => {  // 채팅방 꾹 누르면
         Alert.alert(
             'Exit?',
@@ -161,6 +179,10 @@ export default class ChatroomTab extends Component {
                 
             }}/>
         );
+    }
+    
+    suggestRoom(){
+        
     }
 
     searchBarShow(){
@@ -217,17 +239,16 @@ export default class ChatroomTab extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
-                <Button light 
-                style = {{width : "100%",height :"100%"}}>
-                    <View style={styles.febContainer}>
-                    </View>
-                </Button>
+                    <Button light 
+                        style = {{width : "100%",height :"100%"}}>
+                    </Button>
                 </View>
                 {/*=========flatlist 부분===========*/}
                 <View style ={{width: '100%', backgroundColor: '#00e600'}}>
                     <Text style = {{fontSize : 16, margin : 15,color :"#fff"}}>My Chatroom</Text>
                 </View>
                 <FlatList
+                    style = {{height : '30%'}}
                     data={this.state.arrayHolder}
                     width='100%'
                     extraData={this.state.arrayHolder}
@@ -292,7 +313,6 @@ export default class ChatroomTab extends Component {
                 />
                 {/*=======아래 채팅방 추천 및 검색 창 팝업 부분=========*/}
                 <View style={styles.febContainer}>
-                
                 </View>
                 {
                     (this.state.isSearchVisible == true) ? (
@@ -322,24 +342,21 @@ export default class ChatroomTab extends Component {
                         position="bottomRight"
                         onPress={() => this.setState({ active: !this.state.active })}>
                         <Icon name="navigate" />
-
                         <Button   
                             onPress={() => this._displayCreateCR('flex')}
                             activeOpacity={0.7} 
                             style={styles.button_create} >
                         <Icon name='chatbubbles' style={{color: '#FFF'}}/>
                         </Button>
-
                         <Button   
                             onPress={()=> this.searchBarShow()} 
                             activeOpacity={0.7} 
                             style={styles.button_search} >
                         <Icon name='ios-search' style={{color: '#FFF'}}/>
                         </Button>
-
                         <Button  
-                            onPress={()=> this.getSuggestedChatRoomList()} 
-                            activeOpacity={0.7} 
+                            onPress={()=> this.suggestRoom()} 
+                            activeOpacity={0.5} 
                             style={styles.button_suggest}>
                         <Icon name='paw' style={{color: '#222'}}/>
                         </Button>
@@ -354,7 +371,8 @@ export default class ChatroomTab extends Component {
 
 const styles = StyleSheet.create({
     container : {
-        flex : 1,
+        width: '100%',
+        height: '100%',
         justifyContent : 'flex-start',
         alignItems : 'center',
         backgroundColor : '#fff'
@@ -366,16 +384,20 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
     },
-    hide : {
-    },
     febContainer: {
         flex: 2,
         flexDirection : 'row',
         width: '100%',
         height: 50,
-        marginTop: 20,
+        marginTop: 15,
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
+    },
+    MyChatroom : {
+        width : '100%',
+        height:  50,
+        backgroundColor : '#111',
+        
     },
     button_search:{
         width: 45,
@@ -410,7 +432,7 @@ const styles = StyleSheet.create({
         borderColor : '#333',
         backgroundColor: '#fff',
     },
-        Divider : {
+    Divider : {
         width: '100%',
         backgroundColor : '#BDBDBD',
     },
@@ -450,7 +472,9 @@ const styles = StyleSheet.create({
         color: '#222',
         backgroundColor:'#eee',
         paddingLeft: 10,
-        borderRadius: 5,
+        borderRadius: 5,   
+    },
+    hide : {
     },
     searchButton:{
         width: 40,
@@ -462,4 +486,5 @@ const styles = StyleSheet.create({
         marginRight: 15,
         backgroundColor:'#eee',
     }
+
 })

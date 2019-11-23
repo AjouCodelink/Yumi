@@ -64,6 +64,7 @@ export default class CreateChatroom extends Component {
         })
         ToastAndroid.show('Chat room creation complete.', ToastAndroid.SHORT);
         this.popupClose()
+        this.setState({new_cr_name: ''})
     }
 
     popupClose = () => {
