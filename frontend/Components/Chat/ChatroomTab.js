@@ -298,7 +298,7 @@ export default class ChatroomTab extends Component {
                             <Body>
                                 <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.cr_name}</Text>
                                 <Text style={{fontSize: 10, color: '#333'}}>  #{item.interest.section}  #{item.interest.group}</Text>
-                                <Text style={{fontSize: 13}}>  {item.lastMessage!=null 
+                                <Text style={{fontSize: 13, width: '80%', height: 18}}>  {item.lastMessage!=null 
                                     ? (item.lastMessage)
                                     : ('No message')}
                                 </Text>

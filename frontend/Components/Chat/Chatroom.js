@@ -176,7 +176,7 @@ export default class Chatroom extends Component {
             user_email: 'PopQuizBot',
             cr_id: this.state.cr_id,
             Time: Date(),
-            message: this.state.myNickname+' got the right answer! The correct answer is '+answer+'.',
+            message: '🏆 '+this.state.myNickname+' got the right answer! The correct answer is '+answer+'.',
         }
         this.socket.emit('SEND_MESSAGE', correctAlert);
     }
