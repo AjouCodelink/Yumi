@@ -1,32 +1,36 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native'
-import { Button, Item, Label, Input } from 'native-base'
+import { ToastAndroid, View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { Button } from 'native-base'
 
-import SectionPicker from './SectionPicker'
-import GroupPicker from './GroupPicker'
+import DoPicker from '../../SignUp/Address/DoPicker'
+import CityPicker from '../../SignUp/Address/CityPicker'
 
-export default class CreateChatroom extends Component {
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
+
+export default class EditAddress extends Component {
     constructor(props){
         super(props)
     }
 
     state = {
-        selectedSection: 'noValue',
-        selectedGroup: 'noValue',
-        new_cr_name: '',
+        selectedDo: 'noValue',
+        selectedCity: 'noValue',
+        address: '',
         display: this.props.display
     }
 
-    sectionChange = (value) => {
+    doChange = (value) => {
         this.setState({
-            selectedSection: value,
-            selectedGroup: 'noValue'
+            selectedDo: value,
+            selectedCity: 'noValue'
         })
     }
 
-    groupChange = (value) => {
+    cityChange = (value) => {
         this.setState({
-            selectedGroup: value, 
+            selectedCity: value, 
+            address: this.state.selectedDo+' '+value
         })
     }
 
@@ -35,64 +39,61 @@ export default class CreateChatroom extends Component {
     }
 
     _onPressAdmit = () => {
-        if (this.state.selectedGroup ==  'noValue') {
-            ToastAndroid.show('Please select interest.', ToastAndroid.SHORT)
-            return
-        } else if (this.state.new_cr_name ==  '') {
-            ToastAndroid.show('Please input Room name.', ToastAndroid.SHORT)
+        if (this.state.selectedCity= 'noValue') {
+            ToastAndroid.show('Please select language.', ToastAndroid.SHORT)
             return
         }
-        const new_room = {
-            interest: {
-                section: this.state.selectedSection,
-                group: this.state.selectedGroup,
-            },
-            name: this.state.new_cr_name,
-        }
-        var url = 'http://101.101.160.185:3000/chatroom/creation';
+        var url = 'http://101.101.160.185:3000/user/profile/address/'+this.state.address;
         fetch(url, {
             method: 'POST',
             headers: new Headers({
-            'Content-Type': 'application/json',
+            'Content-Type' : 'application/json',
+            'token': 'token',
             'x-access-token': this.props.token
-            }),
-            body: JSON.stringify(new_room)
+            })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson=>{
-            this.props.pushNewRoom(responseJson.cr_name, responseJson.cr_id, responseJson.interest, '1')
-            ToastAndroid.show('Chat room creation complete.', ToastAndroid.SHORT)
-            this.popupClose()
+        .then(responseJson => {
+            if(responseJson.result == true){
+                db.transaction(tx => {
+                    tx.executeSql(  // DB에 바뀐 닉네임 저장
+                        'UPDATE userInfo SET address = ?',
+                        [this.state.address],
+                        null,
+                        (_,error) => console.error(error)
+                    )
+                })
+                this.popupClose()
+                ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
+            } else {
+                ToastAndroid.show('Failed to save. Please check the network.', ToastAndroid.SHORT);
+            }
         })
     }
 
     popupClose = () => {
         this.setState({
-            selectedSection: 'noValue',
-            selectedGroup: 'noValue',
-            new_cr_name: '',
+            selectedDo: 'noValue',
+            selectedCity: 'noValue',
+            address: '',
         })
         this.props.displayChange('none');
     }
 
     render() {
         return (
-            <View style={[style.container, {display: this.props.display}]}>
+            <View style={style.container}>
                 <View style={[style.backGround, {display: this.props.display}]}>
                     <View style={style.content}>
-                        <Text style={style.font_Title}>Create Chatroom</Text>
+                        <Text style={style.font_Title}>Edit Address</Text>
                         <View style={{height: 45, width: 250, margin:10}}>
-                            <SectionPicker valueChange={this.sectionChange}/>
+                            <DoPicker valueChange={this.doChange}/>
                         </View>
                         <View style={{height: 45, width: 250}}>
-                            <GroupPicker selectedSection={this.state.selectedSection} valueChange={this.groupChange}/>
+                            <CityPicker selectedDo={this.state.selectedDo} valueChange={this.cityChange}/>
                         </View>
-                        <Item style={{height: 48, width: 250, marginTop: 15}} floatingLabel>
-                            <Label style={{color: '#aaa'}}> Room name</Label>
-                            <Input style={{fontSize: 16, color: '#ddd', paddingLeft: 8}} onChangeText={(new_cr_name) => this.setState({new_cr_name})}/>
-                        </Item>
                         <View style={style.pickerContainer}>
-                            <TouchableOpacity>
+                            <TouchableOpacity >
                                 <Button onPress={() => this._onPressCancel()} style={{backgroundColor: '#bbb', width: 80, justifyContent: 'center', marginRight:20}}>
                                     <Text>Cancel</Text>
                                 </Button>
@@ -112,10 +113,10 @@ export default class CreateChatroom extends Component {
 
 const style = StyleSheet.create({
     container: {
-        flex: 4,
-        position : 'absolute',
+        flex: 3,
         width: '100%',
         height: '100%',
+        position : 'absolute',
     },
     backGround: {
         width: '100%',
@@ -126,9 +127,9 @@ const style = StyleSheet.create({
     },
     content: {
         width: 300,
-        height: 400,
+        height: 350,
         borderRadius: 20,
-        backgroundColor: 'rgba(44,44,44,0.90)',
+        backgroundColor: '#444',
         justifyContent: 'center',
         alignItems: 'center',
     },

@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, Platform, ToastAndroid } from 'react-native';
-import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail,Icon,Button,Fab, Spinner} from 'native-base';
-import CreateChatroom from './Popup/CreateChatroom'
-import SearchedChatrooms from './Popup/SearchedChatrooms'
+import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, ToastAndroid } from 'react-native';
+import { ListItem, Left, Body, Right, Thumbnail,Icon, Spinner} from 'native-base';
+
+import Fabs from './ChatPopup/Fabs'
+import SearchBar from './ChatPopup/SearchBar'
+import CreateChatroom from './ChatPopup/CreateChatroom'
+import SearchedChatrooms from './ChatPopup/SearchedChatrooms'
 
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
+
 export default class ChatroomTab extends Component {
     static navigationOptions = {
         tabBarIcon: ({tintColor}) => (
@@ -18,15 +22,14 @@ export default class ChatroomTab extends Component {
         this.token = '',
         this.email = '',
         this.state = {
-            active : false,
+            fabActive : false,
             myLanguage : '',
-            search : '',
             arrayHolder: [],
             searcharrayHolder: [],
-            suggestArrayHolder:[],
-            isSearchVisible: false,
-            createChatroomDisplay: 'none',
-            searchChatroomDisplay: 'none',
+            suggestedRoom: [],
+            searchBarDisplay: 'none',
+            createCRDisplay: 'none',
+            searchCRDisplay: 'none',
             spinnerOpacity: 1,
         }
     }
@@ -52,8 +55,7 @@ export default class ChatroomTab extends Component {
             )
         },(error) => console.error(error))
         this.crList_reload()
-        this.setState({spinnerOpacity: 0});
-        //this.getSuggestRoomList();
+        //this._onPressSuggestCR();
     }
 
     crList_reload = () => {
@@ -103,7 +105,7 @@ export default class ChatroomTab extends Component {
         this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
     }
 
-    getSuggestedChatRoomList = () => {
+    _onPressSuggestCRFab = () => {
         this.setState({spinnerOpacity: 1});
         var url = 'http://101.101.160.185:3000/chatroom/recommend';
         fetch(url, {
@@ -115,18 +117,22 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            this.setState({suggestArrayHolder:[]});
-            console.log(responseJson)
-            newItem = {
-                title: responseJson.name,
-                roomID: responseJson._id,
-                interest: responseJson.interest
+            if(responseJson._id == undefined) {
+                ToastAndroid.show("No chat room found to suit your interests.", ToastAndroid.SHORT)
+            } else {
+                newItem = {
+                    cr_name: responseJson.name,
+                    cr_id: responseJson._id,
+                    interest: responseJson.interest
+                }
+                this.setState({suggestedRoom: newItem})
             }
-            this.setState({
-                suggestArrayHolder: [...this.state.suggestArrayHolder, newItem],
-                spinnerOpacity: 0
-            })
+            this.setState({spinnerOpacity: 0})
         })
+    }
+
+    _onPressSuggestedCR = (newRoom) => {
+
     }
 
     exitChatRoom = (cr_id) => { // 방 나가기
@@ -140,23 +146,21 @@ export default class ChatroomTab extends Component {
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
-        .then(responseJson => {
-            this.setState(prevState => {
-                const index = prevState.arrayHolder.findIndex(holder => holder.cr_id === cr_id);
-                prevState.arrayHolder.splice(index, 1);
-                return ({
-                    arrayHolder: [...prevState.arrayHolder]
-                })
+        this.setState(prevState => {
+            const index = prevState.arrayHolder.findIndex(holder => holder.cr_id === cr_id);
+            prevState.arrayHolder.splice(index, 1);
+            return ({
+                arrayHolder: [...prevState.arrayHolder]
             })
-            db.transaction( tx => {
-                tx.executeSql(
-                    'DELETE FROM crList WHERE cr_id = ?);',
-                    [cr_id],
-                    null,
-                    (_,error) => console.error(error)
-                )
-            },(error) => console.error(error));
         })
+        db.transaction( tx => {
+            tx.executeSql(
+                'DELETE FROM crList WHERE cr_id = ?;',
+                [cr_id],
+                null,
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error));
     }
 
     _longPressChatroom = (cr_id) => {  // 채팅방 꾹 누르면
@@ -175,6 +179,8 @@ export default class ChatroomTab extends Component {
             {cancelable: false},
         );
     }
+
+
     _onPressChatroom = (item) => {
         this.props.navigation.navigate('Chatroom', {
             cr_name: item.cr_name,
@@ -188,26 +194,18 @@ export default class ChatroomTab extends Component {
 
     FlatListItemSeparator = () => {
         return (
-            <View style={{
-                height: 1,
-                width: "100%",
-            }}/>
+            <View style={{ height: 1, width: "100%" }}/>
         );
     }
 
-    searchBarShow(){
-        this.setState({isSearchVisible: !this.state.isSearchVisible});
-    }
-
-    searchRoomByKeyword(){
-        this.textInput.clear()
-        if (this.state.search ==  '') {
+    _onPressSearch = (keyword) => {
+        if (keyword ==  '') {
             ToastAndroid.show('Please input keyword.', ToastAndroid.SHORT)
             return
         }
         this.state.searcharrayHolder.splice(0,100)
         this.setState({spinnerOpacity: 1});
-        var url = 'http://101.101.160.185:3000/chatroom/search/'+this.state.search;
+        var url = 'http://101.101.160.185:3000/chatroom/search/'+keyword;
         fetch(url, {
             method: 'GET',
             headers: new Headers({
@@ -217,50 +215,52 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            for(var i=0;i<responseJson.length;i++)
-            {
-                newItem = {
-                    cr_name: responseJson[i].name,
-                    cr_id: responseJson[i]._id,
-                    interest: responseJson[i].interest
+            console.log(responseJson)
+            if (responseJson.message == "no search chatroom") {
+                ToastAndroid.show('No rooms searched by this keyword.', ToastAndroid.SHORT);
+            } else {
+                for(var i=0;i<responseJson.length;i++)
+                {
+                    newItem = {
+                        cr_name: responseJson[i].name,
+                        cr_id: responseJson[i]._id,
+                        interest: responseJson[i].interest
+                    }
+                    this.setState({searcharrayHolder: [...this.state.searcharrayHolder, newItem]})
                 }
-                this.setState({searcharrayHolder: [...this.state.searcharrayHolder, newItem]})
+                this.setState({searchCRDisplay: 'none',})
             }
-            this.setState({
-                searchChatroomDisplay: 'flex',
-                spinnerOpacity: 0
-            })
+            this.setState({spinnerOpacity: 0})
         })
     }
 
-    GetItem(item) {
-        Alert.alert(item);
+    _onPressFabs = () => {
+        this.setState({fabActive: !this.state.fabActive})
     }
 
-    _displayCreateCR = (display) => {
-        this.setState({createChatroomDisplay: display, active: false})
+    _switchSearchCR = (display) => {
+        this.setState({searchCRDisplay: display, fabActive: false})
     }
 
-    _displaySearchCR = (display) => {
-        this.setState({searchChatroomDisplay: display, active: false})
+    _onPressSearchBarFab = (display) => {
+        this.setState({searchBarDisplay: display, fabActive: false})
+    }
+
+    _onPressCreateCRFab = (display) => {
+        this.setState({createCRDisplay: display, fabActive: false})
     }
 
     render() {
-        {/*========헤더부분===========*/}
         return (
             <View style={styles.container}>
-                <View style={styles.header}>
-                    <Button light 
-                        style = {{width : "100%",height :"100%"}}>
-                    </Button>
-                </View>
+                <View style={styles.header}></View>
                 {/*=========flatlist 부분===========*/}
-                <View style ={{width: '100%', backgroundColor: '#00e600'}}>
-                    <Text style = {{fontSize : 16, margin : 15,color :"#fff"}}>My Chatroom</Text>
+                <View style ={{width: '100%', backgroundColor: '#00d500'}}>
+                    <Text style = {{fontSize : 16, margin : 15, fontWeight: 'bold', color :"#fff"}}>My Chatroom</Text>
                 </View>
                 <FlatList
-                    style = {{height : '30%'}}
                     data={this.state.arrayHolder}
+                    height= '100%'
                     width='100%'
                     extraData={this.state.arrayHolder}
                     keyExtractor = {(item, index) => String(index)}
@@ -272,8 +272,9 @@ export default class ChatroomTab extends Component {
                             onPress={() => this._onPressChatroom(item)}
                             key={item.cr_id}>
                             <Left style={{justifyContent: 'center'}}>
-                                <Thumbnail style={{width: 50, height: 45}} 
-                                    source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
+                                <Thumbnail
+                                style={{width: 50, height: 45}} 
+                                source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }}/>
                             </Left>
                             <Body>
                                 <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.cr_name}</Text>
@@ -295,92 +296,49 @@ export default class ChatroomTab extends Component {
                         </ListItem>
                     )}
                 />
-            <View style ={{width: '100%', backgroundColor: '#9cf'}}>
-                <Text style = {{fontSize : 16, margin : 15,color :"#fff"}}>Chatroom Suggest</Text>
-            </View>
-            <FlatList
-                    data={this.state.suggestArrayHolder}
-                    width='100%'
-                    extraData={this.state.suggestArrayHolder}
-                    keyExtractor = {(item, index) => String(index)}
-                    ItemSeparatorComponent={this.FlatListItemSeparator}
-                    renderItem={({ item }) =>(
-                        <ListItem avatar
-                            activeOpacity={0.5}
-                            onLongPress={() => this._longPressChatroom(item.roomID)}
-                            onPress={() => this._onPressChatroom(item)}
-                            key={item.roomID}>
-                            <Left style={{justifyContent: 'center'}}>
-                                <Thumbnail style={{width: 50, height: 45}} 
-                                    source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
-                            </Left>
-                            <Body>
-                                <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.title}</Text>
-                                <Text style={{fontSize: 10, color: '#333'}}>  #{item.interest.section}  #{item.interest.group}</Text>
-                                <Text style={{fontSize: 13}}>  chatRoom message</Text>
-                            </Body>
-                            <Right style={{justifyContent: 'flex-end', alignItems:'flex-end'}}>
-                                <Icon name='md-people' style={{marginBottom: 10, fontSize: 16, color: '#333'}}>
-                                    <Text style={{fontSize: 14, color: '#333'}}> 14</Text>
-                                </Icon>
-                                <Text style={{fontSize: 12}}>3:43 pm</Text>
-                            </Right>
-                        </ListItem>
-                    )}
-                />
-                {/*=======아래 채팅방 추천 및 검색 창 팝업 부분=========*/}
-                <View style={styles.febContainer}>
+                <View style ={{width: '100%', backgroundColor: '#9cf'}}>
+                    <Text style = {{fontSize : 16, margin : 15, fontWeight: 'bold', color :"#fff"}}>Chatroom Suggest</Text>
                 </View>
-                {
-                    (this.state.isSearchVisible == true) ? (
-                    <View style = {styles.searchBarConatiner}>
-                        <TextInput
-                            ref={input => { this.textInput = input }}
-                            style={styles.searchBar}
-                            onSubmitEditing={() => {this.searchRoomByKeyword();}}  // 엔터눌러도 입력되도록 함
-                            placeholder="Search..."
-                            value={this.state.search}
-                            onChangeText={(search) => this.setState({search})}
-                        />
-                        <TouchableOpacity
-                            style={styles.searchButton} 
-                            onPress={()=>this.searchRoomByKeyword()}>
-                            <Icon name='ios-search' style={{color: '#111'}}/>
-                        </TouchableOpacity>
-                    </View> 
-                    ):(<View style = {styles.hide}></View>)
-                } 
-                    <Fab
-                        active={this.state.active}
-                        direction="up"
-                        containerStyle={{ }}
-                        style={{ backgroundColor: '#5067FF' , width:  65,
-                            height: 65,borderRadius: 70}}
-                        position="bottomRight"
-                        onPress={() => this.setState({ active: !this.state.active })}>
-                        <Icon name="navigate" />
-                        <Button   
-                            onPress={() => this._displayCreateCR('flex')}
-                            activeOpacity={0.7} 
-                            style={styles.button_create} >
-                        <Icon name='chatbubbles' style={{color: '#FFF'}}/>
-                        </Button>
-                        <Button   
-                            onPress={()=> this.searchBarShow()} 
-                            activeOpacity={0.7} 
-                            style={styles.button_search} >
-                        <Icon name='ios-search' style={{color: '#FFF'}}/>
-                        </Button>
-                        <Button  
-                            onPress={()=> this.getSuggestedChatRoomList()} 
-                            activeOpacity={0.5} 
-                            style={styles.button_suggest}>
-                        <Icon name='paw' style={{color: '#222'}}/>
-                        </Button>
-                </Fab>
-                <CreateChatroom token={this.token} pushNewRoom={this.insertArrayHolder} displayChange={this._displayCreateCR} display={this.state.createChatroomDisplay}/>
-                <SearchedChatrooms token={this.token} pushNewRoom={this.insertArrayHolder} array={this.state.searcharrayHolder} displayChange={this._displaySearchCR} display={this.state.searchChatroomDisplay}/>
-                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#999'/>
+                <View style={{}}>
+                {this.state.suggestedRoom.cr_id == undefined
+                    ? (<Text style={{color: '#333', fontSize: 16, padding: 30}}>No room suggested yet.</Text>)
+                    : (<TouchableOpacity activeOpacity={0.5} onPress={() => this._onPressChatroom(this.state.suggestedRoom)} onLongPress={() => this._longPressChatroom(this.state.suggestedRoom.cr_id)}>
+                        <Left style={{justifyContent: 'center'}}>
+                            <Thumbnail style={{width: 50, height: 45}} 
+                                source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
+                        </Left>
+                        <Body>
+                            <Text style={{fontSize: 16, fontWeight: 'bold',}}>{this.state.suggestedRoom.cr_name}</Text>
+                            <Text style={{fontSize: 10, color: '#333'}}>  #{this.state.suggestedRoom.interest.section}  #{this.state.suggestedRoom.interest.group}</Text>
+                            <Text style={{fontSize: 13}}>  chatRoom message</Text>
+                        </Body>
+                        <Right style={{justifyContent: 'flex-end', alignItems:'flex-end'}}>
+                            <Icon name='md-people' style={{marginBottom: 10, fontSize: 16, color: '#333'}}>
+                                <Text style={{fontSize: 14, color: '#333'}}> 14</Text>
+                            </Icon>
+                            <Text style={{fontSize: 12}}>3:43 pm</Text>
+                        </Right>
+                    </TouchableOpacity>)
+                }
+                </View>
+                <SearchBar display={this.state.searchBarDisplay}
+                    displayChange={this._onPressSearchBarFab}
+                    onPressSearch={this._onPressSearch}/>
+                <Fabs active={this.state.fabActive}
+                    onPressCreate={this._onPressCreateCRFab}
+                    onPressSearch={this._onPressSearchBarFab}
+                    onPressSuggest={this._onPressSuggestCRFab}
+                    onPressFabs={this._onPressFabs}/>
+                <SearchedChatrooms token={this.token}
+                    array={this.state.searcharrayHolder}
+                    pushNewRoom={this.insertArrayHolder}
+                    displayChange={this._switchSearchCR}
+                    display={this.state.searchCRDisplay}/>
+                <CreateChatroom token={this.token}
+                    pushNewRoom={this.insertArrayHolder}
+                    displayChange={this._onPressCreateCRFab}
+                    display={this.state.createCRDisplay}/>
+                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#ccc'/>
             </View>
         );
     }
@@ -401,44 +359,11 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
     },
-    febContainer: {
-        flex: 2,
-        flexDirection : 'row',
-        width: '100%',
-        height: 50,
-        marginTop: 15,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end',
-    },
     MyChatroom : {
         width : '100%',
         height:  50,
         backgroundColor : '#111',
         
-    },
-    button_search:{
-        width: 45,
-        height: 45,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 50,
-        backgroundColor: '#33AAFF',
-    },
-    button_create: {
-        width:  45,
-        height: 45,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 50,
-        backgroundColor: '#44DD44',
-    }, 
-    button_suggest : {
-        width:  45,
-        height: 45,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 40,
-        backgroundColor: '#eeee33',
     },
     item : {
         flexDirection : 'row',
@@ -456,7 +381,6 @@ const styles = StyleSheet.create({
     thumbnail: {
         justifyContent : 'center',
         alignItems: 'center',
-
     },
     item_font : {
         fontSize : 16,
@@ -472,36 +396,4 @@ const styles = StyleSheet.create({
         borderColor : '#4CAF50',
         marginTop : 12,
     },
-    searchBarConatiner: {
-        position : 'absolute',
-        flex: 3,
-        flexDirection: 'row',
-        width:'100%',
-        justifyContent: 'center',
-        alignItems : "stretch",
-        marginTop: 40,
-        paddingLeft: 15,
-    },
-    searchBar:{
-        width: "75%",
-        height: 40,
-        fontSize:18,
-        color: '#222',
-        backgroundColor:'#eee',
-        paddingLeft: 10,
-        borderRadius: 5,   
-    },
-    hide : {
-    },
-    searchButton:{
-        width: 40,
-        height: 40,
-        borderRadius: 40,
-        justifyContent : 'center',
-        alignItems : 'center',
-        marginLeft :15,
-        marginRight: 15,
-        backgroundColor:'#eee',
-    }
-
 })

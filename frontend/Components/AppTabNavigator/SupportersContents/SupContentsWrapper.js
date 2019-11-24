@@ -43,31 +43,34 @@ export default class AjouSup extends Component {
                                     <Left>
                                         <Thumbnail source={{uri: item.HeaderImage}} />
                                         <Body>
-                                            <Text>#{item.title}</Text>
-                                            <Text note>{item.Date}</Text>
+                                            <Text style={styles.font_title}>{item.title}</Text>
+                                            <Text style={styles.font_date}>{item.Date}</Text>
                                         </Body>
                                     </Left>
                                     </CardItem>
                                     <CardItem>
                                     <Body>
-                                        <TouchableOpacity style = {{width: '100%',height:350}} onPress={() => {this.ShowPoster(item)}}>
+                                        <TouchableOpacity style = {{width: '100%', height:350}} onPress={() => {this.ShowPoster(item)}}>
                                             <Image
-                                            source={{uri: item.PosterImage}} style={{ width: "100%", height: "20%", flex: 1,resizeMode: 'contain',alignItems: 'center'}}/>
+                                            source={{uri: item.PosterImage}} style={{ width: "100%", height: null, flex: 1,resizeMode: 'contain',alignItems: 'center'}}/>
                                         </TouchableOpacity>
                                         <Text style = {{marginTop: 15}}>{item.description}</Text>
-                                        <Text>{item.DueDay}</Text>
-                                        <Text>{item.fee}</Text>
+                                        <Text># {item.DueDay}</Text>
+                                        <Text># {item.fee}</Text>
                                     </Body>
                                     </CardItem>
                                     <CardItem>
-                                    <Left>
-                                        <Button transparent textStyle={{color: '#87838B'}}>
-                                        <Text onPress={() => {this.Moreinfo(item)}} style ={styles.font}>More info...</Text>
-                                        </Button>
-                                    </Left>
-                                    <Right>
-                                        <Text onPress={() => {this.Apply(item)}} style ={styles.font}>Apply</Text>
-                                    </Right>
+                                        <Left>
+                                            <Button transparent onPress={() => {this.Moreinfo(item)}}>
+                                                <Text style ={styles.font_button}>  More info...  </Text>
+                                            </Button>
+                                        </Left>
+                                        <Right>
+                                            <Button transparent onPress={() => {this.Apply(item)}}>
+                                                <Text style ={styles.font_button}>  Apply  </Text>
+                                            </Button>
+                                            
+                                        </Right>
                                     </CardItem>
                                 </Card>
                             )
@@ -79,11 +82,21 @@ export default class AjouSup extends Component {
     }
 
 const styles = StyleSheet.create({
-
-
-    font: {
+    font_title: {
+        fontWeight: 'bold',
+        fontSize : 17,
+    },
+    font_date: {
+        fontSize : 14,
+        color: '#222'
+    },
+    font_main: {
+        fontSize : 12,
+    },
+    font_button: {
+        fontWeight: 'bold',
+        color: '#20B2AA',
         fontSize : 16,
     },
-
 }
 );

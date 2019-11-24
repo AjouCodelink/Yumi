@@ -15,17 +15,13 @@ constructor(props) {
 }
     render() {
         return (
-        <View style = {styles.container}>
-            <View style = {styles.header}>
-            </View>
+            <View style = {styles.container}>
+                <View style = {styles.header}></View>
                 <View style ={{width: '100%', backgroundColor: '#20B2AA'}}>
-                        <Text style = {{fontSize : 16, margin : 15,color :"#fff"}}>Supporters</Text>
+                    <Text style = {{fontSize : 16, margin : 15, fontWeight: 'bold', color :"#fff"}}>Supporters</Text>
                 </View>
-            
-                    <SupContentsWrapper />
-            
-        </View>
-
+                <SupContentsWrapper />
+            </View>
         );
     }
 }

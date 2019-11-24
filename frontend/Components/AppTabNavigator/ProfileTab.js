@@ -4,9 +4,9 @@ import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'rea
 import DialogInput from 'react-native-dialog-input';
 import { Icon, Thumbnail, Spinner } from 'native-base';
 
-import EditAddress from '../ProfileEdit/EditAddress'
-import EditInterest from '../ProfileEdit/EditInterest'
-import EditLanguage from '../ProfileEdit/EditLanguage'
+import EditAddress from './ProfilePopup/EditAddress'
+import EditInterest from './ProfilePopup/EditInterest'
+import EditLanguage from './ProfilePopup/EditLanguage'
 
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
@@ -153,22 +153,22 @@ export default class ProfileTab extends Component {
                     <View style={{flexDirection:'row', alignItems: 'flex-end', marginLeft: 25}}> 
                         <Text style={style.font_nickname}>{this.state.myNickname}</Text>
                         <TouchableOpacity onPress= {() => this.setState({isAlertVisible: true})}>
-                            <Icon name='md-create' style={{fontSize: 22, margin: 8, color: 'white'}} />
+                            <Icon name='md-create' style={{fontSize: 22, margin: 8, color: '#444'}} />
                         </TouchableOpacity>
                     </View>
                     <Text style={style.font_email}>{this.state.myEmail}</Text>
                 </View>
                 <View style={style.febContainer}>
                     <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayAddr('flex')}>
-                        <Icon name='md-pin' style={{fontSize: 32, margin: 4, color: 'white'}} />
+                        <Icon name='md-pin' style={{fontSize: 32, margin: 4, color: '#444'}} />
                         <Text style={style.font_feb}>Address</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayInter('flex')}>
-                        <Icon name='md-cafe' style={{fontSize: 32, margin: 4, color: 'white'}} />
+                        <Icon name='md-cafe' style={{fontSize: 32, margin: 4, color: '#444'}} />
                         <Text style={style.font_feb}>Interests</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayLang('flex')}>
-                        <Icon name='md-sync' style={{fontSize: 32, margin: 4, color: 'white'}} />
+                        <Icon name='md-sync' style={{fontSize: 32, margin: 4, color: '#444'}} />
                         <Text style={style.font_feb}>Language</Text>
                     </TouchableOpacity>
                 </View>
@@ -182,7 +182,7 @@ export default class ProfileTab extends Component {
                 <EditAddress token={this.state.token} displayChange={this._displayAddr} display={this.state.editAddrDisplay}/>
                 <EditInterest token={this.state.token} displayChange={this._displayInter} display={this.state.editInterDisplay}/>
                 <EditLanguage token={this.state.token} displayChange={this._displayLang} display={this.state.editLangDisplay}/>
-                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#999'/>
+                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#ccc'/>
             </View>
         );
     }
@@ -194,7 +194,7 @@ const style = StyleSheet.create({
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#333',
+        backgroundColor: '#ccc',
     },
     topsideContainer: {
         width: '100%',
@@ -213,7 +213,9 @@ const style = StyleSheet.create({
         width: '100%',
         height: '40%',
         paddingTop: screenHeight*0.11,
-        backgroundColor: '#555',
+        borderTopWidth: 1,
+        borderTopColor: '#222',
+        backgroundColor: '#e8e8e8',
         alignItems: 'center',
     },
     thumbnailContainer: {
@@ -230,23 +232,23 @@ const style = StyleSheet.create({
         flexDirection: 'row',
     },
     font_feb: {
-        color: '#ddd',
+        color: '#333',
         fontSize: 14,
     },
     thumbnail: {
         height: screenHeight*0.2,
         width: screenHeight*0.2,
-        borderWidth: 4,
-        borderColor: '#333',
+        borderWidth: 2,
+        borderColor: '#222',
         borderRadius: (screenHeight*0.2)*0.4,
     },
     font_nickname: {
-        color: '#eee',
+        color: '#222',
         fontSize: 40,
         fontWeight: 'bold',
     },
     font_email: {
-        color: '#aaa',
+        color: '#444',
         fontSize: 24,
     },
 });

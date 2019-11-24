@@ -72,23 +72,17 @@ export default class SearchedChatrooms extends Component {
                     <View style={style.content}>
                         <Text style={style.font_Title}>Searched Chatrooms</Text>
                         <ScrollView style={{width: '90%', height: '50%'}}>
-                            {this.props.array.length != 0
-                                ? (this.props.array.map( chatroom => (
-                                    <TouchableOpacity key={chatroom.cr_id} onPress={() => this._onPressChatroom(chatroom)}> 
-                                        <View style={style.chatroom}>
-                                            <Text style={style.font_cr_name}>{chatroom.cr_name}</Text>
-                                            <Text style={style.font_cr_intertest}> #{chatroom.interest.section} #{chatroom.interest.group}</Text>
-                                            <Icon name='md-people' style={{position : 'absolute', right:10, fontSize: 14, color: '#333'}}>
-                                                <Text style={{fontSize: 12, color: '#333'}}> 14</Text>
-                                            </Icon>
-                                        </View>
-                                    </TouchableOpacity> 
-                                ))) : (
-                                    <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={style.font_foundNoCR}>No Room Found.</Text>
+                            {this.props.array.map( chatroom => (
+                                <TouchableOpacity key={chatroom.cr_id} onPress={() => this._onPressChatroom(chatroom)}> 
+                                    <View style={style.chatroom}>
+                                        <Text style={style.font_cr_name}>{chatroom.cr_name}</Text>
+                                        <Text style={style.font_cr_intertest}> #{chatroom.interest.section} #{chatroom.interest.group}</Text>
+                                        <Icon name='md-people' style={{position : 'absolute', right:10, fontSize: 14, color: '#333'}}>
+                                            <Text style={{fontSize: 12, color: '#333'}}> 14</Text>
+                                        </Icon>
                                     </View>
-                                )
-                            }
+                                </TouchableOpacity> 
+                            ))}
                         </ScrollView>
                         <TouchableOpacity>
                             <Button onPress={() => this._onPressClose()} style={{backgroundColor: '#bbb', width: 80, justifyContent: 'center', margin: 15,}}>
