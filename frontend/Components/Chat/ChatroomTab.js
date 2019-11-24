@@ -191,7 +191,6 @@ export default class ChatroomTab extends Component {
         );
     }
 
-
     _onPressChatroom = (item) => {
         this.props.navigation.navigate('Chatroom', {
             cr_name: item.cr_name,

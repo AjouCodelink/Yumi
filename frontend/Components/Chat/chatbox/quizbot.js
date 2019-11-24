@@ -6,11 +6,12 @@ import { Button, Thumbnail } from 'native-base';
 export default class quizbot extends Component {
     constructor() {
         super();
-        this.state = {
-            isActive: true,
-            isAlertVisible: false,
-            count: 1,
-        }
+    }
+
+    state = {
+        isActive: true,
+        isAlertVisible: false,
+        count: 1,
     }
 
     isCorrect(answer) {
@@ -23,9 +24,10 @@ export default class quizbot extends Component {
     }
 
     submit = (inputText, answer) => {
-        inputText = inputText.toLowerCase()
+        _inputText = inputText.toLowerCase()
+        _answer = answer.toLowerCase()
         {
-            (answer == inputText)
+            (_answer == _inputText)
             ? this.isCorrect(answer)
             : ToastAndroid.show("Wrong!", ToastAndroid.SHORT)
         }
