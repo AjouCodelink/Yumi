@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet  } from 'react-native';
+import { View, Text, StyleSheet, ToastAndroid } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import { Button, Thumbnail } from 'native-base';
 
@@ -9,20 +9,25 @@ export default class quizbot extends Component {
         this.state = {
             isActive: true,
             isAlertVisible: false,
+            count: 1,
         }
     }
 
-    isCorrect() {
-        alert("correct!")
+    isCorrect(answer) {
+        if(this.state.count-- > 0) {
+            this.props._sendPopQuizWon(answer)
+            ToastAndroid.show("Correct!🏆", ToastAndroid.SHORT)
+            return
+        }
+        ToastAndroid.show("You've already got the right answer.", ToastAndroid.SHORT)
     }
 
     submit = (inputText, answer) => {
-        console.log(inputText, answer)
         inputText = inputText.toLowerCase()
         {
             (answer == inputText)
-            ? this.isCorrect()
-            : alert("wrong!")
+            ? this.isCorrect(answer)
+            : ToastAndroid.show("Wrong!", ToastAndroid.SHORT)
         }
     }
 

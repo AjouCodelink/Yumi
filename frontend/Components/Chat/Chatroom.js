@@ -102,7 +102,6 @@ export default class Chatroom extends Component {
                 )
             })
         }
-        
         this.socket.on('RECEIVE_QUIZ', function(quiz){
             receivePopQuiz(quiz.question, quiz.answer);
         })
@@ -143,19 +142,10 @@ export default class Chatroom extends Component {
         this.state.cr_name = navigation.getParam('cr_name', 'No cr_name')
         this.state.memNum = navigation.getParam('memNum', '?')
         this.state.myEmail = navigation.getParam('myEmail', '');
+        this.state.myNickname = navigation.getParam('myNickname', '');
         this.state.myLanguage = navigation.getParam('myLanguage', 'en');
         this.state.favorite = navigation.getParam('favorite', undefined);
-
-        db.transaction(tx => {
-            tx.executeSql(  // token에서 user_email 읽어오기
-                'SELECT * FROM token',
-                [],
-                (_, { rows: { _array }  }) => {
-                    this.state.token = _array[0].access_token
-                    this.socket.emit('JOIN_ROOM', {cr_id : this.state.cr_id, myEmail : this.state.myEmail})},
-                (_,error) => console.error(error)
-            )
-        },(error) => console.error(error))
+        console.log(this.state.favorite)
         this.db_read_chatLog();
         this._getParticipants();
     }
@@ -180,6 +170,16 @@ export default class Chatroom extends Component {
             this.setState({message: ''});    
             this.socket.emit('SEND_MESSAGE', newChat);
         }
+    }
+
+    _sendPopQuizWon(answer) { // 임시로 만든 함수입니다. 이후 팝퀴즈 연동이 완성되면 반드시 삭제해주세요.
+        const correctAlert = {
+            user_email: 'PopQuizBot',
+            cr_id: this.state.cr_id,
+            Time: Date(),
+            message: this.state.myNickname+' got the right answer! The correct answer is '+answer+'.',
+        }
+        this.socket.emit('SEND_MESSAGE', correctAlert);
     }
 
     _getParticipants() {
@@ -282,7 +282,7 @@ export default class Chatroom extends Component {
                                     <Chatbox_other data={chat}/>
                                 </View>)
                                 : (<View key={this.state.key++} style={style.other_chat}>
-                                    <Chatbox_quizbot data={chat}/>
+                                    <Chatbox_quizbot data={chat} _sendPopQuizWon={this._sendPopQuizWon}/>
                                 </View>)
                             )
                         ))}

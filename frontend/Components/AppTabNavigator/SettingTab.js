@@ -49,19 +49,37 @@ export default class SettingTab extends Component {
                 {text: 'LogOut', onPress: () => {
                     db.transaction(tx => {
                         tx.executeSql(
-                            'DELETE FROM token',
+                            'DROP TABLE token',
                             [],
                             null,
                             (_,error) => console.error(error)
                         ),
                         tx.executeSql(
-                            'DELETE FROM userInfo',
+                            'DROP TABLE userInfo',
                             [],
                             null,
                             (_,error) => console.error(error)
                         ),
                         tx.executeSql(
-                            'DELETE FROM crList',
+                            'DROP TABLE crList',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        ),
+                        tx.executeSql(          // token 저장하는 table 생성하기
+                            'CREATE TABLE if not exists token (access_token TEXT NOT NULL, user_email TEXT NOT NULL, PRIMARY KEY("access_token"))',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        ),
+                        tx.executeSql(          // userInfo 저장하는 table 생성하기 // 이메일, 닉네임, 주소, 언어, 프사URL
+                            'CREATE TABLE if not exists userInfo (email TEXT NOT NULL, nickname TEXT NOT NULL, address TEXT NOT NULL, language TEXT NOT NULL, thumbnailURL TEXT, PRIMARY KEY("email"))',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        ),
+                        tx.executeSql(          // 채팅방 목록 저장하는 table 생성하기 // 채팅방ID, 채팅방이름, 대분류, 소분류, 인원, 마지막 메세지, 마지막 메세지 시간
+                            'CREATE TABLE if not exists crList (cr_id TEXT NOT NULL, cr_name TEXT NOT NULL, section TEXT NOT NULL, _group TEXT NOT NULL, memNum INTEGER, lastMessage TEXT, lastTime TEXT, favorite INTEGER, PRIMARY KEY("cr_id"))',
                             [],
                             null,
                             (_,error) => console.error(error)

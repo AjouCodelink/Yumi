@@ -24,6 +24,8 @@ export default class ChatroomTab extends Component {
         this.state = {
             fabActive : false,
             myLanguage : '',
+            myNickname: '',
+            favoriteHolder: [],
             arrayHolder: [],
             searcharrayHolder: [],
             suggestedRoom: [],
@@ -50,6 +52,7 @@ export default class ChatroomTab extends Component {
                 [],
                 (_, { rows: { _array }  }) => { 
                     this.state.myLanguage = _array[0].language;
+                    this.state.myNickname = _array[0].nickname;
                 },
                 (_,error) => console.error(error)
             )
@@ -59,6 +62,7 @@ export default class ChatroomTab extends Component {
     }
 
     crList_reload = () => {
+        this.state.favoriteHolder.splice(0,100)
         this.state.arrayHolder.splice(0,100)
         db.transaction( tx => {
             tx.executeSql(
@@ -79,7 +83,11 @@ export default class ChatroomTab extends Component {
                             lastTime: _array[i].lastTime,
                             favorite: _array[i].favorite
                         }
-                        this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
+                        if (_array[i].favorite == 1){
+                            this.setState({favoriteHolder: [...this.state.favoriteHolder, newItem]})
+                        } else {
+                            this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
+                        }
                     }
                     this.setState({spinnerOpacity: 0})
                 },
@@ -118,6 +126,7 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
+            console.log(responseJson)
             if(responseJson._id == undefined) {
                 ToastAndroid.show("No chat room found to suit your interests.", ToastAndroid.SHORT)
             } else {
@@ -188,7 +197,9 @@ export default class ChatroomTab extends Component {
             cr_id: item.cr_id,
             memNum: item.memNum,
             myEmail: this.email,
+            myNickname: this.state.myNickname,
             myLanguage: this.state.myLanguage,
+            favorite: item.favorite,
             crList_reload: this.crList_reload()
         });
     }
@@ -262,10 +273,9 @@ export default class ChatroomTab extends Component {
                     <Text style = {{fontSize : 16, margin : 15, fontWeight: 'bold', color :"#fff"}}>My Chatroom</Text>
                 </View>
                 <FlatList
-                    data={this.state.arrayHolder}
+                    data={[...this.state.favoriteHolder, ...this.state.arrayHolder]}
                     height= '100%'
                     width='100%'
-                    extraData={this.state.arrayHolder}
                     keyExtractor = {(item, index) => String(index)}
                     ItemSeparatorComponent={this.FlatListItemSeparator}
                     renderItem={({ item }) =>(
@@ -279,8 +289,10 @@ export default class ChatroomTab extends Component {
                                     ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/foods.jpg')}/>)
                                     : item.interest.section == 'Games'
                                         ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/games.jpg')}/>)
-                                        : (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/sports.jpg')}/>)
-                                }
+                                        : (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/sports.jpg')}/>)}
+                                {item.favorite==1
+                                    ?(<Icon name="md-star" style={{width: 34, position : 'absolute', top: 2, left: -9, fontSize: 26, color: '#eec600'}}/>)
+                                    :(null)}
                             </Left>
                             <Body>
                                 <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.cr_name}</Text>
@@ -290,8 +302,8 @@ export default class ChatroomTab extends Component {
                                     : ('No message')}
                                 </Text>
                             </Body>
-                            <Right style={{justifyContent: 'flex-end', alignItems:'flex-end'}}>
-                                <Icon name='md-people' style={{marginBottom: 10, fontSize: 16, color: '#333'}}>
+                            <Right style={{justifyContent: 'space-between', alignItems:'flex-end'}}>
+                                <Icon name='md-people' style={{fontSize: 16, color: '#333'}}>
                                     <Text style={{fontSize: 14, color: '#333'}}> {item.memNum}</Text>
                                 </Icon>
                                 <Text style={{fontSize: 12}}>{item.lastTime!=null ?

@@ -23,9 +23,11 @@ export default class Chatroom_SideMenu extends Component {
         if(this.state.favorite == undefined || this.state.favorite == null || this.state.favorite == 0) {
             this.setState({favorite: 1})
             this.db_changeFavorite(1)
+            console.log('favorite add')
         } else {
             this.setState({favorite: 0})
             this.db_changeFavorite(0)
+            console.log('favorite delete')
         }
     
     }

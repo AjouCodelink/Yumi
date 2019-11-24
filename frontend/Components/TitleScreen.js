@@ -48,7 +48,7 @@ export default class TitleScreen extends Component {
             const cr = crList[i]
             db.transaction( tx => {
                 tx.executeSql(          // 채팅방목록 저장
-                    'INSERT INTO crList (cr_id, cr_name, section, _group, memNum) values (?,?,?,?,?);',
+                    'INSERT INTO crList (cr_id, cr_name, section, _group, memNum, favorite) values (?,?,?,?,?,0);',
                     [cr.cr_id, cr.name, cr.interest.section, cr.interest.group, cr.memNum],
                     null,
                     (_,error) => console.error(error)
