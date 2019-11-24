@@ -13,7 +13,7 @@ export default class otherchat extends Component {
 
     _LongPress = (transMessage) => {
         if (transMessage == null) {
-            ToastAndroid.show("This message is same as your language.", ToastAndroid.SHORT)
+            ToastAndroid.show("This message cannot be translated.", ToastAndroid.SHORT)
             return
         } else{
             this.setState({

@@ -77,6 +77,7 @@ export default class ChatroomTab extends Component {
                             memNum: _array[i].memNum,
                             lastMessage: _array[i].lastMessage,
                             lastTime: _array[i].lastTime,
+                            favorite: _array[i].favorite
                         }
                         this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
                     }
@@ -215,7 +216,6 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            console.log(responseJson)
             if (responseJson.message == "no search chatroom") {
                 ToastAndroid.show('No rooms searched by this keyword.', ToastAndroid.SHORT);
             } else {
@@ -228,7 +228,10 @@ export default class ChatroomTab extends Component {
                     }
                     this.setState({searcharrayHolder: [...this.state.searcharrayHolder, newItem]})
                 }
-                this.setState({searchCRDisplay: 'none',})
+                this.setState({
+                    searchCRDisplay: 'flex',
+                    searchBarDisplay: 'none',
+                })
             }
             this.setState({spinnerOpacity: 0})
         })
@@ -272,9 +275,12 @@ export default class ChatroomTab extends Component {
                             onPress={() => this._onPressChatroom(item)}
                             key={item.cr_id}>
                             <Left style={{justifyContent: 'center'}}>
-                                <Thumbnail
-                                style={{width: 50, height: 45}} 
-                                source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }}/>
+                                {item.interest.section == 'Foods'
+                                    ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/foods.jpg')}/>)
+                                    : item.interest.section == 'Games'
+                                        ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/games.jpg')}/>)
+                                        : (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/sports.jpg')}/>)
+                                }
                             </Left>
                             <Body>
                                 <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.cr_name}</Text>
@@ -359,12 +365,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
     },
-    MyChatroom : {
-        width : '100%',
-        height:  50,
-        backgroundColor : '#111',
-        
-    },
     item : {
         flexDirection : 'row',
         padding : 10,
@@ -374,26 +374,8 @@ const styles = StyleSheet.create({
         borderColor : '#333',
         backgroundColor: '#fff',
     },
-    Divider : {
-        width: '100%',
-        backgroundColor : '#BDBDBD',
-    },
     thumbnail: {
         justifyContent : 'center',
         alignItems: 'center',
-    },
-    item_font : {
-        fontSize : 16,
-        marginLeft : 10,
-    },
-    textInputStyle:{
-        width: '85%',
-        height: 40,
-        textAlign : 'center',
-        color : '#fff',
-        borderWidth : 1, 
-        borderRadius: 7,
-        borderColor : '#4CAF50',
-        marginTop : 12,
     },
 })

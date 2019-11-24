@@ -17,6 +17,7 @@ export default class quizbot extends Component {
     }
 
     submit = (inputText, answer) => {
+        console.log(inputText, answer)
         inputText = inputText.toLowerCase()
         {
             (answer == inputText)
@@ -79,14 +80,14 @@ const style = StyleSheet.create({
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
         fontSize : 16,
-        color: '#fff',
+        color: '#444',
         paddingLeft: 65,
         paddingTop: 5,
         marginBottom: 5,
     },
     text_time: {
         fontSize : 12,
-        color: '#ddd',
+        color: '#222',
     },
     text_message: {
         fontSize: 15,

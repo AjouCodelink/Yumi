@@ -115,9 +115,8 @@ export default class Chatroom extends Component {
                 message: question,
                 answer: answer,
             }
-            console.log(newQuiz);
-            
-            // TODO: 받은 팝퀴즈를 db에 저장
+            db_Add(newQuiz)
+            console.log(newQuiz)
         }
     };
 
@@ -127,6 +126,7 @@ export default class Chatroom extends Component {
         message: '',
         myEmail: '',
         myLanguage: '',
+        favorite: undefined,
         chatLog:[], // 채팅로그
         userlist:[], // 유저 목록
         token: '',
@@ -144,6 +144,7 @@ export default class Chatroom extends Component {
         this.state.memNum = navigation.getParam('memNum', '?')
         this.state.myEmail = navigation.getParam('myEmail', '');
         this.state.myLanguage = navigation.getParam('myLanguage', 'en');
+        this.state.favorite = navigation.getParam('favorite', undefined);
 
         db.transaction(tx => {
             tx.executeSql(  // token에서 user_email 읽어오기
@@ -162,7 +163,7 @@ export default class Chatroom extends Component {
     renderDrawer = () => {
         return (
             <View>
-                <ChatroomSideMenu goBack={() => this.props.navigation.goBack(null)} userlist={this.state.userlist}/>
+                <ChatroomSideMenu goBack={() => this.props.navigation.goBack(null)} userlist={this.state.userlist} cr_id={this.state.cr_id} favorite={this.state.favorite}/>
             </View>
         );
     };

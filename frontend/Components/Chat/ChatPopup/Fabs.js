@@ -24,8 +24,8 @@ export default class Fabs extends Component {
                     style={styles.button_create} >
                     <Icon name='chatbubbles' style={{fontSize: 22, color: '#FFF'}}/>
                 </Button>
-                <Button   
-                    onPress={()=> this.props.onPressSearch()} 
+                <Button 
+                    onPress={()=> this.props.onPressSearch('flex')} 
                     activeOpacity={0.7} 
                     style={styles.button_search} >
                     <Icon name='ios-search' style={{fontSize: 22, color: '#FFF'}}/>

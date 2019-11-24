@@ -1,3 +1,0 @@
-class address extends Component {
-    
-}

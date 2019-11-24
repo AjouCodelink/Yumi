@@ -17,7 +17,7 @@ export default class ProfileTab extends Component {
         myNickname: '',
         myAddress: '',
         myLanguage: '',
-        myThumbnailURL: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd', // 이후 기본 URL로 연동해야함.
+        myThumbnailURL: null, // 이후 기본 URL로 연동해야함.
         isAlertVisible: false,
         token: '',
         spinnerOpacity: 1,
@@ -56,7 +56,7 @@ export default class ProfileTab extends Component {
                             myNickname: _array[0].nickname,
                             myAddress: _array[0].address,
                             myLanguage: _array[0].language,
-                            //myThumbnailURL: _array[0].thumbnailURL, //이후 썸네일 구현되면 연동
+                            myThumbnailURL: _array[0].thumbnailURL, //이후 썸네일 구현되면 연동
                             spinnerOpacity: 0
                         })
                     )
@@ -145,9 +145,9 @@ export default class ProfileTab extends Component {
                     submitInput={ (inputText) => {this._changeNickname(inputText), this.setState({isAlertVisible:false})}}
                     closeDialog={ () => {this.setState({isAlertVisible:false})} }/>
                 <View style={style.topsideContainer}>
-                    <Image
-                        style={{height:'100%', width:'100%', opacity: 0.2, resizeMode:'cover'}}
-                        source={{ uri: this.state.myThumbnailURL }}/>
+                    {this.state.myThumbnailURL == 'img_path'
+                    ? <Image style={{height:'100%', width:'100%', opacity: 0.2, resizeMode:'cover'}} source={require('../../assets/default_thumbnail.png')}/>
+                    : <Image style={{height:'100%', width:'100%', opacity: 0.2, resizeMode:'cover'}} source={{ uri: this.state.myThumbnailURL }}/>}
                 </View>
                 <View style={style.downsideContainer}>
                     <View style={{flexDirection:'row', alignItems: 'flex-end', marginLeft: 25}}> 
@@ -176,8 +176,9 @@ export default class ProfileTab extends Component {
                     style={style.thumbnailContainer}
                     onPress= {() => this._onPressThumbnail()}
                     activeOpacity= {0.8}>
-                    <Thumbnail circle backgroundColor="#ddd" style={style.thumbnail}
-                        source={{ uri: this.state.myThumbnailURL }}/>
+                    {this.state.myThumbnailURL == 'img_path'
+                    ? <Thumbnail backgroundColor="#ddd" style={style.thumbnail} source={require('../../assets/default_thumbnail.png')}/>
+                    : <Thumbnail backgroundColor="#ddd" style={style.thumbnail} source={{ uri: this.state.myThumbnailURL }}/>}
                 </TouchableOpacity>
                 <EditAddress token={this.state.token} displayChange={this._displayAddr} display={this.state.editAddrDisplay}/>
                 <EditInterest token={this.state.token} displayChange={this._displayInter} display={this.state.editInterDisplay}/>
@@ -248,7 +249,7 @@ const style = StyleSheet.create({
         fontWeight: 'bold',
     },
     font_email: {
-        color: '#444',
+        color: '#777',
         fontSize: 24,
     },
 });
