@@ -29,10 +29,8 @@ export default class AjouSup extends Component {
     }
     render() {
         return (
-    
             <Container>
                 <Content>
-                
                     <FlatList
                         data = {this.state.data.concat(AjouData,SeoulData)}
                         keyExtractor = {(item,index)=>String(index)}

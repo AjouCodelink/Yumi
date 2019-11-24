@@ -46,6 +46,7 @@ export default class TitleScreen extends Component {
         }),(error) => console.error(error);   // 트랜젝션 에러
         for(var i=0; i<crList.length; i++){
             const cr = crList[i]
+            console.log(cr)
             db.transaction( tx => {
                 tx.executeSql(          // 채팅방목록 저장
                     'INSERT INTO crList (cr_id, cr_name, section, _group, memNum, favorite) values (?,?,?,?,?,0);',

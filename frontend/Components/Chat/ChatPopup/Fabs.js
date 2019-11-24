@@ -2,8 +2,6 @@ import React, { Component } from "react"
 import { StyleSheet, Dimensions } from "react-native"
 import { Fab, Icon, Button } from 'native-base'
 
-const screenHeight = Math.round(Dimensions.get('window').height);
-
 export default class Fabs extends Component {
     constructor(props) {
         super(props);
@@ -13,7 +11,7 @@ export default class Fabs extends Component {
         return (
             <Fab
                 active={this.props.active}
-                direction="up"
+                direction="left"
                 containerStyle={styles.Container}
                 style={styles.big_fab}
                 onPress={() => this.props.onPressFabs()}>
@@ -44,9 +42,13 @@ export default class Fabs extends Component {
 const styles = StyleSheet.create({
     Container: {
         position : 'absolute',
+        justifyContent: 'center',
+        width: 65,
+        height: 65,
+        alignItems: 'center',
         flexDirection : 'row',
-        right: screenHeight*0.03,
-        bottom: screenHeight*0.02,
+        right: 15,
+        bottom: 72,
     },
     big_fab: {
         backgroundColor: '#5067FF',

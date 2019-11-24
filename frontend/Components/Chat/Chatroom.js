@@ -45,7 +45,6 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
-                console.log(responseJson, this.state.myLanguage)
                 if (data.user_email == this.state.myEmail || data.user_email == 'PopQuizBot') {
                     db_Add(data);
                 } else {
@@ -73,7 +72,6 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
-                console.log(responseJson)
                 if (responseJson.message == undefined) {
                     db_Add(data);
                 } else {
@@ -145,7 +143,6 @@ export default class Chatroom extends Component {
         this.state.myNickname = navigation.getParam('myNickname', '');
         this.state.myLanguage = navigation.getParam('myLanguage', 'en');
         this.state.favorite = navigation.getParam('favorite', undefined);
-        console.log(this.state.favorite)
         this.db_read_chatLog();
         this._getParticipants();
     }

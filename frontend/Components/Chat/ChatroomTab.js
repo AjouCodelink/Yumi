@@ -127,13 +127,14 @@ export default class ChatroomTab extends Component {
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             console.log(responseJson)
-            if(responseJson._id == undefined) {
+            if(responseJson[0]._id == undefined) {
                 ToastAndroid.show("No chat room found to suit your interests.", ToastAndroid.SHORT)
             } else {
                 newItem = {
-                    cr_name: responseJson.name,
-                    cr_id: responseJson._id,
-                    interest: responseJson.interest
+                    cr_name: responseJson[0].name,
+                    cr_id: responseJson[0]._id,
+                    interest: responseJson[0].interest,
+                    memNum: responseJson[0].participants.length
                 }
                 this.setState({suggestedRoom: newItem})
             }
@@ -317,26 +318,38 @@ export default class ChatroomTab extends Component {
                 <View style ={{width: '100%', backgroundColor: '#9cf'}}>
                     <Text style = {{fontSize : 16, margin : 15, fontWeight: 'bold', color :"#fff"}}>Chatroom Suggest</Text>
                 </View>
-                <View style={{}}>
+                <View style={{width: '100%', height: 80}}>
                 {this.state.suggestedRoom.cr_id == undefined
                     ? (<Text style={{color: '#333', fontSize: 16, padding: 30}}>No room suggested yet.</Text>)
-                    : (<TouchableOpacity activeOpacity={0.5} onPress={() => this._onPressChatroom(this.state.suggestedRoom)} onLongPress={() => this._longPressChatroom(this.state.suggestedRoom.cr_id)}>
+                    : (<ListItem avatar
+                        activeOpacity={0.5}
+                        onLongPress={() => this._longPressChatroom(this.state.suggestedRoom.cr_id)}
+                        onPress={() => this._onPressChatroom(this.state.suggestedRoom)}
+                        key={this.state.suggestedRoom.cr_id}>
                         <Left style={{justifyContent: 'center'}}>
-                            <Thumbnail style={{width: 50, height: 45}} 
-                                source={{ uri: 'https://search4.kakaocdn.net/argon/600x0_65_wr/CPagPGu3ffd' }} />
+                            {this.state.suggestedRoom.interest.section == 'Foods'
+                                ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/foods.jpg')}/>)
+                                : this.state.suggestedRoom.interest.section == 'Games'
+                                    ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/games.jpg')}/>)
+                                    : (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/sports.jpg')}/>)}
+                            {this.state.suggestedRoom.favorite==1
+                                ?(<Icon name="md-star" style={{width: 34, position : 'absolute', top: 2, left: -9, fontSize: 26, color: '#eec600'}}/>)
+                                :(null)}
                         </Left>
                         <Body>
                             <Text style={{fontSize: 16, fontWeight: 'bold',}}>{this.state.suggestedRoom.cr_name}</Text>
                             <Text style={{fontSize: 10, color: '#333'}}>  #{this.state.suggestedRoom.interest.section}  #{this.state.suggestedRoom.interest.group}</Text>
-                            <Text style={{fontSize: 13}}>  chatRoom message</Text>
+                            <Text style={{fontSize: 13}}>  {this.state.suggestedRoom.lastMessage!=null 
+                                ? (item.lastMessage)
+                                : ('Resent message 1hour ago')}
+                            </Text>
                         </Body>
-                        <Right style={{justifyContent: 'flex-end', alignItems:'flex-end'}}>
-                            <Icon name='md-people' style={{marginBottom: 10, fontSize: 16, color: '#333'}}>
-                                <Text style={{fontSize: 14, color: '#333'}}> 14</Text>
+                        <Right style={{justifyContent: 'flex-start', alignItems:'flex-end'}}>
+                            <Icon name='md-people' style={{fontSize: 16, color: '#333'}}>
+                                <Text style={{fontSize: 14, color: '#333'}}> {this.state.suggestedRoom.memNum}</Text>
                             </Icon>
-                            <Text style={{fontSize: 12}}>3:43 pm</Text>
                         </Right>
-                    </TouchableOpacity>)
+                    </ListItem>)
                 }
                 </View>
                 <SearchBar display={this.state.searchBarDisplay}

@@ -37,6 +37,7 @@ export default class quizbot extends Component {
             <View>
                 <DialogInput
                     isDialogVisible = {this.state.isAlertVisible}
+                    onSubmitEditing={() => {this.submit(inputText,data.answer, this.setState({isAlertVisible:false}))}}
                     title={"PopQuiz"}
                     message={data.message}
                     hintInput ={"Answer"}
