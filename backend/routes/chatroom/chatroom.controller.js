@@ -120,8 +120,8 @@ exports.recommend = (req, res) => {
 
             if(user.interests.length == 0)
             {
-                var random = Math.floor(Math.random() * 100);
-                ChatRoom.find().skip(random).limit(1).exec((err, chatroom) => {
+                var random = Math.floor(Math.random() * 5);
+                ChatRoom.find().skip(random).limit(5).exec((err, chatroom) => {
                     res.json(chatroom);
                 })      
             }
