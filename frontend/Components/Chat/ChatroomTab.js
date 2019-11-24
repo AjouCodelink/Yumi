@@ -227,6 +227,7 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
+            console.log(responseJson)
             if (responseJson.message == "no search chatroom") {
                 ToastAndroid.show('No rooms searched by this keyword.', ToastAndroid.SHORT);
             } else {
