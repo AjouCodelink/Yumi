@@ -111,7 +111,7 @@ export default class ChatroomTab extends Component {
     };
       
     getSuggestedChatRoomList = () => {
-        var url = 'http://101.101.160.185:3000/chatroom/recommend';
+        var url = 'http://101.101.160.185:3000/chatroom/recommend'; //3000
         fetch(url, {
             method: 'GET',
             headers: new Headers({
@@ -122,7 +122,7 @@ export default class ChatroomTab extends Component {
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             this.setState({suggestArrayHolder:[]});
-            for(var i=0; i<responseJson.length; i++){
+            for(var i=0; i<1; i++){
                 newItem = {
                     title: responseJson[i].name,
                     roomID: responseJson[i]._id,

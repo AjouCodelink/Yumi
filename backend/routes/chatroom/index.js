@@ -16,4 +16,5 @@ router.get('/log/:cr_id', controller.getLog);
 router.get('/participants/:cr_id', controller.getParticipants);
 router.get('/recommend', controller.recommend);
 router.post('/entrance/:cr_id', controller.entrance);
+
 module.exports = router;
