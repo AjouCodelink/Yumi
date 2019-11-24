@@ -144,8 +144,9 @@ export default class Chatroom extends Component {
         this.state.myNickname = navigation.getParam('myNickname', '');
         this.state.myLanguage = navigation.getParam('myLanguage', 'en');
         this.state.favorite = navigation.getParam('favorite', undefined);
+        this.socket.emit('JOIN_ROOM', {cr_id:this.state.cr_id, myEmail:this.state.myEmail})
         this.db_read_chatLog();
-        this._getParticipants();
+        this._getParticipants();s
     }
 
     renderDrawer = () => {
