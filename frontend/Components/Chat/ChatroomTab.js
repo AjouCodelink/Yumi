@@ -58,7 +58,6 @@ export default class ChatroomTab extends Component {
             )
         },(error) => console.error(error))
         this.crList_reload()
-        //this._onPressSuggestCR();
     }
 
     crList_reload = () => {
@@ -127,19 +126,49 @@ export default class ChatroomTab extends Component {
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             console.log(responseJson)
-            if(responseJson[0]._id == undefined) {
+            if(responseJson._id == undefined) {
                 ToastAndroid.show("No chat room found to suit your interests.", ToastAndroid.SHORT)
             } else {
                 newItem = {
-                    cr_name: responseJson[0].name,
-                    cr_id: responseJson[0]._id,
-                    interest: responseJson[0].interest,
-                    memNum: responseJson[0].participants.length
+                    cr_name: responseJson.name,
+                    cr_id: responseJson._id,
+                    interest: responseJson.interest,
+                    //memNum: responseJson.participants.length
                 }
                 this.setState({suggestedRoom: newItem})
             }
             this.setState({spinnerOpacity: 0})
         })
+    }
+
+    _joinCR = (new_room) => {
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM crList WHERE cr_id = ?;',
+                [new_room.cr_id],
+                (_, { rows: { _array }  }) => {
+                    {if(_array.length != 0) {
+                        ToastAndroid.show('You already join this room.', ToastAndroid.SHORT);
+                    } else {
+                        var url = 'http://101.101.160.185:3000/chatroom/entrance/'+new_room.cr_id;
+                        fetch(url, {
+                            method: 'POST',
+                            headers: new Headers({
+                            'Content-Type': 'application/json',
+                            'x-access-token': this.token
+                            }),
+                        }).then(response => response.json())
+                        .catch(error => console.error('Error: ', error))
+                        .then(responseJson=>{
+                            this.insertArrayHolder(new_room.cr_name, new_room.cr_id, new_room.interest, new_room.memNum)
+                            ToastAndroid.show('Chat room join complete.', ToastAndroid.SHORT);
+                            this._switchSearchCR('none')
+                        })
+                    }}
+                },
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error));
     }
 
     _onPressSuggestedCR = (newRoom) => {
@@ -363,6 +392,7 @@ export default class ChatroomTab extends Component {
                 <SearchedChatrooms token={this.token}
                     array={this.state.searcharrayHolder}
                     pushNewRoom={this.insertArrayHolder}
+                    _onPressChatroom={this._joinCR}
                     displayChange={this._switchSearchCR}
                     display={this.state.searchCRDisplay}/>
                 <CreateChatroom token={this.token}
