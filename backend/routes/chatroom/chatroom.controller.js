@@ -23,6 +23,7 @@ exports.searchWord = (req, res) =>{
         })
 }
 
+
 /*
     POST /chatroom/creation
     {
@@ -82,23 +83,28 @@ exports.entrance = (req, res)=>{
         if(err) res.json(err);
         User.findOne({email:email},{email:1, nickname: 1, interests: 1, chatroom:1}, function(err, user){
             if(err) res.json(err);
+            
             for(var i=0; i<chatroom.participants.length; i++){
                 if(chatroom.participants[i].email == user.email) return res.json({result:false, message : "user already entrance"});
             }
+
             chatroom.participants.push({
                 email : user.email,
                 nickname : user.nickname,
                 interests : user.interests
             })
+
             chatroom.save(function(){
                 user.chatroom.push({
                     cr_id: chatroom._id,
                     name: chatroom.name,
                     interest: chatroom.interest
                 })
+
                 user.save(function(){
                     res.json({result: true, message: "success entrance!"});
                 });
+                
             });
         })
 
@@ -122,7 +128,9 @@ exports.recommend = (req, res) => {
             {
                 var random = Math.floor(Math.random() * 5);
                 ChatRoom.find().skip(random).limit(5).exec((err, chatroom) => {
-                    res.json(chatroom);
+                    //array말고 단일 object로 보내기
+                    var a = chatroom[0];
+                    res.json(a);
                 })      
             }
             else{
