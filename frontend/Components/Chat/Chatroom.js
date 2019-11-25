@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Dimensions, YellowBox } from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Dimensions, YellowBox, BackHandler} from 'react-native';
 import {Icon, Input, Left, Right} from 'native-base';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 
@@ -22,6 +22,7 @@ YellowBox.ignoreWarnings([  // 강제로 에러 안뜨게 하기
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
+        this.handleBackButtonClick = this._goBack.bind(this);
         this.messageInput = React.createRef();
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
@@ -143,9 +144,14 @@ export default class Chatroom extends Component {
         this.state.myNickname = navigation.getParam('myNickname', '');
         this.state.myLanguage = navigation.getParam('myLanguage', 'en');
         this.state.favorite = navigation.getParam('favorite', undefined);
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
         this.socket.emit('JOIN_ROOM', {cr_id:this.state.cr_id, myEmail:this.state.myEmail})
         this.db_read_chatLog();
         this._getParticipants();
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
 
     renderDrawer = () => {
@@ -225,13 +231,16 @@ export default class Chatroom extends Component {
         })
     }
 
-
     handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
-        goback()
+        this._goBack()
     };
 
+    _goBack = () => {    // 전 화면을 리로드하며 goback을 묶어서 수행하는 함수
+        this.props.navigation.state.params.onNavigateBack()
+        this.props.navigation.goBack()
+    }
+
     render() {
-        const { goBack } = this.props.navigation;
         return (
             <DrawerLayout
                 ref={ drawer => this.drawer = drawer }
@@ -242,7 +251,7 @@ export default class Chatroom extends Component {
                 renderNavigationView={this.renderDrawer}>
                 <View style={style.header}>
                     <Left>
-                        <TouchableOpacity onPress={() => {goBack(null)}}>
+                        <TouchableOpacity onPress={() => {this._goBack()}}>
                             <Icon name='md-arrow-round-back' style={{color: '#999', fontSize: 30}}/>
                         </TouchableOpacity>
                     </Left>

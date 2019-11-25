@@ -125,7 +125,7 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            console.log(responseJson)
+            //console.log(responseJson)
             if(responseJson._id == undefined) {
                 ToastAndroid.show("No chat room found to suit your interests.", ToastAndroid.SHORT)
             } else {
@@ -221,6 +221,10 @@ export default class ChatroomTab extends Component {
         );
     }
 
+    handleOnNavigateBack = () => {
+        this.crList_reload()
+    }
+
     _onPressChatroom = (item) => {
         this.props.navigation.navigate('Chatroom', {
             cr_name: item.cr_name,
@@ -230,7 +234,7 @@ export default class ChatroomTab extends Component {
             myNickname: this.state.myNickname,
             myLanguage: this.state.myLanguage,
             favorite: item.favorite,
-            crList_reload: this.crList_reload()
+            onNavigateBack: this.handleOnNavigateBack
         });
     }
 
@@ -257,7 +261,7 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            console.log(responseJson)
+            //console.log(responseJson)
             if (responseJson.message == "no search chatroom") {
                 ToastAndroid.show('No rooms searched by this keyword.', ToastAndroid.SHORT);
             } else {
