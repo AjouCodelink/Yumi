@@ -95,6 +95,47 @@ export default class ChatroomTab extends Component {
         },(error) => console.error(error))
     }
 
+    cr_reload = (cr_id) => {        // 변경사항이 있는 cr 하나만 reload함.
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM crList where cr_id = ?',
+                [cr_id],
+                (_, { rows: { _array }  }) => {
+                    console.log(_array)
+                    changedCR = {
+                        cr_name: _array[0].cr_name,
+                        cr_id: _array[0].cr_id,
+                        interest: {
+                            section: _array[0].section,
+                            group: _array[0]._group
+                        },
+                        memNum: _array[0].memNum,
+                        lastMessage: _array[0].lastMessage,
+                        lastTime: _array[0].lastTime,
+                        favorite: _array[0].favorite
+                    }
+                    for(var i=0;i<this.state.favoriteHolder.length;i++)
+                    {
+                        if (this.state.favoriteHolder[i].cr_id == cr_id) {
+                            this.state.favoriteHolder[i] = changedCR
+                            this.setState({cr_id})  // 배열의 i번째 항목만 setState가 안되기 때문에 넣음
+                            return
+                        }
+                    }
+                    for(var i=0;i<this.state.arrayHolder.length;i++)
+                    {
+                        if (this.state.arrayHolder[i].cr_id == cr_id) {
+                            this.state.arrayHolder[i] = changedCR
+                            this.setState({cr_id})
+                            return
+                        }
+                    }
+                },
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
+    }
+
     insertArrayHolder = (cr_name, cr_id, interest, memNum) => {       // 새로운 방을 arrayholder이나 DB에 넣는 함수
         newItem = {
             cr_name: cr_name,
@@ -221,10 +262,6 @@ export default class ChatroomTab extends Component {
         );
     }
 
-    handleOnNavigateBack = () => {
-        this.crList_reload()
-    }
-
     _onPressChatroom = (item) => {
         this.props.navigation.navigate('Chatroom', {
             cr_name: item.cr_name,
@@ -234,7 +271,7 @@ export default class ChatroomTab extends Component {
             myNickname: this.state.myNickname,
             myLanguage: this.state.myLanguage,
             favorite: item.favorite,
-            onNavigateBack: this.handleOnNavigateBack
+            onNavigateBack: this.cr_reload
         });
     }
 

@@ -239,7 +239,7 @@ export default class Chatroom extends Component {
     };
 
     _goBack = () => {    // 전 화면을 리로드하며 goback을 묶어서 수행하는 함수
-        this.props.navigation.state.params.onNavigateBack()
+        this.props.navigation.state.params.onNavigateBack(this.state.cr_id)
         this.props.navigation.goBack()
     }
 

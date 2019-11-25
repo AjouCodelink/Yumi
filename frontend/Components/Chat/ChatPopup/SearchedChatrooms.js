@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native'
 import { Button, Item, Icon, Label, Input, Left, Body, Right} from 'native-base'
 
-import * as SQLite from 'expo-sqlite';
-const db = SQLite.openDatabase('db.db');
-
 export default class SearchedChatrooms extends Component {
     constructor(props){
         super(props)
@@ -48,7 +45,7 @@ export default class SearchedChatrooms extends Component {
                                         <Text style={style.font_cr_name}>{chatroom.cr_name}</Text>
                                         <Text style={style.font_cr_intertest}> #{chatroom.interest.section} #{chatroom.interest.group}</Text>
                                         <Icon name='md-people' style={{position : 'absolute', right:10, fontSize: 14, color: '#333'}}>
-                                            <Text style={{fontSize: 12, color: '#333'}}> {chatroom.participants.lenth}</Text>
+                                            <Text style={{fontSize: 12, color: '#333'}}> {/*chatroom.participants.length*/}</Text>
                                         </Icon>
                                     </View>
                                 </TouchableOpacity> 
