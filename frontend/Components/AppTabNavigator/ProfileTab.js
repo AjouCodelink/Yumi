@@ -4,7 +4,7 @@ import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'rea
 import DialogInput from 'react-native-dialog-input';
 import { Icon, Thumbnail, Spinner } from 'native-base';
 
-import EditAddress from './ProfilePopup/EditAddress'
+//import EditAddress from './ProfilePopup/EditAddress'
 import EditInterest from './ProfilePopup/EditInterest'
 import EditLanguage from './ProfilePopup/EditLanguage'
 
@@ -20,7 +20,7 @@ export default class ProfileTab extends Component {
         myThumbnailURL: null, // 이후 기본 URL로 연동해야함.
         isAlertVisible: false,
         token: '',
-        spinnerOpacity: 1,
+        spinnerDisplay: 'flex',
         editAddrDisplay: 'none',
         editInterDisplay: 'none',
         editLangDisplay: 'none',
@@ -57,7 +57,7 @@ export default class ProfileTab extends Component {
                             myAddress: _array[0].address,
                             myLanguage: _array[0].language,
                             myThumbnailURL: _array[0].thumbnailURL, //이후 썸네일 구현되면 연동
-                            spinnerOpacity: 0
+                            spinnerDisplay: 'none',
                         })
                     )
                 },
@@ -122,9 +122,9 @@ export default class ProfileTab extends Component {
     //     .then(responseJson => {console.log(responseJson)})
     // }
 
-    _displayAddr = (display) => {
-        this.setState({editAddrDisplay: display})
-    }
+    // _displayAddr = (display) => {
+    //     this.setState({editAddrDisplay: display})
+    // }
 
     _displayInter = (display) => {
         this.setState({editInterDisplay: display})
@@ -159,10 +159,10 @@ export default class ProfileTab extends Component {
                     <Text style={style.font_email}>{this.state.myEmail}</Text>
                 </View>
                 <View style={style.febContainer}>
-                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayAddr('flex')}>
+                    {/*<TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayAddr('flex')}>
                         <Icon name='md-pin' style={{fontSize: 32, margin: 4, color: '#444'}} />
                         <Text style={style.font_feb}>Address</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>*/}
                     <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayInter('flex')}>
                         <Icon name='md-cafe' style={{fontSize: 32, margin: 4, color: '#444'}} />
                         <Text style={style.font_feb}>Interests</Text>
@@ -180,10 +180,10 @@ export default class ProfileTab extends Component {
                     ? <Thumbnail backgroundColor="#ddd" style={style.thumbnail} source={require('../../assets/default_thumbnail.png')}/>
                     : <Thumbnail backgroundColor="#ddd" style={style.thumbnail} source={{ uri: this.state.myThumbnailURL }}/>}
                 </TouchableOpacity>
-                <EditAddress token={this.state.token} displayChange={this._displayAddr} display={this.state.editAddrDisplay}/>
+                {/*<EditAddress token={this.state.token} displayChange={this._displayAddr} display={this.state.editAddrDisplay}/>*/}
                 <EditInterest token={this.state.token} displayChange={this._displayInter} display={this.state.editInterDisplay}/>
                 <EditLanguage token={this.state.token} displayChange={this._displayLang} display={this.state.editLangDisplay}/>
-                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#ccc'/>
+                <Spinner size={80} style={{display: this.state.spinnerDisplay, flex: 4, bottom: '50%'}} color='#555'/>
             </View>
         );
     }

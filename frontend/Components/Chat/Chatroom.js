@@ -227,7 +227,6 @@ export default class Chatroom extends Component {
 
 
     handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
-        this.props.crList_reload()
         goback()
     };
 
@@ -243,7 +242,7 @@ export default class Chatroom extends Component {
                 renderNavigationView={this.renderDrawer}>
                 <View style={style.header}>
                     <Left>
-                        <TouchableOpacity onPress={() => goBack(null)}>
+                        <TouchableOpacity onPress={() => {goBack(null)}}>
                             <Icon name='md-arrow-round-back' style={{color: '#999', fontSize: 30}}/>
                         </TouchableOpacity>
                     </Left>

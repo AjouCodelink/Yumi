@@ -32,7 +32,7 @@ export default class ChatroomTab extends Component {
             searchBarDisplay: 'none',
             createCRDisplay: 'none',
             searchCRDisplay: 'none',
-            spinnerOpacity: 1,
+            spinnerDisplay: 'flex',
         }
     }
 
@@ -88,7 +88,7 @@ export default class ChatroomTab extends Component {
                             this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
                         }
                     }
-                    this.setState({spinnerOpacity: 0})
+                    this.setState({spinnerDisplay: 'none'})
                 },
                 (_,error) => console.error(error)
             )
@@ -114,7 +114,7 @@ export default class ChatroomTab extends Component {
     }
 
     _onPressSuggestCRFab = () => {
-        this.setState({spinnerOpacity: 1});
+        this.setState({spinnerDisplay: 'flex'});
         var url = 'http://101.101.160.185:3000/chatroom/recommend';
         fetch(url, {
             method: 'GET',
@@ -137,7 +137,7 @@ export default class ChatroomTab extends Component {
                 }
                 this.setState({suggestedRoom: newItem})
             }
-            this.setState({spinnerOpacity: 0})
+            this.setState({spinnerDisplay: 'none'})
         })
     }
 
@@ -246,7 +246,7 @@ export default class ChatroomTab extends Component {
             return
         }
         this.state.searcharrayHolder.splice(0,100)
-        this.setState({spinnerOpacity: 1});
+        this.setState({spinnerDisplay: 'flex'});
         var url = 'http://101.101.160.185:3000/chatroom/search/'+keyword;
         fetch(url, {
             method: 'GET',
@@ -275,7 +275,7 @@ export default class ChatroomTab extends Component {
                     searchBarDisplay: 'none',
                 })
             }
-            this.setState({spinnerOpacity: 0})
+            this.setState({spinnerDisplay: 'none'})
         })
     }
 
@@ -399,7 +399,7 @@ export default class ChatroomTab extends Component {
                     pushNewRoom={this.insertArrayHolder}
                     displayChange={this._onPressCreateCRFab}
                     display={this.state.createCRDisplay}/>
-                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#ccc'/>
+                <Spinner size={80} style={{display: this.state.spinnerDisplay, flex: 4, bottom: '47%'}} color='#777'/>
             </View>
         );
     }
