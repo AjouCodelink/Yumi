@@ -172,7 +172,8 @@ export default class ChatroomTab extends Component {
     }
 
     _onPressSuggestedCR = (newRoom) => {
-
+        this._joinCR(newRoom)
+        this.setState({suggestedRoom: []})
     }
 
     exitChatRoom = (cr_id) => { // 방 나가기
@@ -352,8 +353,7 @@ export default class ChatroomTab extends Component {
                     ? (<Text style={{color: '#333', fontSize: 16, padding: 30}}>No room suggested yet.</Text>)
                     : (<ListItem avatar
                         activeOpacity={0.5}
-                        onLongPress={() => this._longPressChatroom(this.state.suggestedRoom.cr_id)}
-                        onPress={() => this._onPressChatroom(this.state.suggestedRoom)}
+                        onPress={() => this._onPressSuggestedCR(this.state.suggestedRoom)}
                         key={this.state.suggestedRoom.cr_id}>
                         <Left style={{justifyContent: 'center'}}>
                             {this.state.suggestedRoom.interest.section == 'Foods'
