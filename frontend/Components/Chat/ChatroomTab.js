@@ -133,7 +133,7 @@ export default class ChatroomTab extends Component {
                     cr_name: responseJson.name,
                     cr_id: responseJson._id,
                     interest: responseJson.interest,
-                    //memNum: responseJson.participants.length
+                    memNum: responseJson.participants.length
                 }
                 this.setState({suggestedRoom: newItem})
             }
