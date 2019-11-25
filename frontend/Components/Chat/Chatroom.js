@@ -47,7 +47,7 @@ export default class Chatroom extends Component {
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
                 if (data.user_email == 'PopQuizBot') {
-                    db_Add(data);
+                    chatLogAdd(data);
                 } else if (data.user_email == this.state.myEmail) {
                     return
                 } else {
@@ -76,15 +76,15 @@ export default class Chatroom extends Component {
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
                 if (responseJson.message == undefined) {
-                    db_Add(data);
+                    chatLogAdd(data);
                 } else {
                     data.transMessage = responseJson.message.result.translatedText;
-                    db_Add(data);
+                    chatLogAdd(data);
                 }
             })
         }
 
-        db_Add = (newChat) => {
+        chatLogAdd = (newChat) => {
             this.chatLogAdd(newChat)
             db.transaction( tx => {
                 tx.executeSql(
@@ -115,7 +115,7 @@ export default class Chatroom extends Component {
                 message: question,
                 answer: answer,
             }
-            db_Add(newQuiz)
+            chatLogAdd(newQuiz)
             console.log(newQuiz)
         }
     };
@@ -148,7 +148,7 @@ export default class Chatroom extends Component {
         this.state.favorite = navigation.getParam('favorite', undefined);
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
         this.socket.emit('JOIN_ROOM', {cr_id:this.state.cr_id, myEmail:this.state.myEmail})
-        this.db_read_chatLog();
+        this.db_readChatLog();
     }
 
     componentDidMount() {
@@ -176,7 +176,7 @@ export default class Chatroom extends Component {
                 Time: Date(),
                 message: this.state.message,
             }
-            db_Add(newChat)
+            chatLogAdd(newChat)
             this.socket.emit('SEND_MESSAGE', newChat);
         }
     }
@@ -218,7 +218,7 @@ export default class Chatroom extends Component {
         })
     }
 
-    db_read_chatLog = () => {        // DB 내의 채팅 로그 읽어오기
+    db_readChatLog = () => {        // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
