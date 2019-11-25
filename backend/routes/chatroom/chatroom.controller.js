@@ -128,6 +128,7 @@ exports.recommend = (req, res) => {
             {
                 var random = Math.floor(Math.random() * 5);
                 ChatRoom.find().skip(random).limit(5).exec((err, chatroom) => {
+                    //array말고 단일 object로 보내기
                     var a = chatroom[0];
                     res.json(a);
                 })      
