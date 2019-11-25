@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Button } from 'native-base';
 
 export default class mychat extends Component {
     render() {
@@ -8,9 +7,9 @@ export default class mychat extends Component {
         return (
             <View style={style.content}>
                 <Text style={style.text_time}>{data.Time.toString().substr(16, 5)}  </Text>
-                <Button info style={style.messageBox}>
+                <Text style={style.messageBox}>
                     <Text style={style.text_message}> {data.message} </Text>
-                </Button>
+                </Text>
             </View>
         );
     }
@@ -24,14 +23,15 @@ const style = StyleSheet.create({
         justifyContent: 'flex-end',
         marginLeft: '30%',
         paddingRight: 10,
-        paddingTop: 5,
-        paddingBottom: 5,
+        paddingTop: 6,
+        paddingBottom: 6,
     },
     messageBox: {
-        paddingLeft: 8,
-        paddingRight: 8,
+        paddingTop: 8,
+        paddingBottom: 8,
+        padding: 5,
         backgroundColor: "#ee3",
-        borderRadius: 6
+        borderRadius: 6,
     },
     text_time: {
         fontSize : 12,

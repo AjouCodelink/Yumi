@@ -46,6 +46,7 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
+                //console.log(responseJson)
                 if (data.user_email == 'PopQuizBot') {
                     chatLogAdd(data);
                 } else if (data.user_email == this.state.myEmail) {
@@ -75,6 +76,7 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
+                //console.log(responseJson)
                 if (responseJson.message == undefined) {
                     chatLogAdd(data);
                 } else {
@@ -236,10 +238,6 @@ export default class Chatroom extends Component {
         })
     }
 
-    handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
-        this._goBack()
-    };
-
     _goBack = () => {    // 전 화면을 리로드하며 goback을 묶어서 수행하는 함수
         this.props.navigation.state.params.onNavigateBack(this.state.cr_id)
         this.props.navigation.goBack()
@@ -301,12 +299,12 @@ export default class Chatroom extends Component {
                     <View style={style.inputPlace}>
                         <Input onChangeText={(message) => this.setState({message})}
                             ref={this.messageInput}
-                            onSubmitEditing={() => {this._onPressSend();}}  // 엔터눌러도 입력되도록 함
+                            onSubmitEditing={() => this._onPressSend()}  // 엔터눌러도 입력되도록 함
                             value={this.state.message}
                             placeholder='Enter message'
-                            style={{marginLeft: 6, fontSize: 16}}/>
+                            style={{fontSize: 16}}/>
                         <TouchableOpacity onPress={() => this._onPressSend()}>
-                            <Icon name='md-send' style={{color: '#555', marginRight: 10, fontSize: 30}}/>
+                            <Icon name='md-send' style={{color: '#555', fontSize: 30}}/>
                         </TouchableOpacity>
                     </View>
                 </KeyboardAvoidingView>
@@ -357,12 +355,13 @@ const style = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     inputPlace: {
-        height: 45,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f6f6f6',
+        paddingRight: 10,
+        paddingLeft: 10,
         borderWidth: 0,
     },
     font_main: {
