@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, Dimensions, TouchableOpacity, ToastAndroid } from 'react-native'
 import { Button, } from 'native-base'
 
-import Games from '../SignUp/Interest/Games';
-import Sports from '../SignUp/Interest/Sports';
-import Foods from '../SignUp/Interest/Foods';
+import Games from '../../SignUp/Interest/Games';
+import Sports from '../../SignUp/Interest/Sports';
+import Foods from '../../SignUp/Interest/Foods';
 
 const screenHeight = Math.round(Dimensions.get('window').height);
 
@@ -25,6 +25,7 @@ export default class EditInterest extends Component {
             interests: pervInterests.concat({section : newSection, group: newGroup, key: newKey})
         });
     }
+
     interRemove = (remKey) => {
         const pervInterests = this.state.interests;
         this.setState({
@@ -37,13 +38,27 @@ export default class EditInterest extends Component {
     }
 
     _onPressAdmit = () => {
-        if (this.state.interests.length == 0) {
-            ToastAndroid.show('Please select your interests.', ToastAndroid.SHORT)
-            return
-        }
-        //todo: 서버와 연동
-        this.popupClose()
-        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
+        var url = 'http://101.101.160.185:3000/user/profile/interests';
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token',
+            'x-access-token': this.props.token
+            }),
+            body: JSON.stringify({
+                "interests": this.state.interests
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            if(responseJson.result == true){
+                this.popupClose()
+                ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
+            } else {
+                ToastAndroid.show('Failed to save. Please check the network.', ToastAndroid.SHORT);
+            }
+        })
     }
 
     popupClose = () => {

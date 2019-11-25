@@ -28,8 +28,8 @@ const style = StyleSheet.create({
         paddingBottom: 5,
     },
     messageBox: {
-        paddingLeft: 5,
-        paddingRight: 5,
+        paddingLeft: 8,
+        paddingRight: 8,
         backgroundColor: "#ee3",
         borderRadius: 6
     },

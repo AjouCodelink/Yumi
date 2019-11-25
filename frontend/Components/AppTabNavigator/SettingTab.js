@@ -49,19 +49,37 @@ export default class SettingTab extends Component {
                 {text: 'LogOut', onPress: () => {
                     db.transaction(tx => {
                         tx.executeSql(
-                            'DELETE FROM token',
+                            'DROP TABLE token',
                             [],
                             null,
                             (_,error) => console.error(error)
                         ),
                         tx.executeSql(
-                            'DELETE FROM userInfo',
+                            'DROP TABLE userInfo',
                             [],
                             null,
                             (_,error) => console.error(error)
                         ),
                         tx.executeSql(
-                            'DELETE FROM crList',
+                            'DROP TABLE crList',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        ),
+                        tx.executeSql(          // token 저장하는 table 생성하기
+                            'CREATE TABLE if not exists token (access_token TEXT NOT NULL, user_email TEXT NOT NULL, PRIMARY KEY("access_token"))',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        ),
+                        tx.executeSql(          // userInfo 저장하는 table 생성하기 // 이메일, 닉네임, 주소, 언어, 프사URL
+                            'CREATE TABLE if not exists userInfo (email TEXT NOT NULL, nickname TEXT NOT NULL, address TEXT NOT NULL, language TEXT NOT NULL, thumbnailURL TEXT, PRIMARY KEY("email"))',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        ),
+                        tx.executeSql(          // 채팅방 목록 저장하는 table 생성하기 // 채팅방ID, 채팅방이름, 대분류, 소분류, 인원, 마지막 메세지, 마지막 메세지 시간
+                            'CREATE TABLE if not exists crList (cr_id TEXT NOT NULL, cr_name TEXT NOT NULL, section TEXT NOT NULL, _group TEXT NOT NULL, memNum INTEGER, lastMessage TEXT, lastTime TEXT, favorite INTEGER, PRIMARY KEY("cr_id"))',
                             [],
                             null,
                             (_,error) => console.error(error)
@@ -102,7 +120,7 @@ export default class SettingTab extends Component {
                             (_,error) => console.error(error)
                         ),
                         tx.executeSql(
-                            'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
+                            'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, transMessage TEXT, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
                             [],
                             null,
                             (_,error) => console.error(error)
@@ -129,7 +147,7 @@ export default class SettingTab extends Component {
             <View style={style.container}>
                 <View style={style.content}>
                     <ScrollView style={{width: '100%'}}>
-                        <List >
+                        <List>
                             <ListItem itemDivider style={style.first_divider} key={'A'}>
                                 <Text style={style.font_divider}>Contact</Text>
                             </ListItem>       
@@ -151,7 +169,7 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 25,
-        backgroundColor: '#333',
+        backgroundColor: '#fff',
     },
     font_header: {
         color: 'white',
@@ -168,8 +186,8 @@ const style = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         borderBottomWidth: 3,
-        borderColor: "#222",
-        backgroundColor: '#383838',
+        borderColor: "#bbb",
+        backgroundColor: '#eeeeee',
         paddingLeft: 15,
         alignItems: 'center',
     },
@@ -177,32 +195,31 @@ const style = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         borderBottomWidth: 3,
-        borderColor: "#222",
-        backgroundColor: '#404040',
+        borderColor: "#bbb",
+        backgroundColor: '#eeeeee',
         marginTop: 20,
         paddingLeft: 15,
         alignItems: 'center',
     },
     font_divider: {
         fontSize: 25,
-        color: "#eee",
+        color: "#000",
     },
     menu: {
         width: '100%',
+        borderBottomWidth: 2,
+        borderColor: "#bbb",
         flexDirection: 'row',
-        borderWidth: 1,
-        borderColor: "#333",
-        marginLeft: 24,
         alignItems: 'center',
     },
     icon_menu: {
         width: 38,
         fontSize: 24,
-        color: "#ddd",
+        color: "#555",
         justifyContent: 'center',
     },
     font_menu: {
         fontSize: 20,
-        color: "#eee",
+        color: "#444",
     },
 });

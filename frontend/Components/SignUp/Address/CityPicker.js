@@ -11,7 +11,7 @@ export default class CityPicker extends Component {
     state = {
         selected: undefined,
         seoul: [
-            {label:'Gangseo-gu', value:'강남구'},
+            {label:'Gangnam-gu', value:'강남구'},
             {label:'Gangdong-gu', value:'강동구'},
             {label:'Gangbuk-gu', value:'강북구'},
             {label:'Gangseo-gu', value:'강서구'},

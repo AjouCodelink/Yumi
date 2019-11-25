@@ -6,6 +6,7 @@ import ChatScreen from './AppTabNavigator/ChatScreen'
 import ProfileTab from './AppTabNavigator/ProfileTab'
 import SettingTab from './AppTabNavigator/SettingTab'
 import SupportersTab from './AppTabNavigator/SupportersTab'
+
 const AppTabNavigator = createMaterialTopTabNavigator({
     Profile: ProfileTab,
     Chatroom: ChatScreen, 
@@ -18,7 +19,7 @@ const AppTabNavigator = createMaterialTopTabNavigator({
     tabBarOptions: {
     style: {
         backgroundColor: '#F6F6F6',
-        borderTopColor: '#EAEAEA',
+        borderTopColor: '#cccccc',
         borderTopWidth: 1.5,
     },
     iconStyle: {height:25, paddingTop: -5},

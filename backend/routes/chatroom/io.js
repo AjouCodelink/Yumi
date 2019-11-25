@@ -28,7 +28,7 @@ module.exports = function (server) {
                             break;
                         } else{
                             socket.leave(chatroom.participants[i].socketID);
-                            socket.id = chatroom.participants[i].socketID;
+                            chatroom.participants[i].socketID=socket.id;
                             socket.join(data.cr_id);
                             break;
                         }

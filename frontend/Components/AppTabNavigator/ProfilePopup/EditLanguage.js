@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native'
 import { Button, } from 'native-base'
 
-import LanguagePicker from '../SignUp/Language/LanguagePicker'
+import LanguagePicker from '../../SignUp/Language/LanguagePicker'
+
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
 
 export default class EditLanguage extends Component {
     constructor(props){
@@ -33,6 +36,7 @@ export default class EditLanguage extends Component {
     }
 
     _onPressAdmit = () => {
+        console.log(this.state.language)
         if (this.state.language == "NoValue") {
             ToastAndroid.show('Please select language.', ToastAndroid.SHORT)
             return
@@ -48,10 +52,21 @@ export default class EditLanguage extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            console.log(responseJson); // TODO : responseJson의 결과에 맞춰 알림 메세지 띄우기
+            if(responseJson.result == true){
+                db.transaction(tx => {
+                    tx.executeSql(  // DB에 바뀐 닉네임 저장
+                        'UPDATE userInfo SET language = ?',
+                        [this.state.language],
+                        null,
+                        (_,error) => console.error(error)
+                    )
+                })
+                this.popupClose()
+                ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
+            } else {
+                ToastAndroid.show('Failed to save. Please check the network.', ToastAndroid.SHORT);
+            }
         })
-        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
-        this.popupClose()
     }
 
     popupClose = () => {

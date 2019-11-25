@@ -26,13 +26,13 @@ export default class LanguagePicker extends Component {
                     selectedValue={this.state.selected}
                     onValueChange={this.onValueChange.bind(this)}>
                     <Picker.Item label='Language' value='noValue'/>
-                    <Picker.Item label="English" value="EN" />
-                    <Picker.Item label="中國語" value="CH" />
-                    <Picker.Item label="日本語" value="JP" />
-                    <Picker.Item label="Русский" value="RU" />
-                    <Picker.Item label="français" value="FR" />
-                    <Picker.Item label="español" value="ES" />
-                    <Picker.Item label="한국어" value="KR" />
+                    <Picker.Item label="English" value="en" />
+                    <Picker.Item label="中國語" value="zh-cn" />
+                    <Picker.Item label="日本語" value="ja" />
+                    <Picker.Item label="Русский" value="ru" />
+                    <Picker.Item label="français" value="fr" />
+                    <Picker.Item label="español" value="es" />
+                    <Picker.Item label="한국어" value="ko" />
                 </Picker>
             </View>
         )

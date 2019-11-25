@@ -26,13 +26,13 @@ export default class LoadingScreen extends Component {
                 (_,error) => console.error(error)
             ),
             tx.executeSql(          // 채팅방 목록 저장하는 table 생성하기 // 채팅방ID, 채팅방이름, 대분류, 소분류, 인원, 마지막 메세지, 마지막 메세지 시간
-                'CREATE TABLE if not exists crList (cr_id TEXT NOT NULL, cr_name TEXT NOT NULL, section TEXT NOT NULL, _group TEXT NOT NULL, memNum INTEGER, lastMessage TEXT, lastTime TEXT, PRIMARY KEY("cr_id"))',
+                'CREATE TABLE if not exists crList (cr_id TEXT NOT NULL, cr_name TEXT NOT NULL, section TEXT NOT NULL, _group TEXT NOT NULL, memNum INTEGER, lastMessage TEXT, lastTime TEXT, favorite INTEGER, PRIMARY KEY("cr_id"))',
                 [],
                 null,
                 (_,error) => console.error(error)
             ),
             tx.executeSql(          // 채팅 로그 저장하는 table 생성하기 /// 말한 사람 이메일, 채팅방 ID, 시간, 메세지, (팝퀴즈일경우)정답
-                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
+                'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, transMessage TEXT, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
                 [],
                 null,
                 (_,error) => console.error(error)

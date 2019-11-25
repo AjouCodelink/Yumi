@@ -46,9 +46,10 @@ export default class TitleScreen extends Component {
         }),(error) => console.error(error);   // 트랜젝션 에러
         for(var i=0; i<crList.length; i++){
             const cr = crList[i]
+            console.log(cr)
             db.transaction( tx => {
                 tx.executeSql(          // 채팅방목록 저장
-                    'INSERT INTO crList (cr_id, cr_name, section, _group, memNum) values (?,?,?,?,?);',
+                    'INSERT INTO crList (cr_id, cr_name, section, _group, memNum, favorite) values (?,?,?,?,?,0);',
                     [cr.cr_id, cr.name, cr.interest.section, cr.interest.group, cr.memNum],
                     null,
                     (_,error) => console.error(error)
@@ -122,7 +123,7 @@ export default class TitleScreen extends Component {
                     </Item>
                     <Item style={{height: 53, borderColor:'#222', marginTop: 20}} floatingLabel>
                         <Label style={{color: '#555'}}>Password</Label>
-                        <Input secureTextEntry={true} style={{fontSize: 18, color: '#000', paddingLeft: 5}} onSubmitEditing={() => {this.submit();}} onChangeText={(password) => this.setState({password})}/>
+                        <Input secureTextEntry={true} style={{fontSize: 18, color: '#000', paddingLeft: 5}} onSubmitEditing={() => {this.onPressLogin();}} onChangeText={(password) => this.setState({password})}/>
                     </Item>
                 </KeyboardAvoidingView>
                 <View style={style.footer}>
