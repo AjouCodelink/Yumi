@@ -46,6 +46,7 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
+                console.log(responseJson)
                 if (data.user_email == this.state.myEmail || data.user_email == 'PopQuizBot') {
                     db_Add(data);
                 } else {
@@ -73,6 +74,7 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
+                console.log(responseJson)
                 if (responseJson.message == undefined) {
                     db_Add(data);
                 } else {
