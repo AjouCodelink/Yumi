@@ -43,7 +43,8 @@ export default class EditAddress extends Component {
             ToastAndroid.show('Please select language.', ToastAndroid.SHORT)
             return
         }
-        var url = 'http://101.101.160.185:3000/user/profile/address/'+this.state.address;
+        const _address = this.state.address
+        var url = 'http://101.101.160.185:3000/user/profile/address/'+_address;
         fetch(url, {
             method: 'POST',
             headers: new Headers({
@@ -58,7 +59,7 @@ export default class EditAddress extends Component {
                 db.transaction(tx => {
                     tx.executeSql(  // DB에 바뀐 닉네임 저장
                         'UPDATE userInfo SET address = ?',
-                        [this.state.address],
+                        [_address],
                         null,
                         (_,error) => console.error(error)
                     )

@@ -25,7 +25,6 @@ export default class Chatroom extends Component {
         this.messageInput = React.createRef();
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
-            console.log(data)
             // TODO : 자동번역을 할지 말지 선택하게 만들어서 자동번역 해주기
             detection(data);
         });
@@ -46,7 +45,6 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
-                console.log(responseJson)
                 if (data.user_email == this.state.myEmail || data.user_email == 'PopQuizBot') {
                     db_Add(data);
                 } else {
@@ -74,7 +72,6 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
-                console.log(responseJson)
                 if (responseJson.message == undefined) {
                     db_Add(data);
                 } else {
