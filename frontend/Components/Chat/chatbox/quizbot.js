@@ -1,27 +1,35 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet  } from 'react-native';
+import { View, Text, StyleSheet, ToastAndroid } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import { Button, Thumbnail } from 'native-base';
 
 export default class quizbot extends Component {
     constructor() {
         super();
-        this.state = {
-            isActive: true,
-            isAlertVisible: false,
-        }
     }
 
-    isCorrect() {
-        alert("correct!")
+    state = {
+        isActive: true,
+        isAlertVisible: false,
+        count: 1,
+    }
+
+    isCorrect(answer) {
+        if(this.state.count-- > 0) {
+            this.props._sendPopQuizWon(answer)
+            ToastAndroid.show("Correct!🏆", ToastAndroid.SHORT)
+            return
+        }
+        ToastAndroid.show("You've already got the right answer.", ToastAndroid.SHORT)
     }
 
     submit = (inputText, answer) => {
-        inputText = inputText.toLowerCase()
+        _inputText = inputText.toLowerCase()
+        _answer = answer.toLowerCase()
         {
-            (answer == inputText)
-            ? this.isCorrect()
-            : alert("wrong!")
+            (_answer == _inputText)
+            ? this.isCorrect(answer)
+            : ToastAndroid.show("Wrong!", ToastAndroid.SHORT)
         }
     }
 
@@ -31,6 +39,7 @@ export default class quizbot extends Component {
             <View>
                 <DialogInput
                     isDialogVisible = {this.state.isAlertVisible}
+                    onSubmitEditing={() => {this.submit(inputText,data.answer, this.setState({isAlertVisible:false}))}}
                     title={"PopQuiz"}
                     message={data.message}
                     hintInput ={"Answer"}
@@ -70,8 +79,8 @@ const style = StyleSheet.create({
         borderRadius: 45 * 0.4,
     },
     messageBox: {
-        paddingLeft: 5,
-        paddingRight: 5,
+        paddingLeft: 8,
+        paddingRight: 8,
         backgroundColor: "#fff",
         borderRadius: 6
     },
@@ -79,14 +88,14 @@ const style = StyleSheet.create({
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
         fontSize : 16,
-        color: '#fff',
+        color: '#444',
         paddingLeft: 65,
         paddingTop: 5,
         marginBottom: 5,
     },
     text_time: {
         fontSize : 12,
-        color: '#ddd',
+        color: '#222',
     },
     text_message: {
         fontSize: 15,

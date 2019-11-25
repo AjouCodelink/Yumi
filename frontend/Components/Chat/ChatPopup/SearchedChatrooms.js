@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native'
 import { Button, Item, Icon, Label, Input, Left, Body, Right} from 'native-base'
 
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
+
 export default class SearchedChatrooms extends Component {
     constructor(props){
         super(props)
@@ -29,20 +32,33 @@ export default class SearchedChatrooms extends Component {
     }
 
     _onPressChatroom = (new_room) => {
-        var url = 'http://101.101.160.185:3000/chatroom/entrance/'+new_room.cr_id;
-        fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-            'Content-Type': 'application/json',
-            'x-access-token': this.props.token
-            }),
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson=>{
-            this.props.pushNewRoom(new_room)
-        })
-        ToastAndroid.show('Chat room join complete.', ToastAndroid.SHORT);
-        this.popupClose()
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM crList WHERE cr_id = ?;',
+                [new_room.cr_id],
+                (_, { rows: { _array }  }) => {
+                    {if(_array.length != 0) {
+                        ToastAndroid.show('You already join this room.', ToastAndroid.SHORT);
+                    } else {
+                        var url = 'http://101.101.160.185:3000/chatroom/entrance/'+new_room.cr_id;
+                        fetch(url, {
+                            method: 'POST',
+                            headers: new Headers({
+                            'Content-Type': 'application/json',
+                            'x-access-token': this.props.token
+                            }),
+                        }).then(response => response.json())
+                        .catch(error => console.error('Error: ', error))
+                        .then(responseJson=>{
+                            this.props.pushNewRoom(new_room.cr_name, new_room.cr_id, new_room.interest, new_room.memNum)
+                            ToastAndroid.show('Chat room join complete.', ToastAndroid.SHORT);
+                            this.popupClose()
+                        })
+                    }}
+                },
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error));
     }
 
     popupClose = () => {
@@ -51,28 +67,22 @@ export default class SearchedChatrooms extends Component {
 
     render() {
         return (
-            <View style={[style.container, {display: this.props.display}]}>
+            <View style={[style.container]}>
                 <View style={[style.backGround, {display: this.props.display}]}>
                     <View style={style.content}>
                         <Text style={style.font_Title}>Searched Chatrooms</Text>
                         <ScrollView style={{width: '90%', height: '50%'}}>
-                            {this.props.array.length != 0
-                                ? (this.props.array.map( chatroom => (
-                                    <TouchableOpacity key={chatroom.cr_id} onPress={() => this._onPressChatroom(chatroom)}> 
-                                        <View style={style.chatroom}>
-                                            <Text style={style.font_cr_name}>{chatroom.cr_name}</Text>
-                                            <Text style={style.font_cr_intertest}> #{chatroom.interest.section} #{chatroom.interest.group}</Text>
-                                            <Icon name='md-people' style={{position : 'absolute', right:10, fontSize: 14, color: '#333'}}>
-                                                <Text style={{fontSize: 12, color: '#333'}}> 14</Text>
-                                            </Icon>
-                                        </View>
-                                    </TouchableOpacity> 
-                                ))) : (
-                                    <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={style.font_cr_name}>No Room Found.</Text>
+                            {this.props.array.map( chatroom => (
+                                <TouchableOpacity key={chatroom.cr_id} onPress={() => this._onPressChatroom(chatroom)}> 
+                                    <View style={style.chatroom}>
+                                        <Text style={style.font_cr_name}>{chatroom.cr_name}</Text>
+                                        <Text style={style.font_cr_intertest}> #{chatroom.interest.section} #{chatroom.interest.group}</Text>
+                                        <Icon name='md-people' style={{position : 'absolute', right:10, fontSize: 14, color: '#333'}}>
+                                            <Text style={{fontSize: 12, color: '#333'}}> 14</Text>
+                                        </Icon>
                                     </View>
-                                )
-                            }
+                                </TouchableOpacity> 
+                            ))}
                         </ScrollView>
                         <TouchableOpacity>
                             <Button onPress={() => this._onPressClose()} style={{backgroundColor: '#bbb', width: 80, justifyContent: 'center', margin: 15,}}>
@@ -129,6 +139,11 @@ const style = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#000',
+    },
+    font_foundNoCR: {
+        fontSize: 26,
+        fontWeight: 'bold',
+        color: '#ddd',
     },
     font_cr_intertest: {
         fontSize: 12,

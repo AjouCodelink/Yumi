@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { ToastAndroid, View, Text, Dimensions, StyleSheet, TouchableOpacity } from 'react-native'
-import { Button, } from 'native-base'
+import { ToastAndroid, View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { Button } from 'native-base'
 
-import DoPicker from '../SignUp/Address/DoPicker'
-import CityPicker from '../SignUp/Address/CityPicker'
+import DoPicker from '../../SignUp/Address/DoPicker'
+import CityPicker from '../../SignUp/Address/CityPicker'
+
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
 
 export default class EditAddress extends Component {
     constructor(props){
@@ -36,8 +39,8 @@ export default class EditAddress extends Component {
     }
 
     _onPressAdmit = () => {
-        if (this.state.selectedCity ==  'noValue') {
-            ToastAndroid.show('Please select your address.', ToastAndroid.SHORT)
+        if (this.state.selectedCity= 'noValue') {
+            ToastAndroid.show('Please select language.', ToastAndroid.SHORT)
             return
         }
         var url = 'http://101.101.160.185:3000/user/profile/address/'+this.state.address;
@@ -51,10 +54,21 @@ export default class EditAddress extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            console.log(responseJson); // TODO : responseJson의 결과에 맞춰서 알림 띄우기
+            if(responseJson.result == true){
+                db.transaction(tx => {
+                    tx.executeSql(  // DB에 바뀐 닉네임 저장
+                        'UPDATE userInfo SET address = ?',
+                        [this.state.address],
+                        null,
+                        (_,error) => console.error(error)
+                    )
+                })
+                this.popupClose()
+                ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
+            } else {
+                ToastAndroid.show('Failed to save. Please check the network.', ToastAndroid.SHORT);
+            }
         })
-        ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
-        this.popupClose()
     }
 
     popupClose = () => {

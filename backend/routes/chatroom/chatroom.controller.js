@@ -71,6 +71,39 @@ exports.getList = (req, res) => { // user가 속해 있는 채팅방 목록 반�
     })
 }
 
+/*
+    POST /chatroom/entrance/:cr_id
+*/
+exports.entrance = (req, res)=>{
+    var cr_id = req.params.cr_id;
+    var email = req.decoded.email;
+
+    ChatRoom.findOne({_id : cr_id}, function(err, chatroom){
+        if(err) res.json(err);
+        User.findOne({email:email},{email:1, nickname: 1, interests: 1, chatroom:1}, function(err, user){
+            if(err) res.json(err);
+            for(var i=0; i<chatroom.participants.length; i++){
+                if(chatroom.participants[i].email == user.email) return res.json({result:false, message : "user already entrance"});
+            }
+            chatroom.participants.push({
+                email : user.email,
+                nickname : user.nickname,
+                interests : user.interests
+            })
+            chatroom.save(function(){
+                user.chatroom.push({
+                    cr_id: chatroom._id,
+                    name: chatroom.name,
+                    interest: chatroom.interest
+                })
+                user.save(function(){
+                    res.json({result: true, message: "success entrance!"});
+                });
+            });
+        })
+
+    })
+}
 
 
 /*
@@ -84,21 +117,33 @@ exports.recommend = (req, res) => {
         if(err) return res.status(500).json({message : "not found user"});
         if(user){
             var random_num = Math.floor(Math.random() * user.interests.length);
-            console.log(user.interests[random_num]);
-            ChatRoom.find().
+
+            if(user.interests.length == 0)
+            {
+                var random = Math.floor(Math.random() * 5);
+                ChatRoom.find().skip(random).limit(5).exec((err, chatroom) => {
+                    res.json(chatroom);
+                })      
+            }
+            else{
+                ChatRoom.find().
                 or([
                     {"interest.section" : {$regex : '.*'+user.interests[random_num].section+'.*'}},
                     {"interest.group" : {$regex : '.*'+user.interests[random_num].group+'.*'}}
                 ]).
                 select('interest name').
                 sort('interest.group interest.section').
-                limit(5).
+                limit(10).
                 exec((err, chatroom)=>{ // TODO : 소분류순으로 먼저 나오게 하기
-                    res.json(chatroom);
+                    var random = Math.floor(Math.random() * chatroom.length);
+                    var a = chatroom[random];
+                    res.json(a);
                 })
+            }
         }
     })
 }
+
 
 /*
     GET /chatroom/log/:cr_id
