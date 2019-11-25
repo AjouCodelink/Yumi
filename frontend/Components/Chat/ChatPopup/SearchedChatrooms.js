@@ -48,7 +48,7 @@ export default class SearchedChatrooms extends Component {
                                         <Text style={style.font_cr_name}>{chatroom.cr_name}</Text>
                                         <Text style={style.font_cr_intertest}> #{chatroom.interest.section} #{chatroom.interest.group}</Text>
                                         <Icon name='md-people' style={{position : 'absolute', right:10, fontSize: 14, color: '#333'}}>
-                                            <Text style={{fontSize: 12, color: '#333'}}> 14</Text>
+                                            <Text style={{fontSize: 12, color: '#333'}}> {chatroom.participants.lenth}</Text>
                                         </Icon>
                                     </View>
                                 </TouchableOpacity> 
