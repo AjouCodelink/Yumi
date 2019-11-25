@@ -46,8 +46,10 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
-                if (data.user_email == this.state.myEmail || data.user_email == 'PopQuizBot') {
+                if (data.user_email == 'PopQuizBot') {
                     db_Add(data);
+                } else if (data.user_email == this.state.myEmail) {
+                    return
                 } else {
                     translate(data, responseJson.langCode);
                 }
@@ -174,7 +176,7 @@ export default class Chatroom extends Component {
                 Time: Date(),
                 message: this.state.message,
             }
-            this.setState({message: ''});    
+            db_Add(newChat)
             this.socket.emit('SEND_MESSAGE', newChat);
         }
     }

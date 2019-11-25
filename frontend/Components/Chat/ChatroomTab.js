@@ -101,7 +101,6 @@ export default class ChatroomTab extends Component {
                 'SELECT * FROM crList where cr_id = ?',
                 [cr_id],
                 (_, { rows: { _array }  }) => {
-                    console.log(_array)
                     changedCR = {
                         cr_name: _array[0].cr_name,
                         cr_id: _array[0].cr_id,
