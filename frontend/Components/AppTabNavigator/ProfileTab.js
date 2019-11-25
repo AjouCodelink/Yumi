@@ -145,7 +145,7 @@ export default class ProfileTab extends Component {
                     submitInput={ (inputText) => {this._changeNickname(inputText), this.setState({isAlertVisible:false})}}
                     closeDialog={ () => {this.setState({isAlertVisible:false})} }/>
                 <View style={style.topsideContainer}>
-                    {this.state.myThumbnailURL == 'img_path'
+                    {(this.state.myThumbnailURL == 'img_path' || this.state.myThumbnailURL == null)
                     ? <Image style={{height:'100%', width:'100%', opacity: 0.2, resizeMode:'cover'}} source={require('../../assets/default_thumbnail.png')}/>
                     : <Image style={{height:'100%', width:'100%', opacity: 0.2, resizeMode:'cover'}} source={{ uri: this.state.myThumbnailURL }}/>}
                 </View>
@@ -176,7 +176,7 @@ export default class ProfileTab extends Component {
                     style={style.thumbnailContainer}
                     onPress= {() => this._onPressThumbnail()}
                     activeOpacity= {0.8}>
-                    {this.state.myThumbnailURL == 'img_path'
+                    {(this.state.myThumbnailURL == 'img_path' || this.state.myThumbnailURL == null)
                     ? <Thumbnail backgroundColor="#ddd" style={style.thumbnail} source={require('../../assets/default_thumbnail.png')}/>
                     : <Thumbnail backgroundColor="#ddd" style={style.thumbnail} source={{ uri: this.state.myThumbnailURL }}/>}
                 </TouchableOpacity>
