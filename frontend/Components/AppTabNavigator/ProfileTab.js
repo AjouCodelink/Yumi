@@ -165,7 +165,8 @@ export default class ProfileTab extends Component {
           }}
         />
         <View style={style.topsideContainer}>
-          {this.state.myThumbnailURL == "img_path" ? (
+          {this.state.myThumbnailURL == "img_path" ||
+          this.state.myThumbnailURL == null ? (
             <Image
               style={{
                 height: "100%",
@@ -244,7 +245,8 @@ export default class ProfileTab extends Component {
           onPress={() => this._onPressThumbnail()}
           activeOpacity={0.8}
         >
-          {this.state.myThumbnailURL == "img_path" ? (
+          {this.state.myThumbnailURL == "img_path" ||
+          this.state.myThumbnailURL == null ? (
             <Thumbnail
               backgroundColor="#ddd"
               style={style.thumbnail}
