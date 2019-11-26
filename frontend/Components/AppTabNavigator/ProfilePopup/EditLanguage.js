@@ -36,12 +36,12 @@ export default class EditLanguage extends Component {
     }
 
     _onPressAdmit = () => {
-        console.log(this.state.language)
+        const _language = this.state.language
         if (this.state.language == "NoValue") {
             ToastAndroid.show('Please select language.', ToastAndroid.SHORT)
             return
         }
-        var url = 'http://101.101.160.185:3000/user/profile/language/'+this.state.language;
+        var url = 'http://101.101.160.185:3000/user/profile/language/'+_language;
         fetch(url, {
             method: 'POST',
             headers: new Headers({
@@ -56,7 +56,7 @@ export default class EditLanguage extends Component {
                 db.transaction(tx => {
                     tx.executeSql(  // DB에 바뀐 닉네임 저장
                         'UPDATE userInfo SET language = ?',
-                        [this.state.language],
+                        [_language],
                         null,
                         (_,error) => console.error(error)
                     )

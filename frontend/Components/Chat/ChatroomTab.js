@@ -32,7 +32,7 @@ export default class ChatroomTab extends Component {
             searchBarDisplay: 'none',
             createCRDisplay: 'none',
             searchCRDisplay: 'none',
-            spinnerOpacity: 1,
+            spinnerDisplay: 'flex',
         }
     }
 
@@ -88,7 +88,47 @@ export default class ChatroomTab extends Component {
                             this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
                         }
                     }
-                    this.setState({spinnerOpacity: 0})
+                    this.setState({spinnerDisplay: 'none'})
+                },
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
+    }
+
+    cr_reload = (cr_id) => {        // 변경사항이 있는 cr 하나만 reload함.
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM crList where cr_id = ?',
+                [cr_id],
+                (_, { rows: { _array }  }) => {
+                    changedCR = {
+                        cr_name: _array[0].cr_name,
+                        cr_id: _array[0].cr_id,
+                        interest: {
+                            section: _array[0].section,
+                            group: _array[0]._group
+                        },
+                        memNum: _array[0].memNum,
+                        lastMessage: _array[0].lastMessage,
+                        lastTime: _array[0].lastTime,
+                        favorite: _array[0].favorite
+                    }
+                    for(var i=0;i<this.state.favoriteHolder.length;i++)
+                    {
+                        if (this.state.favoriteHolder[i].cr_id == cr_id) {
+                            this.state.favoriteHolder[i] = changedCR
+                            this.setState({cr_id})  // 배열의 i번째 항목만 setState가 안되기 때문에 넣음
+                            return
+                        }
+                    }
+                    for(var i=0;i<this.state.arrayHolder.length;i++)
+                    {
+                        if (this.state.arrayHolder[i].cr_id == cr_id) {
+                            this.state.arrayHolder[i] = changedCR
+                            this.setState({cr_id})
+                            return
+                        }
+                    }
                 },
                 (_,error) => console.error(error)
             )
@@ -114,7 +154,7 @@ export default class ChatroomTab extends Component {
     }
 
     _onPressSuggestCRFab = () => {
-        this.setState({spinnerOpacity: 1});
+        this.setState({spinnerDisplay: 'flex'});
         var url = 'http://101.101.160.185:3000/chatroom/recommend';
         fetch(url, {
             method: 'GET',
@@ -125,7 +165,7 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            console.log(responseJson)
+            //console.log(responseJson)
             if(responseJson._id == undefined) {
                 ToastAndroid.show("No chat room found to suit your interests.", ToastAndroid.SHORT)
             } else {
@@ -133,11 +173,11 @@ export default class ChatroomTab extends Component {
                     cr_name: responseJson.name,
                     cr_id: responseJson._id,
                     interest: responseJson.interest,
-                    //memNum: responseJson.participants.length
+                    memNum: responseJson.participants.length
                 }
                 this.setState({suggestedRoom: newItem})
             }
-            this.setState({spinnerOpacity: 0})
+            this.setState({spinnerDisplay: 'none'})
         })
     }
 
@@ -230,7 +270,7 @@ export default class ChatroomTab extends Component {
             myNickname: this.state.myNickname,
             myLanguage: this.state.myLanguage,
             favorite: item.favorite,
-            crList_reload: this.crList_reload()
+            onNavigateBack: this.cr_reload
         });
     }
 
@@ -246,7 +286,7 @@ export default class ChatroomTab extends Component {
             return
         }
         this.state.searcharrayHolder.splice(0,100)
-        this.setState({spinnerOpacity: 1});
+        this.setState({spinnerDisplay: 'flex'});
         var url = 'http://101.101.160.185:3000/chatroom/search/'+keyword;
         fetch(url, {
             method: 'GET',
@@ -257,7 +297,7 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            console.log(responseJson)
+            //console.log(responseJson)
             if (responseJson.message == "no search chatroom") {
                 ToastAndroid.show('No rooms searched by this keyword.', ToastAndroid.SHORT);
             } else {
@@ -275,7 +315,7 @@ export default class ChatroomTab extends Component {
                     searchBarDisplay: 'none',
                 })
             }
-            this.setState({spinnerOpacity: 0})
+            this.setState({spinnerDisplay: 'none'})
         })
     }
 
@@ -399,7 +439,7 @@ export default class ChatroomTab extends Component {
                     pushNewRoom={this.insertArrayHolder}
                     displayChange={this._onPressCreateCRFab}
                     display={this.state.createCRDisplay}/>
-                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 4, position: "absolute", bottom: '43%'}}color='#ccc'/>
+                <Spinner size={80} style={{display: this.state.spinnerDisplay, flex: 4, bottom: '47%'}} color='#777'/>
             </View>
         );
     }

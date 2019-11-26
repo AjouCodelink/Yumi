@@ -38,6 +38,7 @@ export default class EditInterest extends Component {
     }
 
     _onPressAdmit = () => {
+        const _interests = this.state.interests
         var url = 'http://101.101.160.185:3000/user/profile/interests';
         fetch(url, {
             method: 'POST',
@@ -47,7 +48,7 @@ export default class EditInterest extends Component {
             'x-access-token': this.props.token
             }),
             body: JSON.stringify({
-                "interests": this.state.interests
+                "interests": _interests
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
