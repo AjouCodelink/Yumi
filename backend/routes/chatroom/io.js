@@ -8,10 +8,8 @@ module.exports = function (server) {
         console.log(socket.id);
         socket.on('SEND_MESSAGE', function (data) {
             console.log(data);
-            //socket.join(data.cr_id);
+            data.socketID = socket.id;
             io.sockets.in(data.cr_id).emit('RECEIVE_MESSAGE', data); 
-            //socket.emit('MY_MESSAGE', data); // 나한테만 메세지 전송함
-            //socket.broadcast.emit('OTHER_MESSAGE', data); // 본인을 제외한 다른 사람들에게만 메세지 전송함
         })
 
         socket.on('JOIN_ROOM', function(data){
@@ -27,8 +25,8 @@ module.exports = function (server) {
                             socket.join(data.cr_id);
                             break;
                         } else{
-                            socket.leave(chatroom.participants[i].socketID);
                             chatroom.participants[i].socketID=socket.id;
+                            chatroom.save();
                             socket.join(data.cr_id);
                             break;
                         }
@@ -38,8 +36,14 @@ module.exports = function (server) {
         });
 
         socket.on('LEAVE_ROOM', function(cr_id){
-            socket.leave(cr_id);
+            socket.leaveAll();
+            console.log(socket.id);
+            socket.emit('disconnect');
         });
+
+        socket.on('disconnect', function(){
+            console.log('disconnect');
+        })
     });
 
     setInterval(() => { // 일정 주기로 팝퀴즈를 반환함
