@@ -4,83 +4,55 @@ import { Icon } from 'native-base';
 
 import InterestListItem from './InterestListItem';
 
-class Games extends Component {
+class Study extends Component {
     state = {
-        section : 'Games',
-        key : '0100',
+        section : 'Study',
+        key : '0400',
         opened : 'none',
         contactData : [{
-            name : 'Online Game',
+            name : 'Engineering',
             selected : false,
-            key : '0101',
+            key : '0401',
         },{
-            name : 'PC Game',
+            name : 'Information & Technology',
             selected : false,
-            key : '0102',
+            key : '0402',
         },{
-            name : "Mobile Game",
+            name : 'Natural Sciences',
             selected : false,
-            key : '0103',
+            key : '0403',
         },{
-            name : 'Console Game',
+            name : 'Business Administration',
             selected : false,
-            key : '0104',
+            key : '0404',
         },{
-            name : 'Board Game',
+            name : 'Humanities',
             selected : false,
-            key : '0105',
+            key : '0405',
         },{
-            name : 'RPG',
+            name : 'Socical Sciences',
             selected : false,
-            key : '0106',
+            key : '0406',
         },{
-            name : 'FPS',
+            name : 'Medicine',
             selected : false,
-            key : '0107',
+            key : '0407',
         },{
-            name : 'AOS',
+            name : 'Nursing',
             selected : false,
-            key : '0108',
+            key : '0408',
         },{
-            name : 'RTS',
+            name : 'International Studies',
             selected : false,
-            key : '0109',
+            key : '0409',
         },{
-            name : 'Rhythm Game',
+            name : 'Basic Subjects',
             selected : false,
-            key : '0110',
-        },{
-            name : 'Defense Game',
-            selected : false,
-            key : '0111',
-        },{
-            name : 'Racing Game',
-            selected : false,
-            key : '0112',
-        },{
-            name : 'Sandbox Game',
-            selected : false,
-            key : '0113',
-        },{
-            name : 'BattleRoyal',
-            selected : false,
-            key : '0114',
-        },{
-            name : 'Card Game',
-            selected : false,
-            key : '0115',
-        },{
-            name : 'Indie Game',
-            selected : false,
-            key : '0116',
-        },{
-            name : 'Puzzle Game',
-            selected : false,
-            key : '0117',
+            key : '0410',
         },{
             name : 'etc',
             selected : false,
-            key : '0199',
+            key : '0499',
         },]
     }
     _onPressSection() {
@@ -147,4 +119,4 @@ const style = StyleSheet.create({
 })
 
 
-export default Games;
+export default Study;

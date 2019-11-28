@@ -6,7 +6,7 @@ import CustomButton from '../CustomButton';
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
 
-export default class SignUp_Done extends Component {
+export default class Done extends Component {
     static navigationOptions = {
         header: null
     }
@@ -18,7 +18,7 @@ export default class SignUp_Done extends Component {
         }
     }
     goTitle(){
-        this.props.navigation.navigate('Title');
+        RootNavigator('Title')
     }
     render() {
         const {navigation} = this.props;

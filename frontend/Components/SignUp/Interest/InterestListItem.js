@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from 'native-base';
 
-class ContactInfo extends Component {
+export default class InterestListItem extends Component {
     render() {
         const data = this.props.data;
         return (
@@ -30,5 +30,3 @@ const style = StyleSheet.create({
         paddingBottom: 4,
     },
 })
-
-export default ContactInfo;

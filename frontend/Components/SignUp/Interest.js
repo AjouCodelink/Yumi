@@ -6,8 +6,9 @@ import CustomButton from '../CustomButton';
 import Games from './Interest/Games';
 import Sports from './Interest/Sports';
 import Foods from './Interest/Foods';
+import Study from './Interest/Study';
 
-export default class SignUp_Interest extends Component {
+export default class Interest extends Component {
     static navigationOptions = {
         header: null
     }
@@ -97,6 +98,7 @@ export default class SignUp_Interest extends Component {
                         <Foods interAdd={this.interAdd} interRemove={this.interRemove}/>
                         <Games interAdd={this.interAdd} interRemove={this.interRemove}/>
                         <Sports interAdd={this.interAdd} interRemove={this.interRemove}/>
+                        <Study interAdd={this.interAdd} interRemove={this.interRemove}/>
                     </ScrollView>
                 </View>
                 <View style={style.footer}>

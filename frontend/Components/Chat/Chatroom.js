@@ -58,14 +58,14 @@ export default class Chatroom extends Component {
         }
 
         translate = (data, code) =>{
-            var url = 'https://openapi.naver.com/v1/language/translate';
+            var url = 'https://openapi.naver.com/v1/papago/n2mt';
             fetch(url, {
                 method: 'POST',
                 headers: new Headers({
                     'Content-Type': 'application/json',
                     'token': 'token',
-                    'X-Naver-Client-Id': 'ejNDp9aQ1y_evnFX0gTg',
-                    'X-Naver-Client-Secret': 'E1xo6lz3Yx'
+                    'X-Naver-Client-Id': 'uwR54w31oloY23abXfCg',
+                    'X-Naver-Client-Secret': '2OeufRbdBQ'
                 }),
                 body: JSON.stringify({
                     "source": code,
@@ -76,7 +76,7 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
-                //console.log(responseJson)
+                console.log(responseJson)
                 if (responseJson.message == undefined) {
                     chatLogAdd(data);
                 } else {
