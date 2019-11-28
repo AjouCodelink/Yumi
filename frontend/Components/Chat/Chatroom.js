@@ -47,11 +47,11 @@ export default class Chatroom extends Component {
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
                 //console.log(responseJson)
-                if (data.user_email == 'PopQuizBot') {
-                    chatLogAdd(data);
-                } else if (data.user_email == this.state.myEmail) {
+                if (data.user_email == 'PopQuizBot') {  // 팝퀴즈봇이면 디비에 추가
+                    db_chatLogAdd(data);
+                } else if (data.user_email == this.state.myEmail) { // 내 메시지면 스킵 
                     return
-                } else {
+                } else {    // 아니면 번역
                     translate(data, responseJson.langCode);
                 }
             })
@@ -76,25 +76,23 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
-                console.log(responseJson)
                 if (responseJson.message == undefined) {
-                    chatLogAdd(data);
+                    db_chatLogAdd(data);
                 } else {
                     data.transMessage = responseJson.message.result.translatedText;
-                    chatLogAdd(data);
+                    db_chatLogAdd(data);
                 }
             })
         }
 
-        chatLogAdd = (newChat) => {
-            this.chatLogAdd(newChat)
+        db_chatLogAdd = (newChat) => {
             db.transaction( tx => {
                 tx.executeSql(
                     'INSERT INTO chatLog (user_email, cr_id, Time, message, transMessage, answer) values (?, ?, ?, ?, ?, ?);',
                     [newChat.user_email, newChat.cr_id, newChat.Time, newChat.message, newChat.transMessage, newChat.answer],
                     null,
-                    null   // sql문 실패 에러
-                );
+                    null,   // sql문 실패 에러
+                )
             },null)          // 트랜젝션 에러
             db.transaction(tx => {
                 tx.executeSql(  
@@ -103,7 +101,8 @@ export default class Chatroom extends Component {
                     null,
                     (_,error) => console.error(error)
                 )
-            })
+            }, null)
+            this.chatLogAdd(newChat)
         }
         this.socket.on('RECEIVE_QUIZ', function(quiz){
             receivePopQuiz(quiz.question, quiz.answer);
@@ -117,8 +116,7 @@ export default class Chatroom extends Component {
                 message: question,
                 answer: answer,
             }
-            chatLogAdd(newQuiz)
-            console.log(newQuiz)
+            db_chatLogAdd(newQuiz)
         }
     };
 
@@ -178,7 +176,7 @@ export default class Chatroom extends Component {
                 Time: Date(),
                 message: this.state.message,
             }
-            chatLogAdd(newChat)
+            db_chatLogAdd(newChat)
             this.socket.emit('SEND_MESSAGE', newChat);
         }
     }
@@ -233,6 +231,7 @@ export default class Chatroom extends Component {
     };
 
     chatLogAdd = (newChat) => {
+        if (this.state.chatLog[this.state.chatLog.length-1] == newChat) return  // 중복된 메시지가 서버에서 전송될 때
         this.setState({
             chatLog: [...this.state.chatLog, newChat],
         })
