@@ -6,6 +6,7 @@ import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 import Chatbox_my from './chatbox/mychat';
 import Chatbox_other from './chatbox/otherchat';
 import Chatbox_quizbot from './chatbox/quizbot';
+import Chatbox_notice from './chatbox/notice';
 import ChatroomSideMenu from './Chatroom-SideMenu';
 
 import * as SQLite from 'expo-sqlite';
@@ -285,13 +286,18 @@ export default class Chatroom extends Component {
                             ? (<View key={this.state.key++} style={style.my_chat}>
                                 <Chatbox_my data={chat}/>
                             </View>)
-                            : ( chat.user_email != 'PopQuizBot' 
-                                ? (<View key={this.state.key++} style={style.other_chat}>
-                                    <Chatbox_other data={chat}/>
+                            : ( chat.user_email == 'notice' 
+                                ? (<View key={this.state.key++} style={style.notice_chat}>
+                                    <Chatbox_notice data={chat}/>
                                 </View>)
-                                : (<View key={this.state.key++} style={style.other_chat}>
-                                    <Chatbox_quizbot data={chat} _sendPopQuizWon={this._sendPopQuizWon}/>
-                                </View>)
+                                : ( chat.user_email != 'PopQuizBot' 
+                                    ? (<View key={this.state.key++} style={style.other_chat}>
+                                        <Chatbox_other data={chat}/>
+                                    </View>)
+                                    : (<View key={this.state.key++} style={style.other_chat}>
+                                        <Chatbox_quizbot data={chat} _sendPopQuizWon={this._sendPopQuizWon}/>
+                                    </View>)
+                                )
                             )
                         ))}
                     </ScrollView>
@@ -352,6 +358,11 @@ const style = StyleSheet.create({
         flex: 1,
         width: '100%',
         justifyContent: 'flex-start',
+    },
+    notice_chat: {
+        flex: 1,
+        width: '100%',
+        justifyContent: 'center',
     },
     inputPlace: {
         width: '100%',
