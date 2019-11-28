@@ -27,6 +27,7 @@ export default class Chatroom extends Component {
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
             // TODO : 자동번역을 할지 말지 선택하게 만들어서 자동번역 해주기
+            console.log(data);
             detection(data);
         });
         detection=(data)=>{
@@ -239,6 +240,7 @@ export default class Chatroom extends Component {
     }
 
     _goBack = () => {    // 전 화면을 리로드하며 goback을 묶어서 수행하는 함수
+        this.socket.emit('LEAVE_ROOM');
         this.props.navigation.state.params.onNavigateBack(this.state.cr_id)
         this.props.navigation.goBack()
     }
