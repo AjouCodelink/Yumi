@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ToastAndroid } from 'react-native';
+import { View, Text, StyleSheet, ToastAndroid, TouchableOpacity } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import { Button, Thumbnail } from 'native-base';
 
@@ -12,6 +12,12 @@ export default class quizbot extends Component {
         isActive: true,
         isAlertVisible: false,
         count: 1,
+    }
+
+    _onLongPress = (answer) => {
+        if(answer!=null) {
+            this.setState({isAlertVisible: true})
+        }
     }
 
     isCorrect(answer) {
@@ -50,9 +56,9 @@ export default class quizbot extends Component {
                     <Thumbnail backgroundColor="#fff" style={style.thumbnail}
                         source={require('../../../assets/chatbot.jpg')}/>
                     <View>
-                        <Button style={style.messageBox} onLongPress={() => this.setState({isAlertVisible: true})}>
+                        <TouchableOpacity activeOpacity={0.5} style={style.messageBox} onLongPress={() => this._onLongPress(data.answer)}>
                             <Text style={style.text_message}>{data.message} </Text>
-                        </Button>
+                        </TouchableOpacity>
                     </View>
                     <Text style={style.text_time}>  {data.Time.toString().substr(16, 5)}</Text>
                 </View>
@@ -70,6 +76,7 @@ const style = StyleSheet.create({
         justifyContent: 'flex-start',
         marginRight: '30%',
         paddingLeft: 10,
+        paddingTop: 5,
         paddingBottom: 5,
     },
     thumbnail: {
@@ -79,19 +86,21 @@ const style = StyleSheet.create({
         borderRadius: 45 * 0.4,
     },
     messageBox: {
-        paddingLeft: 8,
-        paddingRight: 8,
+        marginTop: 25,
+        paddingTop: 8,
+        paddingBottom: 8,
+        padding: 5,
+        borderRadius: 6,
         backgroundColor: "#fff",
-        borderRadius: 6
     },
     text_name: {
+        position : 'absolute',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
         fontSize : 16,
         color: '#444',
-        paddingLeft: 65,
-        paddingTop: 5,
-        marginBottom: 5,
+        top: 5,
+        left: 70,
     },
     text_time: {
         fontSize : 12,

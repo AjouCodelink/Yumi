@@ -16,7 +16,7 @@ export default class TitleScreen extends Component {
             email: '',
             password: '',
             loginResult: -1,
-            spinnerOpacity: 0,
+            spinnerDisplay: 'none',
         }
     }
     componentWillMount() {
@@ -64,13 +64,13 @@ export default class TitleScreen extends Component {
         else if (this.state.password == ''){
             alert('Please enter your password.');
         } else {
-            this.setState({spinnerOpacity: 1})
+            this.setState({spinnerDisplay: 'flex'})
             this.submit();
             setTimeout(() => {this.checkLoginResult();}, 1000);
         }
     }
     checkLoginResult(){
-        this.setState({spinnerOpacity: 0})
+        this.setState({spinnerDisplay: 'none'})
         if (this.state.loginResult == 0) {           // 잘못된 사용자 정보
             alert("Email or password is incorrect.")
             this.state.loginResult = -1
@@ -134,7 +134,7 @@ export default class TitleScreen extends Component {
                         <Text style={style.text_button}>Log In</Text>
                     </Button>
                 </View>
-                <Spinner size={80} style={{opacity: this.state.spinnerOpacity, flex: 3, position: "absolute", bottom: '50%'}}color='#ddd'/>
+                <Spinner size={80} style={{opacity: this.state.spinnerDisplay, flex: 3, bottom: '50%'}}color='#ddd'/>
             </View>
         );
     }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { ToastAndroid, View, Text, StyleSheet, Linking, Alert  } from 'react-native';
-import { Button, Thumbnail } from 'native-base';
+import { ToastAndroid, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Thumbnail } from 'native-base';
 
 export default class otherchat extends Component {
     constructor() {
@@ -33,9 +33,9 @@ export default class otherchat extends Component {
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
                                 source={require('../../../assets/default_thumbnail.png')}/>
-                            <Button style={[style.messageBox,{backgroundColor: '#9f9'}]} onLongPress={() => this._LongPress(data.transMessage)}>
+                            <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#9f9'}]} onLongPress={() => this._LongPress(data.transMessage)}>
                                 <Text style={style.text_message}>{data.transMessage} </Text>
-                            </Button>
+                            </TouchableOpacity>
                             <View style={style.time_container}>
                                 <Text style={style.text_time}>  translated</Text>
                                 <Text style={style.text_time}>  {data.Time.toString().substr(16, 5)}</Text>
@@ -45,9 +45,9 @@ export default class otherchat extends Component {
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
                                 source={require('../../../assets/default_thumbnail.png')}/>
-                            <Button style={[style.messageBox,{backgroundColor: '#ccc'}]} onLongPress={() => this._LongPress(data.transMessage)}>
+                            <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#ccc'}]} onLongPress={() => this._LongPress(data.transMessage)}>
                                 <Text style={style.text_message}>{data.message} </Text>
-                            </Button>
+                            </TouchableOpacity>
                             <View>
                                 <Text style={style.text_time}>  {data.Time.toString().substr(16, 5)}</Text>
                             </View>
@@ -66,6 +66,7 @@ const style = StyleSheet.create({
         justifyContent: 'flex-start',
         marginRight: '30%',
         paddingLeft: 10,
+        paddingTop: 5,
         paddingBottom: 5,
     },
     thumbnail: {
@@ -75,18 +76,20 @@ const style = StyleSheet.create({
         borderRadius: 45 * 0.4,
     },
     messageBox: {
-        paddingLeft: 8,
-        paddingRight: 8,
+        marginTop: 25,
+        paddingTop: 8,
+        paddingBottom: 8,
+        padding: 5,
         borderRadius: 6
     },
     text_name: {
+        position : 'absolute',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
         fontSize : 16,
         color: '#000',
-        paddingLeft: 65,
-        paddingTop: 5,
-        marginBottom: 5,
+        top: 5,
+        left: 70,
     },
     text_message: {
         fontSize: 15,

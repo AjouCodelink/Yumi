@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Dimensions, YellowBox } from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Dimensions, YellowBox, BackHandler} from 'react-native';
 import {Icon, Input, Left, Right} from 'native-base';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 
@@ -22,6 +22,7 @@ YellowBox.ignoreWarnings([  // 강제로 에러 안뜨게 하기
 export default class Chatroom extends Component {
     constructor(props){
         super(props);
+        this.handleBackButtonClick = this._goBack.bind(this);
         this.messageInput = React.createRef();
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
@@ -45,8 +46,11 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
-                if (data.user_email == this.state.myEmail || data.user_email == 'PopQuizBot') {
-                    db_Add(data);
+                //console.log(responseJson)
+                if (data.user_email == 'PopQuizBot') {
+                    chatLogAdd(data);
+                } else if (data.user_email == this.state.myEmail) {
+                    return
                 } else {
                     translate(data, responseJson.langCode);
                 }
@@ -72,16 +76,17 @@ export default class Chatroom extends Component {
             .then(response => response.json())
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
+                //console.log(responseJson)
                 if (responseJson.message == undefined) {
-                    db_Add(data);
+                    chatLogAdd(data);
                 } else {
                     data.transMessage = responseJson.message.result.translatedText;
-                    db_Add(data);
+                    chatLogAdd(data);
                 }
             })
         }
 
-        db_Add = (newChat) => {
+        chatLogAdd = (newChat) => {
             this.chatLogAdd(newChat)
             db.transaction( tx => {
                 tx.executeSql(
@@ -112,7 +117,7 @@ export default class Chatroom extends Component {
                 message: question,
                 answer: answer,
             }
-            db_Add(newQuiz)
+            chatLogAdd(newQuiz)
             console.log(newQuiz)
         }
     };
@@ -143,9 +148,17 @@ export default class Chatroom extends Component {
         this.state.myNickname = navigation.getParam('myNickname', '');
         this.state.myLanguage = navigation.getParam('myLanguage', 'en');
         this.state.favorite = navigation.getParam('favorite', undefined);
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
         this.socket.emit('JOIN_ROOM', {cr_id:this.state.cr_id, myEmail:this.state.myEmail})
-        this.db_read_chatLog();
+        this.db_readChatLog();
+    }
+
+    componentDidMount() {
         this._getParticipants();
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
 
     renderDrawer = () => {
@@ -165,7 +178,7 @@ export default class Chatroom extends Component {
                 Time: Date(),
                 message: this.state.message,
             }
-            this.setState({message: ''});    
+            chatLogAdd(newChat)
             this.socket.emit('SEND_MESSAGE', newChat);
         }
     }
@@ -207,7 +220,7 @@ export default class Chatroom extends Component {
         })
     }
 
-    db_read_chatLog = () => {        // DB 내의 채팅 로그 읽어오기
+    db_readChatLog = () => {        // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
@@ -225,14 +238,12 @@ export default class Chatroom extends Component {
         })
     }
 
-
-    handleBackButton = () => {  // 뒤로가기 누르면 전 탭으로 돌아감
-        this.props.crList_reload()
-        goback()
-    };
+    _goBack = () => {    // 전 화면을 리로드하며 goback을 묶어서 수행하는 함수
+        this.props.navigation.state.params.onNavigateBack(this.state.cr_id)
+        this.props.navigation.goBack()
+    }
 
     render() {
-        const { goBack } = this.props.navigation;
         return (
             <DrawerLayout
                 ref={ drawer => this.drawer = drawer }
@@ -243,7 +254,7 @@ export default class Chatroom extends Component {
                 renderNavigationView={this.renderDrawer}>
                 <View style={style.header}>
                     <Left>
-                        <TouchableOpacity onPress={() => goBack(null)}>
+                        <TouchableOpacity onPress={() => {this._goBack()}}>
                             <Icon name='md-arrow-round-back' style={{color: '#999', fontSize: 30}}/>
                         </TouchableOpacity>
                     </Left>
@@ -288,12 +299,12 @@ export default class Chatroom extends Component {
                     <View style={style.inputPlace}>
                         <Input onChangeText={(message) => this.setState({message})}
                             ref={this.messageInput}
-                            onSubmitEditing={() => {this._onPressSend();}}  // 엔터눌러도 입력되도록 함
+                            onSubmitEditing={() => this._onPressSend()}  // 엔터눌러도 입력되도록 함
                             value={this.state.message}
                             placeholder='Enter message'
-                            style={{marginLeft: 6, fontSize: 16}}/>
+                            style={{fontSize: 16}}/>
                         <TouchableOpacity onPress={() => this._onPressSend()}>
-                            <Icon name='md-send' style={{color: '#555', marginRight: 10, fontSize: 30}}/>
+                            <Icon name='md-send' style={{color: '#555', fontSize: 30}}/>
                         </TouchableOpacity>
                     </View>
                 </KeyboardAvoidingView>
@@ -344,12 +355,13 @@ const style = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     inputPlace: {
-        height: 45,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f6f6f6',
+        paddingRight: 10,
+        paddingLeft: 10,
         borderWidth: 0,
     },
     font_main: {
