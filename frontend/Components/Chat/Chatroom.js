@@ -27,7 +27,7 @@ export default class Chatroom extends Component {
         this.socket = io('http://101.101.160.185:3000');
         this.socket.on('RECEIVE_MESSAGE', function(data){
             // TODO : 자동번역을 할지 말지 선택하게 만들어서 자동번역 해주기
-            console.log(data);
+            //console.log(data);
             detection(data);
         });
         detection=(data)=>{
