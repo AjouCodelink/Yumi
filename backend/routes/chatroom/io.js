@@ -8,7 +8,6 @@ module.exports = function (server) {
         console.log(socket.id);
         socket.on('SEND_MESSAGE', function (data) {
             console.log(data);
-            data.socketID = socket.id;
             io.sockets.in(data.cr_id).emit('RECEIVE_MESSAGE', data); 
         })
 
