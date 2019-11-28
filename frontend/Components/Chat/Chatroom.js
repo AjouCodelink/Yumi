@@ -163,7 +163,12 @@ export default class Chatroom extends Component {
     renderDrawer = () => {
         return (
             <View>
-                <ChatroomSideMenu goBack={() => this.props.navigation.goBack(null)} userlist={this.state.userlist} cr_id={this.state.cr_id} favorite={this.state.favorite}/>
+                <ChatroomSideMenu
+                    goBack={() => this.props.navigation.goBack(null)}
+                    exitCR={() => this.props.navigation.state.params.exitChatRoom(this.state.cr_id)}
+                    userlist={this.state.userlist}
+                    cr_id={this.state.cr_id}
+                    favorite={this.state.favorite}/>
             </View>
         );
     };
