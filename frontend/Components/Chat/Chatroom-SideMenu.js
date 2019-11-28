@@ -46,8 +46,21 @@ export default class Chatroom_SideMenu extends Component {
         })
     }
     _onPressExit = () => {
-        this.props.goBack();
-        this.props.exitCR();
+        Alert.alert(
+            'Exit?',
+            'Press the OK button to exit this chat room.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {text: 'OK', onPress: () => {
+                    this.props.exitCR();
+                    this.props.goBack();
+                }},
+            ],
+            {cancelable: false},
+        );
     }
     _onPressPicture() {
         alert("You pressed Picture.")
