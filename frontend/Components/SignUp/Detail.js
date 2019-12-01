@@ -10,7 +10,7 @@ import LanguagePicker from './Language/LanguagePicker';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 
-export default class SignUp_Detail extends Component {
+export default class Detail extends Component {
     static navigationOptions = {
         header: null
     }
@@ -35,7 +35,7 @@ export default class SignUp_Detail extends Component {
         }
     }
     goTitle(){
-        this.props.navigation.navigate('Title');
+        RootNavigator('Title')
     }
     goSignUp_Interest(){
         this.props.navigation.navigate('SignUp_Interest', {
@@ -54,9 +54,9 @@ export default class SignUp_Detail extends Component {
         })
         this.passwordCheck();
         this.nicknameCheck();
-        this.addressCheck();
+        // this.addressCheck();
         this.languageCheck();
-        if (this.state.passwordChecked == 1 && this.state.nicknameChecked == 1 && this.state.addressChecked == 1) {
+        if (this.state.passwordChecked == 1 && this.state.nicknameChecked == 1) {
             this.goSignUp_Interest()
         }
     }
@@ -82,13 +82,13 @@ export default class SignUp_Detail extends Component {
             this.state.nicknameChecked = 1
         }
     }
-    addressCheck(){
-        if (this.state.selectedCity == 'noValue') {
-            alert("Please select your address.")
-        } else {
-            this.state.addressChecked = 1
-        }
-    }
+    // addressCheck(){
+    //     if (this.state.selectedCity == 'noValue') {
+    //         alert("Please select your address.")
+    //     } else {
+    //         this.state.addressChecked = 1
+    //     }
+    // }
     languageCheck(){
         if (this.state.language == '') {
             alert("Please select your language.")
@@ -140,7 +140,7 @@ export default class SignUp_Detail extends Component {
                         <Input style={{fontSize: 18, color: '#ddd'}} onChangeText={(nickname) => this.setState({nickname})}/>
                     </Item>
                     <Text style={style.font_main}>  The nickname must be between 2 and 20 characters.{"\n"}</Text>
-                    <View style={style.pickerContainer}>
+                    {/*<View style={style.pickerContainer}>
                         <View style={{height: 45, width: screenWidth*0.32}}>
                             <DoPicker valueChange={this.doChange}/>
                         </View>
@@ -148,7 +148,7 @@ export default class SignUp_Detail extends Component {
                             <CityPicker selectedDo={this.state.selectedDo} valueChange={this.cityChange}/>
                         </View>
                     </View>
-                    <Text style={style.font_main}>   Select a place where you live.{"\n"}</Text>
+                    <Text style={style.font_main}>   Select a place where you live.{"\n"}</Text>*/}
                     <View style={style.pickerContainer}>
                         <View style={{height: 45, width: screenWidth*0.74}}>
                             <LanguagePicker valueChange={this.languageChange} />

@@ -80,8 +80,8 @@ export default class TitleScreen extends Component {
             alert("Failed to login. Please try again.")
         }
     }
-    goSignup_Welcome(){
-        this.props.navigation.navigate('SignUp_Welcome');
+    goSignup(){
+        this.props.navigation.navigate('SignUp');
     }
     goMain(){
         const resetAction = StackActions.reset({
@@ -127,7 +127,7 @@ export default class TitleScreen extends Component {
                     </Item>
                 </KeyboardAvoidingView>
                 <View style={style.footer}>
-                    <Button style={[style.button, {backgroundColor: '#bbb'}]} onPress={() => this.goSignup_Welcome()}>
+                    <Button style={[style.button, {backgroundColor: '#bbb'}]} onPress={() => this.goSignup()}>
                         <Text style={style.text_button}>Sign Up</Text>
                     </Button>
                     <Button style={[style.button, {backgroundColor: '#36ee36'}]} onPress={() => this.onPressLogin()}>

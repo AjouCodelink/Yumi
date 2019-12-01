@@ -270,7 +270,8 @@ export default class ChatroomTab extends Component {
             myNickname: this.state.myNickname,
             myLanguage: this.state.myLanguage,
             favorite: item.favorite,
-            onNavigateBack: this.cr_reload
+            onNavigateBack: this.cr_reload,
+            exitChatRoom: this.exitChatRoom,
         });
     }
 

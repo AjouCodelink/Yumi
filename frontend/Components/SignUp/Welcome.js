@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CustomButton from '../CustomButton';
 
-export default class SignUp_Welcome extends Component {
+export default class Welcome extends Component {
     static navigationOptions = {
         header: null
     }
@@ -17,7 +17,7 @@ export default class SignUp_Welcome extends Component {
         })
     }
     goTitle(){
-        this.props.navigation.navigate('Title');
+        RootNavigator('Title')
     }
     goSignUp_EmailAuth(){
         this.props.navigation.navigate('SignUp_EmailAuth');
@@ -39,7 +39,7 @@ export default class SignUp_Welcome extends Component {
                 <View style={style.footer}>
                     <View style={style.footer_backbutton}>
                         <CustomButton
-                            title={'Back'}
+                            title={'Title'}
                             titleColor={'#ddd'}
                             buttonColor={'#000'}
                             onPress={() => this.goTitle()}/>

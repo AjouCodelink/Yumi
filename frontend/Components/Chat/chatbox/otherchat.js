@@ -33,7 +33,7 @@ export default class otherchat extends Component {
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
                                 source={require('../../../assets/default_thumbnail.png')}/>
-                            <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#9f9'}]} onLongPress={() => this._LongPress(data.transMessage)}>
+                            <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#9f9'}]} onPress={() => this._LongPress(data.transMessage)}>
                                 <Text style={style.text_message}>{data.transMessage} </Text>
                             </TouchableOpacity>
                             <View style={style.time_container}>
@@ -45,7 +45,7 @@ export default class otherchat extends Component {
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
                                 source={require('../../../assets/default_thumbnail.png')}/>
-                            <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#ccc'}]} onLongPress={() => this._LongPress(data.transMessage)}>
+                            <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#ccc'}]} onPress={() => this._LongPress(data.transMessage)}>
                                 <Text style={style.text_message}>{data.message} </Text>
                             </TouchableOpacity>
                             <View>
