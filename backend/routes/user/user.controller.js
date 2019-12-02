@@ -182,7 +182,7 @@ exports.login = (req, res) => {
             }
             for(var i = 0; i < length; i++){
                 var save_chatroom = [];
-                ChatRoom.find({_id:user.chatroom[i].cr_id},{name:1, participants:1}, function(err, chatroom){
+                ChatRoom.findOne({_id:user.chatroom[i].cr_id},{name:1, participants:1}, function(err, chatroom){
                     if(err) res.json(err);
                     save_chatroom.push(chatroom);
                     if(save_chatroom.length == length){

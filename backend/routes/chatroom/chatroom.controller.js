@@ -193,8 +193,10 @@ exports.exit = (req, res) => {
         for(var i=0; i < participants.length; i++){
             if(participants[i].email == email){
                 chatroom.participants.splice(chatroom.participants.indexOf(i), 1);
-                chatroom.save();
 
+                if(chatroom.participants.length==0) chatroom.remove({_id:cr_id});
+                else chatroom.save();
+                
                 User.findOne({email:email}, function(err, user){
                     if(err) res.json({result:0, message:err});
 
