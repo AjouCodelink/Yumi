@@ -14,7 +14,7 @@ exports.searchWord = (req, res) =>{
             {"interest.section" : {$regex : '.*'+keyword+'.*'}},
             {"interest.group" : {$regex : '.*'+keyword+'.*'}}
         ]).
-        select('interest name').
+        select('interest name participants').
         sort('name').
         exec((err, chatroom)=>{
             if(err) res.json(err);
