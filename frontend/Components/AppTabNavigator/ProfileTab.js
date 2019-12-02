@@ -3,6 +3,8 @@ import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'rea
 import * as ImagePicker from 'expo-image-picker';
 import DialogInput from 'react-native-dialog-input';
 import { Icon, Thumbnail, Spinner } from 'native-base';
+import axios from 'axios';
+import * as Permissions from 'expo-permissions';
 
 //import EditAddress from './ProfilePopup/EditAddress'
 import EditInterest from './ProfilePopup/EditInterest'
@@ -100,30 +102,33 @@ export default class ProfileTab extends Component {
         });
         if (!photo.cancelled) {
             const newPhoto = new FormData();
-            newPhoto.append('photo', photo.photo)
-            this._uploadImage(newPhoto)
-            this.setState({ myThumbnailURL: newPhoto.uri });
+            newPhoto.append("file", {
+                name: 'photo.jpg',
+                type: "image/jpeg",
+                uri: photo.uri
+            });
+            
+            this._uploadImage(newPhoto);
         }
     };
 
-    _uploadImage = (newPhoto) => {
-        //var url = 'http://101.101.160.185:3000/user/profile/upload';
-        var url = 'http://101.101.160.185:3389/file/api/customers';
+    _uploadImage = (file) => {
+        var url = 'http://101.101.160.185:3389/images/upload'; // 프로필 사진 서버에 업로드 시켜주는 코드
         fetch(url, {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'multipart/form-data',
                 'x-access-token': this.state.token
             }),
-            body: newPhoto
+            body:file
         }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
+        .catch(error => console.error(error))
         .then(responseJson => {console.log(responseJson)})
     }
 
-    // _displayAddr = (display) => {
-    //     this.setState({editAddrDisplay: display})
-    // }
+    _displayAddr = (display) => {
+        this.setState({editAddrDisplay: display})
+    }
 
     _displayInter = (display) => {
         this.setState({editInterDisplay: display})
