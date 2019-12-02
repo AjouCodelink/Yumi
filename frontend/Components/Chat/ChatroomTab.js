@@ -298,7 +298,7 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            //console.log(responseJson)
+            console.log(responseJson)
             if (responseJson.message == "no search chatroom") {
                 ToastAndroid.show('No rooms searched by this keyword.', ToastAndroid.SHORT);
             } else {
@@ -307,7 +307,8 @@ export default class ChatroomTab extends Component {
                     newItem = {
                         cr_name: responseJson[i].name,
                         cr_id: responseJson[i]._id,
-                        interest: responseJson[i].interest
+                        interest: responseJson[i].interest,
+                        participants: responseJson[i].participants
                     }
                     this.setState({searcharrayHolder: [...this.state.searcharrayHolder, newItem]})
                 }

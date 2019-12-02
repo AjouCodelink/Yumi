@@ -32,7 +32,6 @@ export default class TitleScreen extends Component {
         userInfo = responseJson.userInfo
         crList = responseJson.userInfo.chatroom
         crUserList = responseJson.save_chatroom
-        console.log(responseJson)
         db.transaction( tx => {
             tx.executeSql(          // token 저장
                 'INSERT INTO token (access_token, user_email) values (?,?);',
@@ -49,10 +48,17 @@ export default class TitleScreen extends Component {
         }),(error) => console.error(error);   // 트랜젝션 에러
         for(var i=0; i<crList.length; i++){
             const cr = crList[i]
+            let memNum 
+            for (var j=0; j<crList.length; j++){
+                if (crUserList[j]._id == cr.cr_id) {
+                    memNum = crUserList[j].participants.length
+                    break;
+                }
+            }
             db.transaction( tx => {
                 tx.executeSql(          // 채팅방목록 저장
                     'INSERT INTO crList (cr_id, cr_name, section, _group, memNum, favorite) values (?,?,?,?,?,0);',
-                    [cr.cr_id, cr.name, cr.interest.section, cr.interest.group, crUserList[i].participants.length],
+                    [cr.cr_id, cr.name, cr.interest.section, cr.interest.group, memNum],
                     null,
                     (_,error) => console.error(error)
                 );
@@ -68,7 +74,7 @@ export default class TitleScreen extends Component {
         } else {
             this.setState({spinnerOpacity: 1})
             this.submit();
-            setTimeout(() => {this.checkLoginResult();}, 1000);
+            setTimeout(() => {this.checkLoginResult();}, 300);
         }
     }
     checkLoginResult(){
