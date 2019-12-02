@@ -171,18 +171,25 @@ exports.login = (req, res) => {
         User.findOne({email:email},{email:1, nickname:1, address:1, language:1, img_path:1, chatroom:1}, function(err, user){
             if(err) res.json(err);
             var length = user.chatroom.length;
-            
+            if(length==0) {
+                res.json({
+                    result:1,
+                    message:'logged in successfully',
+                    userInfo:user,
+                    token,
+                    save_chatroom:[]    
+                })
+            }
             for(var i = 0; i < length; i++){
                 var save_chatroom = [];
                 ChatRoom.find({_id:user.chatroom[i].cr_id},{name:1, participants:1}, function(err, chatroom){
                     if(err) res.json(err);
                     save_chatroom.push(chatroom);
                     if(save_chatroom.length == length){
-                        console.log(save_chatroom);
                         res.json({
                             result:1,
-                             message: 'logged in successfully',
-                             userInfo: user,
+                            message: 'logged in successfully',
+                            userInfo: user,
                             token,
                             save_chatroom
                         })
