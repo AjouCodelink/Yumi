@@ -20,7 +20,7 @@ export default class LoadingScreen extends Component {
                 (_,error) => console.error(error)
             ),
             tx.executeSql(          // userInfo 저장하는 table 생성하기 // 이메일, 닉네임, 주소, 언어, 프사URL
-                'CREATE TABLE if not exists userInfo (email TEXT NOT NULL, nickname TEXT NOT NULL, address TEXT NOT NULL, language TEXT NOT NULL, thumbnailURL TEXT, PRIMARY KEY("email"))',
+                'CREATE TABLE if not exists userInfo (email TEXT NOT NULL, nickname TEXT NOT NULL, address, language TEXT NOT NULL, thumbnailURL TEXT, PRIMARY KEY("email"))',
                 [],
                 null,
                 (_,error) => console.error(error)

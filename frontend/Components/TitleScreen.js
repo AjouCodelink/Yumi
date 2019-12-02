@@ -27,9 +27,11 @@ export default class TitleScreen extends Component {
         })
     }
     dbSaveUserData(responseJson){
+        if (this.state.loginResult != 1) {return}
         token = responseJson.token
         userInfo = responseJson.userInfo
         crList = responseJson.userInfo.chatroom
+        crUserList = responseJson.save_chatroom
         db.transaction( tx => {
             tx.executeSql(          // token 저장
                 'INSERT INTO token (access_token, user_email) values (?,?);',
@@ -46,11 +48,17 @@ export default class TitleScreen extends Component {
         }),(error) => console.error(error);   // 트랜젝션 에러
         for(var i=0; i<crList.length; i++){
             const cr = crList[i]
-            console.log(cr)
+            let memNum 
+            for (var j=0; j<crList.length; j++){
+                if (crUserList[j]._id == cr.cr_id) {
+                    memNum = crUserList[j].participants.length
+                    break;
+                }
+            }
             db.transaction( tx => {
                 tx.executeSql(          // 채팅방목록 저장
                     'INSERT INTO crList (cr_id, cr_name, section, _group, memNum, favorite) values (?,?,?,?,?,0);',
-                    [cr.cr_id, cr.name, cr.interest.section, cr.interest.group, cr.memNum],
+                    [cr.cr_id, cr.name, cr.interest.section, cr.interest.group, memNum],
                     null,
                     (_,error) => console.error(error)
                 );
@@ -66,7 +74,7 @@ export default class TitleScreen extends Component {
         } else {
             this.setState({spinnerOpacity: 1})
             this.submit();
-            setTimeout(() => {this.checkLoginResult();}, 1000);
+            setTimeout(() => {this.checkLoginResult();}, 300);
         }
     }
     checkLoginResult(){
@@ -80,8 +88,8 @@ export default class TitleScreen extends Component {
             alert("Failed to login. Please try again.")
         }
     }
-    goSignup_Welcome(){
-        this.props.navigation.navigate('SignUp_Welcome');
+    goSignup(){
+        this.props.navigation.navigate('SignUp');
     }
     goMain(){
         const resetAction = StackActions.reset({
@@ -127,7 +135,7 @@ export default class TitleScreen extends Component {
                     </Item>
                 </KeyboardAvoidingView>
                 <View style={style.footer}>
-                    <Button style={[style.button, {backgroundColor: '#bbb'}]} onPress={() => this.goSignup_Welcome()}>
+                    <Button style={[style.button, {backgroundColor: '#bbb'}]} onPress={() => this.goSignup()}>
                         <Text style={style.text_button}>Sign Up</Text>
                     </Button>
                     <Button style={[style.button, {backgroundColor: '#36ee36'}]} onPress={() => this.onPressLogin()}>

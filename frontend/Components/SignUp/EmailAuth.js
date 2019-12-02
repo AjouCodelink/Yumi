@@ -4,7 +4,7 @@ import { Item, Label, Input, Spinner } from 'native-base';
 
 import CustomButton from '../CustomButton';
 
-export default class SignUp_EmailAuth extends Component {
+export default class EmailAuth extends Component {
     static navigationOptions = {
         header: null
     }
@@ -34,7 +34,6 @@ export default class SignUp_EmailAuth extends Component {
                 authHideness: 'none',
                 nextHideness: 'flex'
             });
-            alert("Your email address is authenticated. Thank you.")
         } else {                                                               // 인증 실패
             alert("Invalid authentication number. Please check again.")
         }
@@ -61,7 +60,7 @@ export default class SignUp_EmailAuth extends Component {
         }
     }
     goTitle(){
-        this.props.navigation.navigate('Title');
+        RootNavigator('Title')
     }
     goSignUp_Detail(){
         this.props.navigation.navigate('SignUp_Detail', {
@@ -138,7 +137,7 @@ export default class SignUp_EmailAuth extends Component {
             <View style={style.footer}>
                 <View style={style.footer_backbutton}>
                     <CustomButton
-                        title={'Back'}
+                        title={'Title'}
                         titleColor={'#ddd'}
                         buttonColor={'#000'}
                         onPress={() => this.goTitle()}/>

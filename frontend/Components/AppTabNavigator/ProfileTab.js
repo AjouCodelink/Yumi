@@ -102,7 +102,6 @@ export default class ProfileTab extends Component {
         });
         if (!photo.cancelled) {
             const newPhoto = new FormData();
-            
             newPhoto.append("file", {
                 name: 'photo.jpg',
                 type: "image/jpeg",
@@ -125,7 +124,6 @@ export default class ProfileTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error(error))
         .then(responseJson => {console.log(responseJson)})
-        
     }
 
     _displayAddr = (display) => {
