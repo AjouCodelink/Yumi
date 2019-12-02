@@ -34,15 +34,15 @@ module.exports = function (server) {
             })
         });
 
-        socket.on('LEAVE_ROOM', function(cr_id){
+        socket.on('LEAVE_ROOM', function(){
             socket.leaveAll();
             console.log(socket.id);
             socket.emit('disconnect');
         });
 
-        socket.on('disconnect', function(){
-            console.log('disconnect');
-        })
+        socket.on('disconnect', () => {
+            console.log('disconnected');
+          });
     });
 
     setInterval(() => { // 일정 주기로 팝퀴즈를 반환함
