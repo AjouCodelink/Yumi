@@ -11,27 +11,27 @@ import {
 import DialogInput from "react-native-dialog-input";
 import { Icon, Thumbnail, Spinner } from "native-base";
 
-import EditAddress from "./ProfilePopup/EditAddress";
-import EditInterest from "./ProfilePopup/EditInterest";
-import EditLanguage from "./ProfilePopup/EditLanguage";
+//import EditAddress from './ProfilePopup/EditAddress'
+import EditInterest from './ProfilePopup/EditInterest'
+import EditLanguage from './ProfilePopup/EditLanguage'
 
 import * as SQLite from "expo-sqlite";
 const db = SQLite.openDatabase("db.db");
 const screenHeight = Math.round(Dimensions.get("window").height);
 export default class ProfileTab extends Component {
-  state = {
-    myEmail: "",
-    myNickname: "",
-    myAddress: "",
-    myLanguage: "",
-    myThumbnailURL: null, // 이후 기본 URL로 연동해야함.
-    isAlertVisible: false,
-    token: "",
-    spinnerOpacity: 1,
-    editAddrDisplay: "none",
-    editInterDisplay: "none",
-    editLangDisplay: "none"
-  };
+    state = {
+        myEmail: '',
+        myNickname: '',
+        myAddress: '',
+        myLanguage: '',
+        myThumbnailURL: null, // 이후 기본 URL로 연동해야함.
+        isAlertVisible: false,
+        token: '',
+        spinnerDisplay: 'flex',
+        editAddrDisplay: 'none',
+        editInterDisplay: 'none',
+        editLangDisplay: 'none',
+    }
 
   static navigationOptions = {
     tabBarIcon: ({ tintColor }) => (
@@ -39,42 +39,39 @@ export default class ProfileTab extends Component {
     )
   };
 
-  componentWillMount() {
-    db.transaction(
-      tx => {
-        tx.executeSql(
-          // token에서 user_email 읽어오기
-          "SELECT * FROM token",
-          [],
-          (_, { rows: { _array } }) => {
-            if (_array != [])
-              this.setState({
-                myEmail: _array[0].user_email,
-                token: _array[0].access_token
-              });
-          },
-          (_, error) => console.error(error)
-        ),
-          tx.executeSql(
-            // userInfo에서 정보
-            "SELECT * FROM userInfo",
-            [],
-            (_, { rows: { _array } }) => {
-              if (_array != [])
-                this.setState({
-                  myNickname: _array[0].nickname,
-                  myAddress: _array[0].address,
-                  myLanguage: _array[0].language,
-                  myThumbnailURL: _array[0].thumbnailURL, //이후 썸네일 구현되면 연동
-                  spinnerOpacity: 0
-                });
-            },
-            (_, error) => console.error(error)
-          );
-      },
-      error => console.error(error)
-    );
-  }
+    componentWillMount() {
+        db.transaction(tx => {
+            tx.executeSql(  // token에서 user_email 읽어오기
+                'SELECT * FROM token',
+                [],
+                (_, { rows: { _array }  }) => {
+                    if(_array != []) (
+                        this.setState({
+                            myEmail: _array[0].user_email, 
+                            token: _array[0].access_token
+                        })
+                    )
+                },
+                (_,error) => console.error(error)
+            ),
+            tx.executeSql(  // userInfo에서 정보
+                'SELECT * FROM userInfo',
+                [],
+                (_, { rows: { _array }  }) => {
+                    if(_array != []) (
+                        this.setState({
+                            myNickname: _array[0].nickname,
+                            myAddress: _array[0].address,
+                            myLanguage: _array[0].language,
+                            myThumbnailURL: _array[0].thumbnailURL, //이후 썸네일 구현되면 연동
+                            spinnerDisplay: 'none',
+                        })
+                    )
+                },
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
+    }
 
   _changeNickname = newNickname => {
     var url =
@@ -136,9 +133,9 @@ export default class ProfileTab extends Component {
   //     .then(responseJson => {console.log(responseJson)})
   // }
 
-  _displayAddr = display => {
-    this.setState({ editAddrDisplay: display });
-  };
+    // _displayAddr = (display) => {
+    //     this.setState({editAddrDisplay: display})
+    // }
 
   _displayInter = display => {
     this.setState({ editInterDisplay: display });
@@ -148,146 +145,59 @@ export default class ProfileTab extends Component {
     this.setState({ editLangDisplay: display });
   };
 
-  render() {
-    return (
-      <View style={style.container}>
-        <DialogInput
-          isDialogVisible={this.state.isAlertVisible}
-          title={"Change Nickname"}
-          message={"Now your nickname is [" + this.state.myNickname + "]"}
-          hintInput={"New Nickname"}
-          submitInput={inputText => {
-            this._changeNickname(inputText),
-              this.setState({ isAlertVisible: false });
-          }}
-          closeDialog={() => {
-            this.setState({ isAlertVisible: false });
-          }}
-        />
-        <View style={style.topsideContainer}>
-          {this.state.myThumbnailURL == "img_path" ||
-          this.state.myThumbnailURL == null ? (
-            <Image
-              style={{
-                height: "100%",
-                width: "100%",
-                opacity: 0.2,
-                resizeMode: "cover"
-              }}
-              source={require("../../assets/default_thumbnail.png")}
-            />
-          ) : (
-            <Image
-              style={{
-                height: "100%",
-                width: "100%",
-                opacity: 0.2,
-                resizeMode: "cover"
-              }}
-              source={{ uri: this.state.myThumbnailURL }}
-            />
-          )}
-        </View>
-        <View style={style.downsideContainer}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "flex-end",
-              marginLeft: 25
-            }}
-          >
-            <Text style={style.font_nickname}>{this.state.myNickname}</Text>
-            <TouchableOpacity
-              onPress={() => this.setState({ isAlertVisible: true })}
-            >
-              <Icon
-                name="md-create"
-                style={{ fontSize: 22, margin: 8, color: "#444" }}
-              />
-            </TouchableOpacity>
-          </View>
-          <Text style={style.font_email}>{this.state.myEmail}</Text>
-        </View>
-        <View style={style.febContainer}>
-          <TouchableOpacity
-            style={{ alignItems: "center" }}
-            onPress={() => this._displayAddr("flex")}
-          >
-            <Icon
-              name="md-pin"
-              style={{ fontSize: 32, margin: 4, color: "#444" }}
-            />
-            <Text style={style.font_feb}>Address</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ alignItems: "center" }}
-            onPress={() => this._displayInter("flex")}
-          >
-            <Icon
-              name="md-cafe"
-              style={{ fontSize: 32, margin: 4, color: "#444" }}
-            />
-            <Text style={style.font_feb}>Interests</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ alignItems: "center" }}
-            onPress={() => this._displayLang("flex")}
-          >
-            <Icon
-              name="md-sync"
-              style={{ fontSize: 32, margin: 4, color: "#444" }}
-            />
-            <Text style={style.font_feb}>Language</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          style={style.thumbnailContainer}
-          onPress={() => this._onPressThumbnail()}
-          activeOpacity={0.8}
-        >
-          {this.state.myThumbnailURL == "img_path" ||
-          this.state.myThumbnailURL == null ? (
-            <Thumbnail
-              backgroundColor="#ddd"
-              style={style.thumbnail}
-              source={require("../../assets/default_thumbnail.png")}
-            />
-          ) : (
-            <Thumbnail
-              backgroundColor="#ddd"
-              style={style.thumbnail}
-              source={{ uri: this.state.myThumbnailURL }}
-            />
-          )}
-        </TouchableOpacity>
-        <EditAddress
-          token={this.state.token}
-          displayChange={this._displayAddr}
-          display={this.state.editAddrDisplay}
-        />
-        <EditInterest
-          token={this.state.token}
-          displayChange={this._displayInter}
-          display={this.state.editInterDisplay}
-        />
-        <EditLanguage
-          token={this.state.token}
-          displayChange={this._displayLang}
-          display={this.state.editLangDisplay}
-        />
-        <Spinner
-          size={80}
-          style={{
-            opacity: this.state.spinnerOpacity,
-            flex: 4,
-            position: "absolute",
-            bottom: "43%"
-          }}
-          color="#ccc"
-        />
-      </View>
-    );
-  }
+    render() {
+        return (
+            <View style={style.container}>
+                <DialogInput
+                    isDialogVisible = {this.state.isAlertVisible}
+                    title={"Change Nickname"}
+                    message={'Now your nickname is ['+this.state.myNickname+']'}
+                    hintInput ={"New Nickname"}
+                    submitInput={ (inputText) => {this._changeNickname(inputText), this.setState({isAlertVisible:false})}}
+                    closeDialog={ () => {this.setState({isAlertVisible:false})} }/>
+                <View style={style.topsideContainer}>
+                    {(this.state.myThumbnailURL == 'img_path' || this.state.myThumbnailURL == null)
+                    ? <Image style={{height:'100%', width:'100%', opacity: 0.2, resizeMode:'cover'}} source={require('../../assets/default_thumbnail.png')}/>
+                    : <Image style={{height:'100%', width:'100%', opacity: 0.2, resizeMode:'cover'}} source={{ uri: this.state.myThumbnailURL }}/>}
+                </View>
+                <View style={style.downsideContainer}>
+                    <View style={{flexDirection:'row', alignItems: 'flex-end', marginLeft: 25}}> 
+                        <Text style={style.font_nickname}>{this.state.myNickname}</Text>
+                        <TouchableOpacity onPress= {() => this.setState({isAlertVisible: true})}>
+                            <Icon name='md-create' style={{fontSize: 22, margin: 8, color: '#444'}} />
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={style.font_email}>{this.state.myEmail}</Text>
+                </View>
+                <View style={style.febContainer}>
+                    {/*<TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayAddr('flex')}>
+                        <Icon name='md-pin' style={{fontSize: 32, margin: 4, color: '#444'}} />
+                        <Text style={style.font_feb}>Address</Text>
+                    </TouchableOpacity>*/}
+                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayInter('flex')}>
+                        <Icon name='md-cafe' style={{fontSize: 32, margin: 4, color: '#444'}} />
+                        <Text style={style.font_feb}>Interests</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => this._displayLang('flex')}>
+                        <Icon name='md-sync' style={{fontSize: 32, margin: 4, color: '#444'}} />
+                        <Text style={style.font_feb}>Language</Text>
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity
+                    style={style.thumbnailContainer}
+                    onPress= {() => this._onPressThumbnail()}
+                    activeOpacity= {0.8}>
+                    {(this.state.myThumbnailURL == 'img_path' || this.state.myThumbnailURL == null)
+                    ? <Thumbnail backgroundColor="#ddd" style={style.thumbnail} source={require('../../assets/default_thumbnail.png')}/>
+                    : <Thumbnail backgroundColor="#ddd" style={style.thumbnail} source={{ uri: this.state.myThumbnailURL }}/>}
+                </TouchableOpacity>
+                {/*<EditAddress token={this.state.token} displayChange={this._displayAddr} display={this.state.editAddrDisplay}/>*/}
+                <EditInterest token={this.state.token} displayChange={this._displayInter} display={this.state.editInterDisplay}/>
+                <EditLanguage token={this.state.token} displayChange={this._displayLang} display={this.state.editLangDisplay}/>
+                <Spinner size={80} style={{display: this.state.spinnerDisplay, flex: 4, bottom: '50%'}} color='#555'/>
+            </View>
+        );
+    }
 }
 
 const style = StyleSheet.create({

@@ -45,11 +45,38 @@ export default class EditLanguage extends Component {
     this.popupClose();
   };
 
-  _onPressAdmit = () => {
-    console.log(this.state.language);
-    if (this.state.language == "NoValue") {
-      ToastAndroid.show("Please select language.", ToastAndroid.SHORT);
-      return;
+    _onPressAdmit = () => {
+        const _language = this.state.language
+        if (this.state.language == "NoValue") {
+            ToastAndroid.show('Please select language.', ToastAndroid.SHORT)
+            return
+        }
+        var url = 'http://101.101.160.185:3000/user/profile/language/'+_language;
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token',
+            'x-access-token': this.props.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            if(responseJson.result == true){
+                db.transaction(tx => {
+                    tx.executeSql(  // DB에 바뀐 닉네임 저장
+                        'UPDATE userInfo SET language = ?',
+                        [_language],
+                        null,
+                        (_,error) => console.error(error)
+                    )
+                })
+                this.popupClose()
+                ToastAndroid.show('Your changes have been saved.', ToastAndroid.SHORT);
+            } else {
+                ToastAndroid.show('Failed to save. Please check the network.', ToastAndroid.SHORT);
+            }
+        })
     }
     var url =
       "http://101.101.160.185:3000/user/profile/language/" +
