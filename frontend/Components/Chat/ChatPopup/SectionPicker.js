@@ -29,6 +29,7 @@ export default class SectionPicker extends Component {
                     <Picker.Item label="Foods" value="Foods" />
                     <Picker.Item label="Games" value="Games" />
                     <Picker.Item label="Sports" value="Sports" />
+                    <Picker.Item label="Study" value="Study" />
                 </Picker>
             </View>
         )

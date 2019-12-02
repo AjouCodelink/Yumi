@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from 'native-base';
 
-import InterestList from './InterestList';
+import InterestListItem from './InterestListItem';
 
 class Games extends Component {
     state = {
@@ -119,7 +119,7 @@ class Games extends Component {
                 <View style={[style.list, {display: this.state.opened}]}>
                     {
                         this.state.contactData.map( contactData => (
-                            <InterestList key={contactData.key} data={contactData} _onPress={this._onPressGroup}/>
+                            <InterestListItem key={contactData.key} data={contactData} _onPress={this._onPressGroup}/>
                         ))
                     }
                 </View>

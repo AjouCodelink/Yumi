@@ -5,6 +5,7 @@ import { Button, } from 'native-base'
 import Games from '../../SignUp/Interest/Games';
 import Sports from '../../SignUp/Interest/Sports';
 import Foods from '../../SignUp/Interest/Foods';
+import Study from '../../SignUp/Interest/Study';
 
 const screenHeight = Math.round(Dimensions.get('window').height);
 
@@ -79,6 +80,7 @@ export default class EditInterest extends Component {
                             <Foods interAdd={this.interAdd} interRemove={this.interRemove}/>
                             <Games interAdd={this.interAdd} interRemove={this.interRemove}/>
                             <Sports interAdd={this.interAdd} interRemove={this.interRemove}/>
+                            <Study interAdd={this.interAdd} interRemove={this.interRemove}/>
                         </ScrollView>
                         <View style={style.pickerContainer}>
                             <TouchableOpacity >

@@ -57,6 +57,19 @@ export default class GroupPicker extends Component {
             {label:'Tennis', value:'Tennis'},
             {label:'Taekwondo', value:'Taekwondo'},
             {label:'etc', value:'etc'},
+        ],
+        study: [
+            {value:'Engineering'},
+            {value:'Information & Technology'},
+            {value:'Natural Sciences'},
+            {value:'Business Administration'},
+            {value:'Humanities'},
+            {value:'Socical Sciences'},
+            {value:'Medicine'},
+            {value:'Nursing'},
+            {value:'International Studies'},
+            {value:'Basic Subjects'},
+            {value:'etc'},
         ]
     };
 
@@ -75,12 +88,14 @@ export default class GroupPicker extends Component {
                     selectedValue={this.state.selected}
                     onValueChange={this.onValueChange.bind(this)}>
                     { this.props.selectedSection == 'Foods'
-                    ? this.state.foods.map( group => (<Picker.Item label={group.label} value={group.value} key={group.value}/>))
+                    ? this.state.foods.map( group => (<Picker.Item label={group.value} value={group.value} key={group.value}/>))
                     : this.props.selectedSection == 'Games'
-                        ? this.state.games.map( group => (<Picker.Item label={group.label} value={group.value} key={group.value}/>))
+                        ? this.state.games.map( group => (<Picker.Item label={group.value} value={group.value} key={group.value}/>))
                         : this.props.selectedSection == 'Sports'
-                            ? this.state.sports.map( group => (<Picker.Item label={group.label} value={group.value} key={group.value}/>))
-                            : <Picker.Item label={'Group'} value={'noValue'}/>
+                            ? this.state.sports.map( group => (<Picker.Item label={group.value} value={group.value} key={group.value}/>))
+                            : this.props.selectedSection == 'Study'
+                                ? this.state.study.map( group => (<Picker.Item label={group.value} value={group.value} key={group.value}/>))
+                                : <Picker.Item label={'Group'} value={'noValue'}/>
                     } 
                 </Picker>
             </View>
