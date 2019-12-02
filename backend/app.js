@@ -20,7 +20,6 @@ app.use(session({ // 로그인, 회원가입 시 필요한 미들웨어 설정
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
-
 // mongoose를 사용하여 mongoDB 연결
 mongoose.connect('mongodb://127.0.0.1:27017/codelink');
 var db = mongoose.connection;
