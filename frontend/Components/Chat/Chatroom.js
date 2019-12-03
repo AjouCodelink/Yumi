@@ -9,16 +9,15 @@ import Chatbox_quizbot from './chatbox/quizbot';
 import Chatbox_notice from './chatbox/notice';
 import ChatroomSideMenu from './Chatroom-SideMenu';
 
-import * as SQLite from "expo-sqlite";
-const db = SQLite.openDatabase("db.db");
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
 
-const screenWidth = Math.round(Dimensions.get("window").width);
-const screenHeight = Math.round(Dimensions.get("window").height);
-const io = require("socket.io-client");
+const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight = Math.round(Dimensions.get('window').height);
+const io = require('socket.io-client');
 
-YellowBox.ignoreWarnings([
-  // 강제로 에러 안뜨게 하기
-  "Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?"
+YellowBox.ignoreWarnings([  // 강제로 에러 안뜨게 하기
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);
 
 export default class Chatroom extends Component {
@@ -110,18 +109,6 @@ export default class Chatroom extends Component {
         this.socket.on('RECEIVE_QUIZ', function(quiz){
             receivePopQuiz(quiz.question, quiz.answer);
         })
-      })
-        .then(response => response.json())
-        .catch(error => console.error("Error: ", error))
-        .then(responseJson => {
-          if (responseJson.message == undefined) {
-            db_Add(data);
-          } else {
-            data.transMessage = responseJson.message.result.translatedText;
-            db_Add(data);
-          }
-        });
-    };
 
         receivePopQuiz= (question, answer)=>{ // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
             const newQuiz = {
@@ -134,36 +121,23 @@ export default class Chatroom extends Component {
             db_chatLogAdd(newQuiz)
         }
     };
-    this.socket.on("RECEIVE_QUIZ", function(quiz) {
-      receivePopQuiz(quiz.question, quiz.answer);
-    });
 
-    receivePopQuiz = (question, answer) => {
-      // 서버로부터 팝퀴즈 받으면 DB에 넣는 작업
-      const newQuiz = {
-        user_email: "PopQuizBot",
-        cr_id: this.state.cr_id,
-        Time: Date(),
-        message: question,
-        answer: answer
-      };
-      db_Add(newQuiz);
-      console.log(newQuiz);
-    };
-  }
+    state = {
+        cr_id: '',
+        cr_name: '',
+        message: '',
+        myEmail: '',
+        myLanguage: '',
+        favorite: undefined,
+        chatLog:[], // 채팅로그
+        userlist:[], // 유저 목록
+        token: '',
+        key: 0,
+    }
 
-  state = {
-    cr_id: "",
-    cr_name: "",
-    message: "",
-    myEmail: "",
-    myLanguage: "",
-    favorite: undefined,
-    chatLog: [], // 채팅로그
-    userlist: [], // 유저 목록
-    token: "",
-    key: 0
-  };
+    static navigationOptions = {
+        header: null
+    }
 
     componentWillMount() {
         const { navigation } = this.props;
@@ -214,53 +188,42 @@ export default class Chatroom extends Component {
         }
     }
 
-  _onPressSend() {
-    this.messageInput.current._root.clear();
-    if (this.state.message.length != 0) {
-      const newChat = {
-        user_email: this.state.myEmail,
-        cr_id: this.state.cr_id,
-        Time: Date(),
-        message: this.state.message
-      };
-      this.setState({ message: "" });
-      this.socket.emit("SEND_MESSAGE", newChat);
+    _sendPopQuizWon = (answer) => { // 임시로 만든 함수입니다. 이후 팝퀴즈 연동이 완성되면 반드시 삭제해주세요.
+        const correctAlert = {
+            user_email: 'PopQuizBot',
+            cr_id: this.state.cr_id,
+            Time: Date(),
+            message: '🏆 '+this.state.myNickname+' got the right answer! The correct answer is '+answer+'.',
+        }
+        this.socket.emit('SEND_MESSAGE', correctAlert);
     }
-  }
 
-  _sendPopQuizWon = answer => {
-    // 임시로 만든 함수입니다. 이후 팝퀴즈 연동이 완성되면 반드시 삭제해주세요.
-    const correctAlert = {
-      user_email: "PopQuizBot",
-      cr_id: this.state.cr_id,
-      Time: Date(),
-      message:
-        "🏆 " +
-        this.state.myNickname +
-        " got the right answer! The correct answer is " +
-        answer +
-        "."
-    };
-    this.socket.emit("SEND_MESSAGE", correctAlert);
-  };
+    _getParticipants() {
+        var url = 'http://101.101.160.185:3000/chatroom/participants/'+this.state.cr_id;
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'x-access-token': this.state.token
+            }),
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            this.setState({userlist: responseJson}),
+            this.db_cr_memNumUpdate(responseJson.length)
+        })
+    }
 
-  _getParticipants() {
-    var url =
-      "http://101.101.160.185:3000/chatroom/participants/" + this.state.cr_id;
-    fetch(url, {
-      method: "GET",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        "x-access-token": this.state.token
-      })
-    })
-      .then(response => response.json())
-      .catch(error => console.error("Error: ", error))
-      .then(responseJson => {
-        this.setState({ userlist: responseJson }),
-          this.db_cr_memNumUpdate(responseJson.length);
-      });
-  }
+    db_cr_memNumUpdate = (new_memNum) => {      // DB에 바뀐 인원 수 저장 
+        db.transaction(tx => {
+            tx.executeSql(  
+                'UPDATE crList SET memNum = ? WHERE cr_id = ?',
+                [new_memNum, this.state.cr_id],
+                null,
+                (_,error) => console.error(error)
+            )
+        })
+    }
 
     db_readChatLog = () => {        // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
