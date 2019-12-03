@@ -21,6 +21,7 @@ router.get('/upload', function(req, res){
     res.render('upload');
 })
 
+
 router.post('/profile', upload.single('file'), function (req, res) {
     var email = req.decoded.email;
 
