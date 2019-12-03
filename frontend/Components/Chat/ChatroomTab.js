@@ -1,31 +1,14 @@
-import React, { Component } from "react";
-import {
-  StyleSheet,
-  FlatList,
-  Text,
-  View,
-  Alert,
-  TouchableOpacity,
-  TextInput,
-  ToastAndroid
-} from "react-native";
-import {
-  ListItem,
-  Left,
-  Body,
-  Right,
-  Thumbnail,
-  Icon,
-  Spinner
-} from "native-base";
+import React, { Component } from 'react';
+import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, ToastAndroid } from 'react-native';
+import { ListItem, Left, Body, Right, Thumbnail,Icon, Spinner} from 'native-base';
 
-import Fabs from "./ChatPopup/Fabs";
-import SearchBar from "./ChatPopup/SearchBar";
-import CreateChatroom from "./ChatPopup/CreateChatroom";
-import SearchedChatrooms from "./ChatPopup/SearchedChatrooms";
+import Fabs from './ChatPopup/Fabs'
+import SearchBar from './ChatPopup/SearchBar'
+import CreateChatroom from './ChatPopup/CreateChatroom'
+import SearchedChatrooms from './ChatPopup/SearchedChatrooms'
 
-import * as SQLite from "expo-sqlite";
-const db = SQLite.openDatabase("db.db");
+import * as SQLite from 'expo-sqlite';
+const db = SQLite.openDatabase('db.db');
 
 export default class ChatroomTab extends Component {
     static navigationOptions = {
@@ -53,32 +36,29 @@ export default class ChatroomTab extends Component {
         }
     }
 
-  componentWillMount() {
-    db.transaction(
-      tx => {
-        tx.executeSql(
-          "SELECT * FROM token",
-          [],
-          (_, { rows: { _array } }) => {
-            this.token = _array[0].access_token;
-            this.email = _array[0].user_email;
-          },
-          (_, error) => console.error(error)
-        );
-        tx.executeSql(
-          "SELECT * FROM userInfo",
-          [],
-          (_, { rows: { _array } }) => {
-            this.state.myLanguage = _array[0].language;
-            this.state.myNickname = _array[0].nickname;
-          },
-          (_, error) => console.error(error)
-        );
-      },
-      error => console.error(error)
-    );
-    this.crList_reload();
-  }
+    componentWillMount() {
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM token',
+                [],
+                (_, { rows: { _array }  }) => { 
+                    this.token = _array[0].access_token;
+                    this.email = _array[0].user_email;
+                },
+                (_,error) => console.error(error)
+            )
+            tx.executeSql(
+                'SELECT * FROM userInfo',
+                [],
+                (_, { rows: { _array }  }) => { 
+                    this.state.myLanguage = _array[0].language;
+                    this.state.myNickname = _array[0].nickname;
+                },
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
+        this.crList_reload()
+    }
 
     crList_reload = () => {
         this.state.favoriteHolder.splice(0,100)
@@ -150,83 +130,28 @@ export default class ChatroomTab extends Component {
                         }
                     }
                 },
-                memNum: _array[i].memNum,
-                lastMessage: _array[i].lastMessage,
-                lastTime: _array[i].lastTime,
-                favorite: _array[i].favorite
-              };
-              if (_array[i].favorite == 1) {
-                this.setState({
-                  favoriteHolder: [...this.state.favoriteHolder, newItem]
-                });
-              } else {
-                this.setState({
-                  arrayHolder: [...this.state.arrayHolder, newItem]
-                });
-              }
-            }
-            this.setState({ spinnerOpacity: 0 });
-          },
-          (_, error) => console.error(error)
-        );
-      },
-      error => console.error(error)
-    );
-  };
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
+    }
 
-  insertArrayHolder = (cr_name, cr_id, interest, memNum) => {
-    // 새로운 방을 arrayholder이나 DB에 넣는 함수
-    newItem = {
-      cr_name: cr_name,
-      cr_id: cr_id,
-      interest: interest,
-      memNum: memNum
-    };
-    db.transaction(
-      tx => {
-        tx.executeSql(
-          "INSERT INTO crList (cr_id, cr_name, section, _group, memNum) VALUES (?,?,?,?,?);",
-          [cr_id, cr_name, interest.section, interest.group, memNum],
-          null,
-          (_, error) => console.error(error)
-        );
-      },
-      error => console.error(error)
-    );
-    this.setState({ arrayHolder: [...this.state.arrayHolder, newItem] });
-  };
-
-  _onPressSuggestCRFab = () => {
-    this.setState({ spinnerOpacity: 1 });
-    var url = "http://101.101.160.185:3000/chatroom/recommend";
-    fetch(url, {
-      method: "GET",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        "x-access-token": this.token
-      })
-    })
-      .then(response => response.json())
-      .catch(error => console.error("Error: ", error))
-      .then(responseJson => {
-        console.log(responseJson);
-        if (responseJson._id == undefined) {
-          ToastAndroid.show(
-            "No chat room found to suit your interests.",
-            ToastAndroid.SHORT
-          );
-        } else {
-          newItem = {
-            cr_name: responseJson.name,
-            cr_id: responseJson._id,
-            interest: responseJson.interest
-            //memNum: responseJson.participants.length
-          };
-          this.setState({ suggestedRoom: newItem });
+    insertArrayHolder = (cr_name, cr_id, interest, memNum) => {       // 새로운 방을 arrayholder이나 DB에 넣는 함수
+        newItem = {
+            cr_name: cr_name,
+            cr_id: cr_id,
+            interest: interest,
+            memNum: memNum
         }
-        this.setState({ spinnerOpacity: 0 });
-      });
-  };
+        db.transaction( tx => {
+            tx.executeSql(
+                'INSERT INTO crList (cr_id, cr_name, section, _group, memNum) VALUES (?,?,?,?,?);',
+                [cr_id, cr_name, interest.section, interest.group, memNum],
+                null,
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error));
+        this.setState({arrayHolder: [...this.state.arrayHolder, newItem]})
+    }
 
     _onPressSuggestCRFab = () => {
         this.setState({spinnerDisplay: 'flex'});
@@ -256,79 +181,85 @@ export default class ChatroomTab extends Component {
         })
     }
 
-  _onPressSuggestedCR = newRoom => {
-    this._joinCR(newRoom);
-    this.setState({ suggestedRoom: [] });
-  };
+    _joinCR = (new_room) => {
+        db.transaction( tx => {
+            tx.executeSql(
+                'SELECT * FROM crList WHERE cr_id = ?;',
+                [new_room.cr_id],
+                (_, { rows: { _array }  }) => {
+                    {if(_array.length != 0) {
+                        ToastAndroid.show('You already join this room.', ToastAndroid.SHORT);
+                    } else {
+                        var url = 'http://101.101.160.185:3000/chatroom/entrance/'+new_room.cr_id;
+                        fetch(url, {
+                            method: 'POST',
+                            headers: new Headers({
+                            'Content-Type': 'application/json',
+                            'x-access-token': this.token
+                            }),
+                        }).then(response => response.json())
+                        .catch(error => console.error('Error: ', error))
+                        .then(responseJson=>{
+                            this.insertArrayHolder(new_room.cr_name, new_room.cr_id, new_room.interest, new_room.memNum)
+                            ToastAndroid.show('Chat room join complete.', ToastAndroid.SHORT);
+                            this._switchSearchCR('none')
+                        })
+                    }}
+                },
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error));
+    }
 
-  exitChatRoom = cr_id => {
-    // 방 나가기
-    var url = "http://101.101.160.185:3000/chatroom/exit/" + cr_id;
-    fetch(url, {
-      method: "POST",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        token: "token",
-        "x-access-token": this.token
-      })
-    })
-      .then(response => response.json())
-      .catch(error => console.error("Error: ", error));
-    this.setState(prevState => {
-      const index = prevState.arrayHolder.findIndex(
-        holder => holder.cr_id === cr_id
-      );
-      prevState.arrayHolder.splice(index, 1);
-      return {
-        arrayHolder: [...prevState.arrayHolder]
-      };
-    });
-    db.transaction(
-      tx => {
-        tx.executeSql(
-          "DELETE FROM crList WHERE cr_id = ?;",
-          [cr_id],
-          null,
-          (_, error) => console.error(error)
+    _onPressSuggestedCR = (newRoom) => {
+        this._joinCR(newRoom)
+        this.setState({suggestedRoom: []})
+    }
+
+    exitChatRoom = (cr_id) => { // 방 나가기
+        var url = 'http://101.101.160.185:3000/chatroom/exit/'+cr_id;
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token' : 'token',
+            'x-access-token': this.token
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        this.setState(prevState => {
+            const index = prevState.arrayHolder.findIndex(holder => holder.cr_id === cr_id);
+            prevState.arrayHolder.splice(index, 1);
+            return ({
+                arrayHolder: [...prevState.arrayHolder]
+            })
+        })
+        db.transaction( tx => {
+            tx.executeSql(
+                'DELETE FROM crList WHERE cr_id = ?;',
+                [cr_id],
+                null,
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error));
+    }
+
+    _longPressChatroom = (cr_id) => {  // 채팅방 꾹 누르면
+        Alert.alert(
+            'Exit?',
+            'Press the OK button to exit the chat room.',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {text: 'OK', onPress: () => {
+                    this.exitChatRoom(cr_id);
+                }},
+            ],
+            {cancelable: false},
         );
-      },
-      error => console.error(error)
-    );
-  };
-
-  _longPressChatroom = cr_id => {
-    // 채팅방 꾹 누르면
-    Alert.alert(
-      "Exit?",
-      "Press the OK button to exit the chat room.",
-      [
-        {
-          text: "Cancel",
-          style: "cancel"
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            this.exitChatRoom(cr_id);
-          }
-        }
-      ],
-      { cancelable: false }
-    );
-  };
-
-  _onPressChatroom = item => {
-    this.props.navigation.navigate("Chatroom", {
-      cr_name: item.cr_name,
-      cr_id: item.cr_id,
-      memNum: item.memNum,
-      myEmail: this.email,
-      myNickname: this.state.myNickname,
-      myLanguage: this.state.myLanguage,
-      favorite: item.favorite,
-      crList_reload: this.crList_reload()
-    });
-  };
+    }
 
     _onPressChatroom = (item) => {
         this.props.navigation.navigate('Chatroom', {
@@ -344,45 +275,16 @@ export default class ChatroomTab extends Component {
         });
     }
 
-  _onPressSearch = keyword => {
-    if (keyword == "") {
-      ToastAndroid.show("Please input keyword.", ToastAndroid.SHORT);
-      return;
+    FlatListItemSeparator = () => {
+        return (
+            <View style={{ height: 1, width: "100%" }}/>
+        );
     }
-    this.state.searcharrayHolder.splice(0, 100);
-    this.setState({ spinnerOpacity: 1 });
-    var url = "http://101.101.160.185:3000/chatroom/search/" + keyword;
-    fetch(url, {
-      method: "GET",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        token: "token"
-      })
-    })
-      .then(response => response.json())
-      .catch(error => console.error("Error: ", error))
-      .then(responseJson => {
-        console.log(responseJson);
-        if (responseJson.message == "no search chatroom") {
-          ToastAndroid.show(
-            "No rooms searched by this keyword.",
-            ToastAndroid.SHORT
-          );
-        } else {
-          for (var i = 0; i < responseJson.length; i++) {
-            newItem = {
-              cr_name: responseJson[i].name,
-              cr_id: responseJson[i]._id,
-              interest: responseJson[i].interest
-            };
-            this.setState({
-              searcharrayHolder: [...this.state.searcharrayHolder, newItem]
-            });
-          }
-          this.setState({
-            searchCRDisplay: "flex",
-            searchBarDisplay: "none"
-          });
+
+    _onPressSearch = (keyword) => {
+        if (keyword ==  '') {
+            ToastAndroid.show('Please input keyword.', ToastAndroid.SHORT)
+            return
         }
         this.state.searcharrayHolder.splice(0,100)
         this.setState({spinnerDisplay: 'flex'});
@@ -419,21 +321,21 @@ export default class ChatroomTab extends Component {
         })
     }
 
-  _onPressFabs = () => {
-    this.setState({ fabActive: !this.state.fabActive });
-  };
+    _onPressFabs = () => {
+        this.setState({fabActive: !this.state.fabActive})
+    }
 
-  _switchSearchCR = display => {
-    this.setState({ searchCRDisplay: display, fabActive: false });
-  };
+    _switchSearchCR = (display) => {
+        this.setState({searchCRDisplay: display, fabActive: false})
+    }
 
-  _onPressSearchBarFab = display => {
-    this.setState({ searchBarDisplay: display, fabActive: false });
-  };
+    _onPressSearchBarFab = (display) => {
+        this.setState({searchBarDisplay: display, fabActive: false})
+    }
 
-  _onPressCreateCRFab = display => {
-    this.setState({ createCRDisplay: display, fabActive: false });
-  };
+    _onPressCreateCRFab = (display) => {
+        this.setState({createCRDisplay: display, fabActive: false})
+    }
 
     render() {
         return (
@@ -546,62 +448,31 @@ export default class ChatroomTab extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    height: "100%",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    backgroundColor: "#fff"
-  },
-  header: {
-    flexDirection: "row",
-    width: "100%",
-    height: 24,
-    justifyContent: "flex-start",
-    alignItems: "flex-end"
-  },
-  item: {
-    flexDirection: "row",
-    padding: 10,
-    justifyContent: "flex-start",
-    borderWidth: 1,
-    borderRadius: 7,
-    borderColor: "#333",
-    backgroundColor: "#fff"
-  },
-  thumbnail: {
-    justifyContent: "center",
-    alignItems: "center"
-  },
-
-  searchBarConatiner: {
-    position: "absolute",
-    flex: 3,
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "stretch",
-    marginTop: 40,
-    paddingLeft: 15
-  },
-  searchBar: {
-    width: "75%",
-    height: 40,
-    fontSize: 18,
-    color: "#222",
-    backgroundColor: "#eee",
-    paddingLeft: 10,
-    borderRadius: 5
-  },
-  hide: {},
-  searchButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 15,
-    marginRight: 15,
-    backgroundColor: "#eee"
-  }
-});
+    container : {
+        width: '100%',
+        height: '100%',
+        justifyContent : 'flex-start',
+        alignItems : 'center',
+        backgroundColor : '#fff'
+    },
+    header: {
+        flexDirection : "row",
+        width:'100%',
+        height: 24,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-end',
+    },
+    item : {
+        flexDirection : 'row',
+        padding : 10,
+        justifyContent : 'flex-start',
+        borderWidth : 1, 
+        borderRadius: 7,
+        borderColor : '#333',
+        backgroundColor: '#fff',
+    },
+    thumbnail: {
+        justifyContent : 'center',
+        alignItems: 'center',
+    },
+})
