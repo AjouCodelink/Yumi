@@ -31,4 +31,9 @@ SupportersSchema.statics.create = function(supporter_info) {
     return supporter.save()
 }
 
+SupportersSchema.methods.assignAdmin = function() {
+    this.admin = true
+    return this.save()
+}
+
 module.exports = mongoose.model('supporter', SupportersSchema);
