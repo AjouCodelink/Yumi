@@ -10,9 +10,9 @@ import * as Permissions from 'expo-permissions';
 import EditInterest from './ProfilePopup/EditInterest'
 import EditLanguage from './ProfilePopup/EditLanguage'
 
-import * as SQLite from 'expo-sqlite';
-const db = SQLite.openDatabase('db.db');
-const screenHeight = Math.round(Dimensions.get('window').height);
+import * as SQLite from "expo-sqlite";
+const db = SQLite.openDatabase("db.db");
+const screenHeight = Math.round(Dimensions.get("window").height);
 export default class ProfileTab extends Component {
     state = {
         myEmail: '',
@@ -28,11 +28,11 @@ export default class ProfileTab extends Component {
         editLangDisplay: 'none',
     }
 
-    static navigationOptions = {
-        tabBarIcon: ({tintColor}) => (
-            <Icon name='md-person' style={{color: "#00D8FF"}}/>
-        ),
-    }
+  static navigationOptions = {
+    tabBarIcon: ({ tintColor }) => (
+      <Icon name="md-person" style={{ color: "#00D8FF" }} />
+    )
+  };
 
     componentWillMount() {
         db.transaction(tx => {
@@ -68,27 +68,31 @@ export default class ProfileTab extends Component {
         },(error) => console.error(error))
     }
 
-    _changeNickname = (newNickname) => {
-        var url = 'http://101.101.160.185:3000/user/profile/nickname/'+newNickname;
-        fetch(url, {
-            method: 'POST',
-            headers: new Headers({
-            'Content-Type': 'application/json',
-            'x-access-token': this.state.token
-            })
-        }).then(response => response.json())
-        .catch(error => console.error('Error: ', error))
-        .then(responseJson => {this.setState({myNickname : responseJson.nickname}),
-            db.transaction(tx => {
-                tx.executeSql(  // DB에 바뀐 닉네임 저장
-                    'UPDATE userInfo SET nickname = ?',
-                    [responseJson.nickname],
-                    null,
-                    (_,error) => console.error(error)
-                )
-            })
-        })
-    }
+  _changeNickname = newNickname => {
+    var url =
+      "http://101.101.160.185:3000/user/profile/nickname/" + newNickname;
+    fetch(url, {
+      method: "POST",
+      headers: new Headers({
+        "Content-Type": "application/json",
+        "x-access-token": this.state.token
+      })
+    })
+      .then(response => response.json())
+      .catch(error => console.error("Error: ", error))
+      .then(responseJson => {
+        this.setState({ myNickname: responseJson.nickname }),
+          db.transaction(tx => {
+            tx.executeSql(
+              // DB에 바뀐 닉네임 저장
+              "UPDATE userInfo SET nickname = ?",
+              [responseJson.nickname],
+              null,
+              (_, error) => console.error(error)
+            );
+          });
+      });
+  };
 
     _onPressThumbnail() {
         this._pickImage()
@@ -130,13 +134,13 @@ export default class ProfileTab extends Component {
         this.setState({editAddrDisplay: display})
     }
 
-    _displayInter = (display) => {
-        this.setState({editInterDisplay: display})
-    }
+  _displayInter = display => {
+    this.setState({ editInterDisplay: display });
+  };
 
-    _displayLang = (display) => {
-        this.setState({editLangDisplay: display})
-    }
+  _displayLang = display => {
+    this.setState({ editLangDisplay: display });
+  };
 
     render() {
         return (
@@ -194,66 +198,66 @@ export default class ProfileTab extends Component {
 }
 
 const style = StyleSheet.create({
-    container: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#ccc',
-    },
-    topsideContainer: {
-        width: '100%',
-        height: '60%',
-        backgroundColor: '#333',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    font_header: {
-        color: 'white',
-        fontSize: 35,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    downsideContainer: {
-        width: '100%',
-        height: '40%',
-        paddingTop: screenHeight*0.11,
-        borderTopWidth: 1,
-        borderTopColor: '#222',
-        backgroundColor: '#e8e8e8',
-        alignItems: 'center',
-    },
-    thumbnailContainer: {
-        flex: 2,
-        position : 'absolute',
-        top: '49%',
-    },
-    febContainer: {
-        flex: 2,
-        position : 'absolute',
-        width: '80%',
-        top: '88%',
-        justifyContent: 'space-around',
-        flexDirection: 'row',
-    },
-    font_feb: {
-        color: '#333',
-        fontSize: 14,
-    },
-    thumbnail: {
-        height: screenHeight*0.2,
-        width: screenHeight*0.2,
-        borderWidth: 2,
-        borderColor: '#222',
-        borderRadius: (screenHeight*0.2)*0.4,
-    },
-    font_nickname: {
-        color: '#222',
-        fontSize: 40,
-        fontWeight: 'bold',
-    },
-    font_email: {
-        color: '#777',
-        fontSize: 24,
-    },
+  container: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ccc"
+  },
+  topsideContainer: {
+    width: "100%",
+    height: "60%",
+    backgroundColor: "#333",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  font_header: {
+    color: "white",
+    fontSize: 35,
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  downsideContainer: {
+    width: "100%",
+    height: "40%",
+    paddingTop: screenHeight * 0.11,
+    borderTopWidth: 1,
+    borderTopColor: "#222",
+    backgroundColor: "#e8e8e8",
+    alignItems: "center"
+  },
+  thumbnailContainer: {
+    flex: 2,
+    position: "absolute",
+    top: "49%"
+  },
+  febContainer: {
+    flex: 2,
+    position: "absolute",
+    width: "80%",
+    top: "88%",
+    justifyContent: "space-around",
+    flexDirection: "row"
+  },
+  font_feb: {
+    color: "#333",
+    fontSize: 14
+  },
+  thumbnail: {
+    height: screenHeight * 0.2,
+    width: screenHeight * 0.2,
+    borderWidth: 2,
+    borderColor: "#222",
+    borderRadius: screenHeight * 0.2 * 0.4
+  },
+  font_nickname: {
+    color: "#222",
+    fontSize: 40,
+    fontWeight: "bold"
+  },
+  font_email: {
+    color: "#777",
+    fontSize: 24
+  }
 });
