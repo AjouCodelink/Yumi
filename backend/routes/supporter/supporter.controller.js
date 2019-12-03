@@ -1,7 +1,7 @@
 var router = require('express').Router();
 const jwt = require('jsonwebtoken');
 var User = require('../../models/user');
-
+var Supporter = require('../../models/supporters');
 
 
 /*
@@ -88,3 +88,79 @@ exports.login = (req, res) => {
 }
 
 
+/*
+    GET /api/supporter/info
+*/
+exports.info = function(req, res){
+    var email = req.decoded.email;
+
+    User.findOne({email:email},{email:1, nickname:1, interests:1, language:1, address:1}, function(err, user){
+        res.json(user);
+    })
+}
+
+
+/*
+    POST /api/supporter/signup
+    {
+        supporter_name,
+        email,
+        contact,
+        text,
+        photo_path
+    }
+*/
+exports.signup = (req, res) => {
+    const supporter_info = req.body;
+    const email = req.body.email;
+    let newSupporter = null
+
+    // create a new user if does not exist
+    const create = (supporter) => {
+        if(supporter) {
+            throw new Error('supporter name exists')
+        } else {
+            return Supporter.create(supporter_info);
+        }
+    }
+
+    // count the number of the user
+    const count = (supporter) => {
+        newSupporter = supporter
+        return Supporter.count({}).exec()
+    }
+
+    // assign admin if count is 1
+    const assign = (count) => {
+        if(count === 1) {
+            return newSupporter.assignAdmin()
+        } else {
+            // if not, return a promise that returns false
+            return Promise.resolve(false)
+        }
+    }
+
+    // respond to the client
+    const respond = (isAdmin) => {
+        res.json({
+            result:1,
+            message: 'registered successfully',
+            admin: isAdmin ? true : false
+        })
+    }
+
+    // run when there is an error (username exists)
+    const onError = (error) => {
+        res.status(409).json({
+            message: error.message
+        })
+    }
+
+    // check username duplication
+    User.findOneByEmail(email)
+    .then(create)
+    .then(count)
+    .then(assign)
+    .then(respond)
+    .catch(onError)
+}

@@ -9,4 +9,26 @@ const SupportersSchema = mongoose.Schema({
     photo_path: { type: String}
 });
 
+// create new User document
+SupportersSchema.statics.create = function(supporter_info) {
+    const {
+        supporter_name,
+        email,
+        contact,
+        text,
+        photo_path
+    } = supporter_info;
+
+
+    const supporter = new this({
+        supporter_name,
+        email,
+        contact,
+        text,
+        photo_path
+    })
+    // return the Promise
+    return supporter.save()
+}
+
 module.exports = mongoose.model('supporter', SupportersSchema);
