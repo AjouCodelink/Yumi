@@ -48,7 +48,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('uploads'));
 
+출처: https://puzzleleaf.tistory.com/49 [퍼즐잎의 기술블로그]
 app.use(bodyParser.json()) // body-parser를 json 형태로 받기 위함.
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/', indexRouter);
