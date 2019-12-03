@@ -16,8 +16,8 @@ router.get('/upload', function(req, res){
     res.render('upload');
 })
 
-router.post('/upload',upload.single('userfile'),function(req,res){
-    res.send('uploaded :'+req.file.originalname);
+router.post('/upload',upload.single('file'),function(req,res){
+    res.json(req.file);
     console.log(req.file);    
 })
 
