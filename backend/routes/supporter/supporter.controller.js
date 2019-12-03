@@ -59,7 +59,7 @@ exports.login = (req, res) => {
 
     // respond the token 
     const respond = (token) => {
-        User.findOne({email:email},{email:1, nickname:1, address:1, language:1, img_path:1, chatroom:1}, function(err, user){
+        User.findOne({email:email},{email:1, nickname:1}, function(err, user){
             if(err) res.json(err);
             
             res.json({
