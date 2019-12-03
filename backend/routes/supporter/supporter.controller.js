@@ -1,10 +1,11 @@
 var router = require('express').Router();
+const jwt = require('jsonwebtoken')
 
 
 
 
 /*
-    localhost:3000/
+    /api/supporter
 */
 exports.getMain = (req, res) => {
     console.log("=========connection complete========");
