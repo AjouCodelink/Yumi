@@ -17,8 +17,7 @@ router.get('/upload', function(req, res){
     res.render('upload');
 })
 
-router.post('/upload', upload.single('file'), function (req, res) {
-    var thumb_path = 'uploads/thumb_' + req.file.filename;
+router.post('/upload',upload.single('file'),function(req,res){
     res.json(req.file);
 })
 
