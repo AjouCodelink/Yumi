@@ -117,7 +117,7 @@ export default class ProfileTab extends Component {
     };
 
     _uploadImage = (file) => {
-        var url = 'http://101.101.160.185:3000/images/upload'; // 프로필 사진 서버에 업로드 시켜주는 코드
+        var url = 'http://101.101.160.185:3000/images/profile'; // 프로필 사진 서버에 업로드 시켜주는 코드
         fetch(url, {
             method: 'POST',
             headers: new Headers({
