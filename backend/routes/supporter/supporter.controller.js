@@ -110,7 +110,7 @@ exports.info = function(req, res){
     }
 */
 
-exports.signup = (req, res) => {
+exports.assign = (req, res) => {
     const supporter_info = req.body;
 
     Supporter.create(supporter_info)
