@@ -117,7 +117,7 @@ export default class ProfileTab extends Component {
     };
 
     _uploadImage = (file) => {
-        var url = 'http://101.101.160.185:3000/images/upload'; // 프로필 사진 서버에 업로드 시켜주는 코드
+        var url = 'http://101.101.160.185:3000/images/profile'; // 프로필 사진 서버에 업로드 시켜주는 코드
         fetch(url, {
             method: 'POST',
             headers: new Headers({
@@ -127,7 +127,7 @@ export default class ProfileTab extends Component {
             body:file
         }).then(response => response.json())
         .catch(error => console.error(error))
-        .then(responseJson => {console.log(responseJson)})
+        .then(responseJson => {this.setState({myThumbnailURL: responseJson.filename})})
     }
 
     _displayAddr = (display) => {
@@ -155,7 +155,7 @@ export default class ProfileTab extends Component {
                 <View style={style.topsideContainer}>
                     {(this.state.myThumbnailURL == 'img_path' || this.state.myThumbnailURL == null)
                     ? <Image style={{height:'100%', width:'100%', opacity: 0.2, resizeMode:'cover'}} source={require('../../assets/default_thumbnail.png')}/>
-                    : <Image style={{height:'100%', width:'100%', opacity: 0.2, resizeMode:'cover'}} source={{ uri: this.state.myThumbnailURL }}/>}
+                    : <Image style={{height:'100%', width:'100%', opacity: 0.2, resizeMode:'cover'}} source={{ uri: 'http://101.101.160.185:3000/images/'+this.state.myThumbnailURL }}/>}
                 </View>
                 <View style={style.downsideContainer}>
                     <View style={{flexDirection:'row', alignItems: 'flex-end', marginLeft: 25}}> 
@@ -186,7 +186,7 @@ export default class ProfileTab extends Component {
                     activeOpacity= {0.8}>
                     {(this.state.myThumbnailURL == 'img_path' || this.state.myThumbnailURL == null)
                     ? <Thumbnail backgroundColor="#ddd" style={style.thumbnail} source={require('../../assets/default_thumbnail.png')}/>
-                    : <Thumbnail backgroundColor="#ddd" style={style.thumbnail} source={{ uri: this.state.myThumbnailURL }}/>}
+                    : <Thumbnail backgroundColor="#ddd" style={style.thumbnail} source={{ uri: 'http://101.101.160.185:3000/images/'+this.state.myThumbnailURL }}/>}
                 </TouchableOpacity>
                 {/*<EditAddress token={this.state.token} displayChange={this._displayAddr} display={this.state.editAddrDisplay}/>*/}
                 <EditInterest token={this.state.token} displayChange={this._displayInter} display={this.state.editInterDisplay}/>
