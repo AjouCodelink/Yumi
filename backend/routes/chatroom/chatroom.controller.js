@@ -139,7 +139,7 @@ exports.recommend = (req, res) => {
                     {"interest.section" : {$regex : '.*'+user.interests[random_num].section+'.*'}},
                     {"interest.group" : {$regex : '.*'+user.interests[random_num].group+'.*'}}
                 ]).
-                select('interest name').
+                select('interest name participants').
                 sort('interest.group interest.section').
                 limit(10).
                 exec((err, chatroom)=>{ // TODO : 소분류순으로 먼저 나오게 하기
