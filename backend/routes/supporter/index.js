@@ -6,7 +6,7 @@ var authMiddleware = require('../../middlewares/auth');
 
 router.get('/supporter',controller.getMain);
 
-router.post('/login/checkLogin', controller.login);
-router.post('/supporter/signup', controller.signup);
+router.post('/login/check', controller.login);
+router.post('/supporter/assign', controller.assign);
 
 module.exports = router;
