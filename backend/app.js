@@ -48,6 +48,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static('uploads'));
 
 app.use(bodyParser.json()) // body-parser를 json 형태로 받기 위함.
 app.use(bodyParser.urlencoded({ extended: true }))
