@@ -63,12 +63,8 @@ UserSchema.methods.verify = function(password) {
 
 //verify the admin of the User document
 UserSchema.methods.verify_admin = function(admin) {
-    if(admin == true)
-    {
-        return true;
-    }else {
-        return false;
-    }
+    if(admin == true) return true;
+    return false;
 }
 
 UserSchema.methods.assignAdmin = function() {
