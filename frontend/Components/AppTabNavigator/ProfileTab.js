@@ -131,7 +131,6 @@ export default class ProfileTab extends Component {
           this.setState({myThumbnailURL: responseJson.filename}),
           db.transaction(tx => {
             tx.executeSql(
-              // DB에 바뀐 닉네임 저장
               "UPDATE userInfo SET thumbnailURL = ?",
               [responseJson.filename],
               null,
