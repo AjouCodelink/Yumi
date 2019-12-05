@@ -47,7 +47,7 @@ export default class SearchedChatrooms extends Component {
                                         <Icon name='md-people' style={{position : 'absolute', right:10, fontSize: 14, color: '#333'}}>
                                             { (chatroom.participants == undefined) 
                                             ? 0
-                                            : <Text style={{fontSize: 12, color: '#333'}}> {chatroom.participants.length}</Text>
+                                            : <Text style={{fontSize: 12, color: '#333'}}> {chatroom.memNum}</Text>
                                             }
                                         </Icon>
                                     </View>

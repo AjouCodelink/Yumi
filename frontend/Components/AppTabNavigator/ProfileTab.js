@@ -96,7 +96,7 @@ export default class ProfileTab extends Component {
 
     _onPressThumbnail() {
         this._pickImage()
-        alert("you pressed Thumbnail Edit.")
+        // todo: 카메라로 찍고 사진으로 올리는 방법은?
     }
 
     _pickImage = async () => {
@@ -127,7 +127,17 @@ export default class ProfileTab extends Component {
             body:file
         }).then(response => response.json())
         .catch(error => console.error(error))
-        .then(responseJson => {this.setState({myThumbnailURL: responseJson.filename})})
+        .then(responseJson => {
+          this.setState({myThumbnailURL: responseJson.filename}),
+          db.transaction(tx => {
+            tx.executeSql(
+              "UPDATE userInfo SET thumbnailURL = ?",
+              [responseJson.filename],
+              null,
+              (_, error) => console.error(error)
+            );
+          });
+        })
     }
 
     _displayAddr = (display) => {
