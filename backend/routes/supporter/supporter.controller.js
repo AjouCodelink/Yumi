@@ -27,6 +27,7 @@ exports.assign = (req, res) => {
 exports.accept = (req,res) =>{
     var email = req.body.email;
     Supporter.findOne({email:email}, function(err, supporter){
+        if(err) res.json({result:0})
         console.log(supporter);
         supporter.isAccepted = true;
         supporter.save();

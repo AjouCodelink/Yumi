@@ -6,7 +6,7 @@ const SupportersSchema = mongoose.Schema({
     email: { type: String },
     contact: { type: String},
     text: { type: String},
-    photo_path: { type: String}, //TODO: 프론트에서 서포터리스트에서 accept 하면 DB에 넣는 Flag 변수인 Boolean type 을 추가
+    img_path: { type: String}, //TODO: 프론트에서 서포터리스트에서 accept 하면 DB에 넣는 Flag 변수인 Boolean type 을 추가
     isAccepted: {type: Boolean}
 });
 
