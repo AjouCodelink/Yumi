@@ -8,7 +8,7 @@ var upload = require('./upload');
 router.use('/user', user);
 router.use('/chatroom', chatroom);
 router.use('/place', place);
-router.use('/api',supporter);
+router.use('/api/supporter',supporter);
 router.use('/images', upload);
 
 module.exports = router;

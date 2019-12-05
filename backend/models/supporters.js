@@ -6,7 +6,8 @@ const SupportersSchema = mongoose.Schema({
     email: { type: String },
     contact: { type: String},
     text: { type: String},
-    photo_path: { type: String} //TODO: 프론트에서 서포터리스트에서 accept 하면 DB에 넣는 Flag 변수인 Boolean type 을 추가
+    photo_path: { type: String}, //TODO: 프론트에서 서포터리스트에서 accept 하면 DB에 넣는 Flag 변수인 Boolean type 을 추가
+    isAccepted: {type: Boolean}
 });
 
 // create new User document
@@ -25,7 +26,8 @@ SupportersSchema.statics.create = function(supporter_info) {
         email,
         contact,
         text,
-        photo_path
+        photo_path,
+        isAccepted : false
     })
     // return the Promise
     return supporter.save()
