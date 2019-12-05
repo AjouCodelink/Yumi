@@ -52,8 +52,8 @@ exports.appendQuestion = (req,res) =>{
 }
 exports.finish = (req,res) =>{
 
-    const Question_info = req.body.id;
-    Question.remove({ id:Question_info }, function(err, output){
+    const Question_info = req.body.email;
+    Question.remove({ email:Question_info }, function(err, output){
         if(err) return res.status(500).json({ error: "Deletion Success"});
         res.status(204).end();
     })

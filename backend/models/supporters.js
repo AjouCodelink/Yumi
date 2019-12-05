@@ -17,7 +17,7 @@ SupportersSchema.statics.create = function(supporter_info) {
         email,
         contact,
         text,
-        photo_path
+        img_path
     } = supporter_info;
 
 
@@ -26,7 +26,7 @@ SupportersSchema.statics.create = function(supporter_info) {
         email,
         contact,
         text,
-        photo_path,
+        img_path,
         isAccepted : false
     })
     // return the Promise
