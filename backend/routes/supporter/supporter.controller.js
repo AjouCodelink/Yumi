@@ -35,11 +35,18 @@ exports.accept = (req,res) =>{
     });
 } // 유미에서는 accepted=true 인 리스트만 가져올 것이다. 
 
+exports.decline = (req,res) => {
+    var email_info = req.body.email;
+        Supporter.remove({ email:email_info }, function(err, output){
+        if(err) return res.status(500).json({ error: "Decline failed"});
+        res.status(204).end();
+    })
+}
 exports.getQuestion = (req,res) =>{
         Question.find({}, function(err, questions){
         if(err) res.json({result: false, message: "not found questions"})
         res.json(questions);
-    })
+    });
 
 }
 exports.appendQuestion = (req,res) =>{
@@ -53,11 +60,11 @@ exports.appendQuestion = (req,res) =>{
 }
 exports.finish = (req,res) =>{
 
-    const Question_info = req.body.email;
-    Question.remove({ email:Question_info }, function(err, output){
-        if(err) return res.status(500).json({ error: "Deletion Success"});
+    const Question_info = req.body.content;
+    Question.remove({ content:Question_info }, function(err, output){
+        if(err) return res.status(500).json({ error: "Deletion Failed"});
         res.status(204).end();
-    })
+    });
 
 }
     /*
