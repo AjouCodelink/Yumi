@@ -21,7 +21,8 @@ const UserSchema = new Schema({
             group : { type : String }
         }
     }],
-    address:{ type: String }
+    address:{ type: String },
+    admin:{type: Boolean}
 });
 
 // create new User document
