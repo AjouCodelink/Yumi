@@ -13,7 +13,7 @@ exports.getMain = (req, res) => {
 }
 
 /*
-    POST /api/login/checkLogin
+    POST /api/login/check
     {
         email,
         password
@@ -25,7 +25,6 @@ exports.login = (req, res) => {
 
     // check the user info & generate the jwt
     const check = (user) => {
-        console.log(user);
         if(!user) {
             // user does not exist
             throw new Error('login failed')
@@ -56,7 +55,7 @@ exports.login = (req, res) => {
             }
         }
     }
-
+    
     // respond the token 
     const respond = (token) => {
         User.findOne({email:email},{email:1, nickname:1}, function(err, user){
