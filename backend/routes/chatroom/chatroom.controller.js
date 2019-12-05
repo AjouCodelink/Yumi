@@ -139,7 +139,7 @@ exports.recommend = (req, res) => {
                     {"interest.section" : {$regex : '.*'+user.interests[random_num].section+'.*'}},
                     {"interest.group" : {$regex : '.*'+user.interests[random_num].group+'.*'}}
                 ]).
-                select('interest name').
+                select('interest name participants').
                 sort('interest.group interest.section').
                 limit(10).
                 exec((err, chatroom)=>{ // TODO : 소분류순으로 먼저 나오게 하기
@@ -215,14 +215,23 @@ exports.exit = (req, res) => {
     })
 }
 
-// /*
-//     GET /chatroom/log/:cr_id
-// */
-// exports.getLog = (req, res) => {
-//     var cr_id = req.params.cr_id;
-    
-//     ChatRoom.findOne({_id : cr_id}, function(err, chatroom){ // TODO : 추후에 채팅 기록 소량만 가져올 수 있게끔 수정해야 함.
-//         res.json(chatroom.chatlog);
-//     })
-// }
+/*
+    GET /chatroom/log?cr_id=a&last_message=b
+*/
+exports.getLog = (req, res) => {
+    var cr_id = req.query.cr_id;
+    var last_message = req.query.last_message;
+
+    ChatRoom.findOne({_id : cr_id})
+        .select('chatlog')
+        .exec((err, chatroom) => {
+            if(err) res.json({result : false});
+            for(var i=0; i< chatroom.chatlog.length; i++){
+                if(chatroom.chatlog[i].time == last_message){
+                    chatroom.chatlog.splice(0, i+1);
+                    res.json(chatroom);
+                }
+            }
+        });
+}
 
