@@ -93,6 +93,7 @@ const style = StyleSheet.create({
         borderRadius: 6
     },
     imageBox: {
+        marginTop: 25,
         padding: 10,
         borderRadius: 6,
     },
