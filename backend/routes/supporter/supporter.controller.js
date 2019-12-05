@@ -61,7 +61,7 @@ exports.finish = (req,res) =>{
 
 }
     /*
-    POST /api/login/checkLogin
+    POST /api/supporter/login/check
     {
         email,
         password
