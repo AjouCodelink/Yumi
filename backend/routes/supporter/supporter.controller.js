@@ -68,94 +68,85 @@ exports.finish = (req,res) =>{
 
 }
     /*
-    POST /api/login/checkLogin
+    POST /api/supporter/login/check
     {
         email,
         password
     }
 */
-/*
-    POST /api/supporter/signup
-    {
-        supporter_name,
-        email,
-        contact,
-        text,
-        photo_path
+
+
+exports.login = (req, res) => {
+    const {email, password} = req.body
+    const secret = req.app.get('jwt-secret')
+
+    // check the user info & generate the jwt
+    const check = (user) => {
+        if(!user) {
+            // user does not exist
+            throw new Error('login failed')
+        } else {
+            // user exists, check the password
+            if(user.verify(password) && user.verify_admin(user.admin)) {
+                // create a promise that generates jwt asynchronously
+                const p = new Promise((resolve, reject) => {
+                    jwt.sign(
+                        {
+                            _id: user._id,
+                            email: user.email,
+                            admin: user.admin
+                        }, 
+                        secret, 
+                        {
+                            expiresIn: '7d',
+                            issuer: 'codelink.com',
+                            subject: 'userInfo'
+                        }, (err, token) => {
+                            if (err) reject(err)
+                            resolve(token) 
+                        })
+                })
+                return p
+            } else {
+                throw new Error('login failed')
+            }
+        }
     }
-*/
-
-// exports.login = (req, res) => {
-//     const {email, password} = req.body
-//     const secret = req.app.get('jwt-secret')
-
-//     // check the user info & generate the jwt
-//     const check = (user) => {
-//         if(!user) {
-//             // user does not exist
-//             throw new Error('login failed')
-//         } else {
-//             // user exists, check the password
-//             if(user.verify(password)) {
-//                 // create a promise that generates jwt asynchronously
-//                 const p = new Promise((resolve, reject) => {
-//                     jwt.sign(
-//                         {
-//                             _id: user._id,
-//                             email: user.email,
-//                             admin: user.admin
-//                         }, 
-//                         secret, 
-//                         {
-//                             expiresIn: '7d',
-//                             issuer: 'codelink.com',
-//                             subject: 'userInfo'
-//                         }, (err, token) => {
-//                             if (err) reject(err)
-//                             resolve(token) 
-//                         })
-//                 })
-//                 return p
-//             } else {
-//                 throw new Error('login failed')
-//             }
-//         }
-//     }
-//     // respond the token 
-//     const respond = (token) => {
-//         User.findOne({email:email},{email:1, nickname:1}, function(err, user){
-//             if(err) res.json(err);
+    // respond the token 
+    const respond = (token) => {
+        User.findOne({email:email},{email:1, nickname:1}, function(err, user){
+            if(err) res.json(err);
             
-//             res.json({
-//                 result:1,
-//                 message: 'logged in successfully',
-//                 userInfo: user,
-//                 token            
-//             })
-//         })
-//     }
+            res.json({
+                result:1,
+                message: 'logged in successfully',
+                userInfo: user,
+                token            
+            })
+        })
+    }
 
-//     // error occured
-//     const onError = (error) => {
-//         res.status(403).json({
-//             message: error.message,
-//             result:0
-//         })
-//     }
+    // error occured
+    const onError = (error) => {
+        res.status(403).json({
+            message: error.message,
+            result:0
+        })
+    }
 
-//     // find the user
-//     User.findOneByEmail(email)
-//     .then(check)
-//     .then(respond)
-//     .catch(onError)
-// }
-// /*
-//     GET /api/supporter/info
-// */
-// exports.info = function(req, res){
-//     var email = req.decoded.email;
-//     User.findOne({email:email},{email:1, nickname:1, interests:1, language:1, address:1}, function(err, user){
-//         res.json(user);
-//     })
-// }
+    // find the user
+    User.findOneByEmail(email)
+    .then(check)
+    .then(respond)
+    .catch(onError)
+}
+/*
+    GET /api/supporter/info
+*/
+exports.info = function(req, res){
+    var email = req.decoded.email;
+    User.findOne({email:email},{email:1, nickname:1, interests:1, language:1, address:1}, function(err, user){
+        res.json(user);
+    })
+}
 

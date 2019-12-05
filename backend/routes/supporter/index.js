@@ -2,7 +2,7 @@ var router = require('express').Router();
 var controller = require('./supporter.controller');
 var authMiddleware = require('../../middlewares/auth');
 
-//router.post('/login/check', controller.login);
+router.post('/login/check', controller.login);
 router.get('/',controller.getMain);
 router.post('/assign', controller.assign);// 서포터 등록 
 router.post('/accept',controller.accept); // 서포터 등록을 승인 
