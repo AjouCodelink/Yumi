@@ -129,8 +129,8 @@ exports.recommend = (req, res) => {
                 var random = Math.floor(Math.random() * 5);
                 ChatRoom.find().skip(random).limit(5).exec((err, chatroom) => {
                     //array말고 단일 object로 보내기
-                    var a = chatroom[0];
-                    res.json(a);
+                    var selected = chatroom[0];
+                    res.json(selected);
                 })      
             }
             else{
@@ -143,9 +143,20 @@ exports.recommend = (req, res) => {
                 sort('interest.group interest.section').
                 limit(10).
                 exec((err, chatroom)=>{ // TODO : 소분류순으로 먼저 나오게 하기
-                    var random = Math.floor(Math.random() * chatroom.length);
-                    var a = chatroom[random];
-                    res.json(a);
+                    if(chatroom.length == 1)
+                    {
+                        var random = Math.floor(Math.random() * 5);
+                        ChatRoom.find().skip(random).limit(5).exec((err, chatroom) => {
+                           //array말고 단일 object로 보내기
+                            var selected = chatroom[0];
+                            res.json(selected);
+                        })
+
+                    }else{
+                        var random = Math.floor(Math.random() * chatroom.length);
+                        var selected = chatroom[random];
+                        res.json(selected);
+                    }
                 })
             }
         }
