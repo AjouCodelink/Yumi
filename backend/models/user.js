@@ -21,7 +21,8 @@ const UserSchema = new Schema({
             group : { type : String }
         }
     }],
-    address:{ type: String }
+    address:{ type: String },
+    admin: { type: Boolean}
 });
 
 // create new User document
@@ -58,6 +59,12 @@ UserSchema.methods.verify = function(password) {
     console.log(this.password === encrypted)
 
     return this.password === encrypted
+}
+
+// verify the admin of the User documment
+UserSchema.methods.verify_admin = function(password) {
+    if(admin == true) return true;
+    return false;
 }
 
 UserSchema.methods.assignAdmin = function() {
