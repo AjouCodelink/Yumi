@@ -2,15 +2,28 @@ var router = require('express').Router();
 const jwt = require('jsonwebtoken');
 var User = require('../../models/user');
 var Supporter = require('../../models/supporters');
+var Question = require('../../models/question');
+
 /*
     /api/supporter
 */
+
 exports.getMain = (req, res) => {
     Supporter.find({}, function(err, supporters){
         if(err) res.json({result: false, message: "not found supporters"})
         res.json(supporters);
     })
 }
+exports.assign = (req, res) => {
+    const supporter_info = req.body;
+    
+    Supporter.create(supporter_info)
+    .then(result => {
+        if(result) res.json({result:true});
+        else res.json({result:false});
+    });
+}
+
 
 /*
     POST /api/login/check
@@ -78,44 +91,42 @@ exports.login = (req, res) => {
         })
     }
 
-    // find the user
-    User.findOneByEmail(email)
-    .then(check)
-    .then(respond)
-    .catch(onError)
+exports.accept = (req,res) =>{
+    var email = req.body.email;
+    Supporter.findOne({email:email}, function(err, supporter){
+        if(err) res.json({result:0})
+        console.log(supporter);
+        supporter.isAccepted = true;
+        supporter.save();
+        res.json({result :1});
+    });
+} // 유미에서는 accepted=true 인 리스트만 가져올 것이다. 
 
-}
 
-
-/*
-    GET /api/supporter/info
-*/
-exports.info = function(req, res){
-    var email = req.decoded.email;
-
-    User.findOne({email:email},{email:1, nickname:1, interests:1, language:1, address:1}, function(err, user){
-        res.json(user);
+exports.getQuestion = (req,res) =>{
+        Question.find({}, function(err, questions){
+        if(err) res.json({result: false, message: "not found questions"})
+        res.json(questions);
     })
+
 }
+exports.appendQuestion = (req,res) =>{
 
-
-/*
-    POST /api/supporter/signup
-    {
-        supporter_name,
-        email,
-        contact,
-        text,
-        photo_path
-    }
-*/
-
-exports.assign = (req, res) => {
-    const supporter_info = req.body;
-
-    Supporter.create(supporter_info)
+    const Question_info = req.body;
+    Question.create(Question_info)
     .then(result => {
         if(result) res.json({result:true});
-        else res.json({result:false});
+        else res.json({result:1});
     });
 }
+exports.finish = (req,res) =>{
+
+    const Question_info = req.body.email;
+    Question.remove({ email:Question_info }, function(err, output){
+        if(err) return res.status(500).json({ error: "Deletion Success"});
+        res.status(204).end();
+    })
+
+}
+
+
