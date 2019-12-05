@@ -33,9 +33,7 @@ exports.sendEmail = (req, res) => {
                 pass: 'zhemfldzm' // gmail 계정의 비밀번호를 입력
             }
         });
-
         var random_number = Math.floor(Math.random() * 899999) + 100000;
-
         let mailOptions = {
             from: 'codelink19@gmail.com',
             to: email,
