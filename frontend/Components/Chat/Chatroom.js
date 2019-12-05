@@ -104,8 +104,10 @@ export default class Chatroom extends Component {
                     (_,error) => console.error(error)
                 )
             }, null)
+            this.state.lastTime = newChat.Time; // (정상현) 코드
             this.chatLogAdd(newChat)
         }
+
         this.socket.on('RECEIVE_QUIZ', function(quiz){
             receivePopQuiz(quiz.question, quiz.answer);
         })
@@ -120,6 +122,7 @@ export default class Chatroom extends Component {
             }
             db_chatLogAdd(newQuiz)
         }
+
     };
 
     state = {
@@ -133,6 +136,7 @@ export default class Chatroom extends Component {
         userlist:[], // 유저 목록
         token: '',
         key: 0,
+        lastTime :'', // (정상현) 뿌잉뿌잉
     }
 
     static navigationOptions = {
@@ -160,7 +164,7 @@ export default class Chatroom extends Component {
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
-
+   
     renderDrawer = () => {
         return (
             <View>
@@ -188,7 +192,7 @@ export default class Chatroom extends Component {
         }
     }
 
-    _sendPopQuizWon = (answer) => { // 임시로 만든 함수입니다. 이후 팝퀴즈 연동이 완성되면 반드시 삭제해주세요.
+    _sendPopQuizWon = (answer) => { // TODO : 임시로 만든 함수입니다. 이후 팝퀴즈 연동이 완성되면 반드시 삭제해주세요.
         const correctAlert = {
             user_email: 'PopQuizBot',
             cr_id: this.state.cr_id,
@@ -225,17 +229,77 @@ export default class Chatroom extends Component {
         })
     }
 
-    db_readChatLog = () => {        // DB 내의 채팅 로그 읽어오기
+    db_readChatLog = () => {   // DB 내의 채팅 로그 읽어오기
         db.transaction( tx => {
             tx.executeSql(
                 'SELECT * FROM chatLog WHERE cr_id = ? LIMIT 200',  //  일단 200개만 읽어오도록
                 [this.state.cr_id],
-                (_, { rows: { _array }  }) => this.setState({ chatLog: _array }),
+                (_, { rows: { _array }  }) => {
+                    if(_array.length){ /* (정상현) TODO : 처음 들어간 뒤 아무 말도 안하고 나갔을 경우는 어떻게 할지 예외 처리
+                                        *  방 들어감 -> 바로 나감(방에 입장된 상태) -> 다른 사람들이 채팅을 침 -> 로컬에는 저장 안된 상태기 때문에
+                                        *  이프문을 통과할 수 없음 -> 서버에서 최근 채팅 기록을 받아올 수 없음
+                                        */
+                        this.setState({ chatLog: _array })
+                        this.state.lastTime = _array[_array.length - 1].Time; // (정상현) 가장 최근에 있는 채팅 메세지의 시간을 저장함
+                        this.getRecentChatList(); // (정상현) 가장 최근 시간 이후에 채팅 온 메세지들을 불러옴
+                    }
+                },
                 (_,error) => console.error(error)
             )
         },(error) => console.error(error)
         )
     };
+    
+    getRecentChatList(){ // (정상현) 가장 최근 시간 이후에 채팅 온 메세지들을 불러옴
+        var url = 'http://101.101.160.185:3000/chatroom/log';
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+                'Content-Type': 'application/json',
+                'x-access-token': this.state.token
+            }),
+            body:JSON.stringify({
+                cr_id: this.state.cr_id,
+                last_message: this.state.lastTime
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => { 
+            if(responseJson.chatlog.length) this.db_recentChatLogAdd(responseJson._id, responseJson.chatlog);
+        })
+    }
+
+    db_recentChatLogAdd(cr_id, chatlog){ // (정상현) 최근 채팅 디비에 저장하기
+        for(var i=0; i<chatlog.length; i++){
+            var chat = chatlog[i];
+            chat.Time = chat.time;
+            this.db_add(cr_id, chat, chatlog.length, i);
+        }
+    }
+
+    db_add(cr_id, chat, length, i){ /* (정상현) 포문 안에서 디비에 저장 안되서 함수로 따로 빼버림. db_chatLogAdd와 비슷함.
+                                    *         TODO : 하나 하나 저장하고 렌더 해주는 방식이기 때문에 새로운 채팅 올라오는 부분이 굉장히 느림. 개선할 필요가 있음
+                                    */
+        db.transaction( tx => {
+            tx.executeSql(
+                'INSERT INTO chatLog (user_email, cr_id, Time, message, transMessage, answer) values (?, ?, ?, ?, ?, ?);',
+                [chat.user_email, cr_id, chat.time, chat.message, chat.message, chat.answer], // TODO : transMessage 넣기 (정상현)
+                () => {this.chatLogAdd(chat)},
+                null,   // sql문 실패 에러
+            )
+        },null)
+
+        if(i == length-1){
+            db.transaction(tx => {
+                tx.executeSql(  
+                'UPDATE crList SET lastMessage = ?, lastTime = ? WHERE cr_id = ?',
+                    [chat.message, chat.time, this.state.cr_id],
+                    null,
+                    (_,error) => console.error(error)
+                )
+            }, null)
+        }  
+    }
 
     chatLogAdd = (newChat) => {
         if (this.state.chatLog[this.state.chatLog.length-1] == newChat) return  // 중복된 메시지가 서버에서 전송될 때

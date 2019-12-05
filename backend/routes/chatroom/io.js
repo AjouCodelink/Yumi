@@ -8,6 +8,14 @@ module.exports = function (server) {
         console.log(socket.id);
         socket.on('SEND_MESSAGE', function (data) {
             console.log(data);
+            ChatRoom.findOne({_id : data.cr_id}, function(err, chatroom){
+                chatroom.chatlog.push({ // chatroom에 채팅 로그 저장
+                    user_email : data.user_email,
+                    time : data.Time,
+                    message : data.message
+                })
+                chatroom.save();
+            })
             io.sockets.in(data.cr_id).emit('RECEIVE_MESSAGE', data); 
         })
 
