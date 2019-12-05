@@ -216,11 +216,15 @@ exports.exit = (req, res) => {
 }
 
 /*
-    GET /chatroom/log?cr_id=a&last_message=b
+    POST /chatroom/log
+    {
+        cr_id,
+        last_message
+    }
 */
 exports.getLog = (req, res) => {
-    var cr_id = req.query.cr_id;
-    var last_message = req.query.last_message;
+    var cr_id = req.body.cr_id;
+    var last_message = req.body.last_message;
 
     ChatRoom.findOne({_id : cr_id})
         .select('chatlog')
