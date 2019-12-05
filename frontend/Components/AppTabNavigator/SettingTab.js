@@ -66,6 +66,12 @@ export default class SettingTab extends Component {
                             null,
                             (_,error) => console.error(error)
                         ),
+                        tx.executeSql(
+                            'DROP TABLE chatLog',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        ),
                         tx.executeSql(          // token 저장하는 table 생성하기
                             'CREATE TABLE if not exists token (access_token TEXT NOT NULL, user_email TEXT NOT NULL, PRIMARY KEY("access_token"))',
                             [],
@@ -80,6 +86,12 @@ export default class SettingTab extends Component {
                         ),
                         tx.executeSql(          // 채팅방 목록 저장하는 table 생성하기 // 채팅방ID, 채팅방이름, 대분류, 소분류, 인원, 마지막 메세지, 마지막 메세지 시간
                             'CREATE TABLE if not exists crList (cr_id TEXT NOT NULL, cr_name TEXT NOT NULL, section TEXT NOT NULL, _group TEXT NOT NULL, memNum INTEGER, lastMessage TEXT, lastTime TEXT, favorite INTEGER, PRIMARY KEY("cr_id"))',
+                            [],
+                            null,
+                            (_,error) => console.error(error)
+                        )
+                        tx.executeSql(          // 채팅 로그 저장하는 table 생성하기 /// 말한 사람 이메일, 채팅방 ID, 시간, 메세지, 프사URL, (팝퀴즈일경우)정답
+                            'CREATE TABLE if not exists chatLog (user_email TEXT NOT NULL, cr_id INTEGER NOT NULL, Time TEXT NOT NULL, message TEXT NOT NULL, transMessage TEXT, answer TEXT, PRIMARY KEY("user_email","cr_id","Time"))',
                             [],
                             null,
                             (_,error) => console.error(error)

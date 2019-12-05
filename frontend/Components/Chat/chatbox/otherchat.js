@@ -21,7 +21,7 @@ export default class otherchat extends Component {
             })
         }
     }
-
+    
     render() {
         const data = this.props.data;
         return (
@@ -32,7 +32,7 @@ export default class otherchat extends Component {
                         ? (
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
-                                source={require('../../../assets/default_thumbnail.png')}/>
+                                source={{uri:'http://101.101.160.185:3000/images/'+data.thumbnailURL}}/>
                             <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#9f9'}]} onPress={() => this._LongPress(data.transMessage)}>
                                 <Text style={style.text_message}>{data.transMessage} </Text>
                             </TouchableOpacity>
@@ -44,7 +44,7 @@ export default class otherchat extends Component {
                         : (
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
-                                source={require('../../../assets/default_thumbnail.png')}/>
+                                source={{uri:'http://101.101.160.185:3000/images/'+data.thumbnailURL}}/>
                             <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#ccc'}]} onPress={() => this._LongPress(data.transMessage)}>
                                 <Text style={style.text_message}>{data.message} </Text>
                             </TouchableOpacity>
