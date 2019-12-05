@@ -25,12 +25,13 @@ exports.login = (req, res) => {
 
     // check the user info & generate the jwt
     const check = (user) => {
+        console.log(user);
         if(!user) {
             // user does not exist
             throw new Error('login failed')
         } else {
             // user exists, check the password
-            if(user.verify(password)) {
+            if(user.verify(password) && user.verify_admin(user.admin)) {
                 // create a promise that generates jwt asynchronously
                 const p = new Promise((resolve, reject) => {
                     jwt.sign(

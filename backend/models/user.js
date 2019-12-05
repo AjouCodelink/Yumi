@@ -21,7 +21,8 @@ const UserSchema = new Schema({
             group : { type : String }
         }
     }],
-    address:{ type: String }
+    address:{ type: String },
+    admin : { type: Boolean}
 });
 
 // create new User document
@@ -50,7 +51,7 @@ UserSchema.statics.findOneByEmail = function(email) {
     }).exec()
 }
 
-// verify the password of the User documment
+// verify the password of the User document
 UserSchema.methods.verify = function(password) {
     const encrypted = crypto.createHmac('sha1', config.secret)
                       .update(password)
@@ -58,6 +59,16 @@ UserSchema.methods.verify = function(password) {
     console.log(this.password === encrypted)
 
     return this.password === encrypted
+}
+
+//verify the admin of the User document
+UserSchema.methods.verify_admin = function(admin) {
+    if(admin == true)
+    {
+        return true;
+    }else {
+        return false;
+    }
 }
 
 UserSchema.methods.assignAdmin = function() {
