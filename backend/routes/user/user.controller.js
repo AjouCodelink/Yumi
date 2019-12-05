@@ -177,8 +177,7 @@ exports.login = (req, res) => {
                     message:'logged in successfully',
                     userInfo:user,
                     token,
-                    save_chatroom:[],
-                    img_path
+                    save_chatroom:[]
                 })
             }
             for(var i = 0; i < length; i++){

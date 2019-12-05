@@ -14,7 +14,8 @@ const ChatRoomSchema = mongoose.Schema({
             section : {type:String},
             group:{type:String}
         }],
-        socketID: { type: String }
+        socketID: { type: String },
+        img_path:{type: String}
     }],
     chatlog:[{
         user_email:{type: String},
