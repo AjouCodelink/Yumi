@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { Icon, Thumbnail } from 'native-base';
 
 import * as SQLite from 'expo-sqlite';
@@ -15,7 +16,27 @@ export default class Chatroom_SideMenu extends Component {
             favorite: this.props.favorite,
             notification: true,
             key: 0,
+            token: '',
+            myEmail: '',
         }
+    }
+
+    componentWillMount() {
+        db.transaction(tx => {
+            tx.executeSql(
+                'SELECT * FROM token',
+                [],
+                (_, { rows: { _array }  }) => {
+                    if(_array != []) (
+                        this.setState({
+                            myEmail: _array[0].user_email, 
+                            token: _array[0].access_token
+                        })
+                    )
+                },
+                (_,error) => console.error(error)
+            )
+        },(error) => console.error(error))
     }
 
     _onPressFavorite() {
@@ -45,6 +66,7 @@ export default class Chatroom_SideMenu extends Component {
             notification: !this.state.notification
         })
     }
+
     _onPressExit = () => {
         Alert.alert(
             'Exit?',
@@ -62,14 +84,44 @@ export default class Chatroom_SideMenu extends Component {
             {cancelable: false},
         );
     }
-    _onPressPicture() {
-        alert("You pressed Picture.")
-    }
-    _onPressRecom() {
-        alert("You pressed Recom.")
-    }
+
+    _onPressPicture = async () => {
+        let photo = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+        });
+        if (!photo.cancelled) {
+            const newPhoto = new FormData();
+            newPhoto.append("file", {
+                name: this.state.myEmail+'.jpg',
+                type: "image/jpeg",
+                uri: photo.uri
+            });
+            this._uploadImage(newPhoto);
+        }
+    };
+
     _onPressCamera() {
         alert("You pressed Camera.")
+    }
+
+    _uploadImage = (file) => {
+        var url = 'http://101.101.160.185:3000/images/profile'; // 이후 다른 api로 수정해야함.
+        fetch(url, {
+            method: 'POST',
+            headers: new Headers({
+                'Content-Type': 'multipart/form-data',
+                'x-access-token': this.state.token
+            }),
+            body: file
+        }).then(response => response.json())
+        .catch(error => console.error(error))
+        .then(responseJson => {
+            this.props.sendImage(responseJson.filename)
+        })
+    }
+
+    _onPressRecom() {
+        alert("You pressed Recom.")
     }
 
     render() {

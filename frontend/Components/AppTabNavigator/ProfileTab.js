@@ -96,7 +96,7 @@ export default class ProfileTab extends Component {
 
     _onPressThumbnail() {
         this._pickImage()
-        alert("you pressed Thumbnail Edit.")
+        // todo: 카메라로 찍고 사진으로 올리는 방법은?
     }
 
     _pickImage = async () => {

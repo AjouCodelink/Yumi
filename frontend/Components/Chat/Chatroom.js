@@ -49,11 +49,11 @@ export default class Chatroom extends Component {
             .catch(error => console.error('Error: ', error))
             .then(responseJson => {
                 //console.log(responseJson)
-                if (data.user_email == 'PopQuizBot') {  // 팝퀴즈봇이면 디비에 추가
-                    db_chatLogAdd(data);
-                } else if (data.user_email == this.state.myEmail) { // 내 메시지면 스킵 
+                if (data.user_email == this.state.myEmail) { // 내 메시지면 스킵
                     return
-                } else {    // 아니면 번역
+                } else if (data.user_email == 'PopQuizBot' || data.user_email == 'notice' || data.answer=='#image') {  // 팝퀴즈봇, 공지, 이미지면 디비에 추가
+                    db_chatLogAdd(data);
+                }  else {    // 아니면 번역
                     translate(data, responseJson.langCode);
                 }
             })
@@ -165,13 +165,14 @@ export default class Chatroom extends Component {
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
-   
+
     renderDrawer = () => {
         return (
             <View>
                 <ChatroomSideMenu
                     goBack={() => this.props.navigation.goBack(null)}
                     exitCR={() => this.props.navigation.state.params.exitChatRoom(this.state.cr_id)}
+                    sendImage={(url => this.sendImage(url))}
                     userlist={this.state.userlist}
                     cr_id={this.state.cr_id}
                     favorite={this.state.favorite}/>
@@ -179,7 +180,7 @@ export default class Chatroom extends Component {
         );
     };
 
-    _onPressSend(){
+    _onPressSend () {
         this.messageInput.current._root.clear();
         if (this.state.message.length != 0){
             const newChat = {
@@ -191,6 +192,18 @@ export default class Chatroom extends Component {
             db_chatLogAdd(newChat)
             this.socket.emit('SEND_MESSAGE', newChat);
         }
+    }
+
+    sendImage (url) {
+        const newChat = {
+            user_email: this.state.myEmail,
+            cr_id: this.state.cr_id,
+            Time: Date(),
+            message: url,
+            answer: '#image'
+        }
+        db_chatLogAdd(newChat)
+        this.socket.emit('SEND_MESSAGE', newChat);
     }
 
     _sendPopQuizWon = (answer) => { // TODO : 임시로 만든 함수입니다. 이후 팝퀴즈 연동이 완성되면 반드시 삭제해주세요.
