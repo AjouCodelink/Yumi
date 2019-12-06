@@ -37,4 +37,9 @@ router.post('/profile', upload.single('file'), function (req, res) {
     })
 })
 
+
+router.post('/supporter/upload', upload.single('file'), function (req, res) {
+    res.json(req.file);
+})
+
 module.exports = router;

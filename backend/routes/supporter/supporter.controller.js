@@ -16,14 +16,20 @@ exports.getMain = (req, res) => {
 }
 exports.assign = (req, res) => {
     const supporter_info = req.body;
-    
+    console.log(supporter_info)
     Supporter.create(supporter_info)
     .then(result => {
         if(result) res.json({result:true});
         else res.json({result:false});
     });
 }
-
+exports.isloggedin = (req,res) => {
+        var email = "admin"
+        User.findOne({email:email}, function(err, user){
+        if(err) res.json({result: false, message: "not found supporters"})
+        res.json(user);
+    })
+}
 exports.accept = (req,res) =>{
     var email = req.body.email;
     Supporter.findOne({email:email}, function(err, supporter){
@@ -74,8 +80,6 @@ exports.finish = (req,res) =>{
         password
     }
 */
-
-
 exports.login = (req, res) => {
     const {email, password} = req.body
     const secret = req.app.get('jwt-secret')
@@ -116,7 +120,10 @@ exports.login = (req, res) => {
     const respond = (token) => {
         User.findOne({email:email},{email:1, nickname:1}, function(err, user){
             if(err) res.json(err);
-            
+            user.isloggedin = true;
+            console.log("is로그드인 값")
+            console.log(user.isloggedin);
+            user.save()
             res.json({
                 result:1,
                 message: 'logged in successfully',
