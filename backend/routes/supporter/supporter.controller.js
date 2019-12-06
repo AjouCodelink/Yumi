@@ -16,7 +16,7 @@ exports.getMain = (req, res) => {
 }
 exports.assign = (req, res) => {
     const supporter_info = req.body;
-    
+
     Supporter.create(supporter_info)
     .then(result => {
         if(result) res.json({result:true});
