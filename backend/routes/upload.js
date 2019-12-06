@@ -45,7 +45,7 @@ router.post('/profile', upload.single('file'), function (req, res) {
     })
 })
 
-function saveImages(user){
+function saveImage(user){
     var chatrooms = user.chatroom;
 
     chatrooms.map((chatroom) => {
