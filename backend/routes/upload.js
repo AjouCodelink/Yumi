@@ -4,6 +4,7 @@ const multer = require('multer');
 const gm = require('gm');
 const User = require('../models/user');
 const ChatRoom = require('../models/chatRoom');
+const Supporter = require('../models/supporters');
 const authMiddleware = require('../middlewares/auth');
 
 router.use('/profile', authMiddleware);
@@ -79,7 +80,15 @@ router.post('/upload', upload.single('file'), function (req, res) {
     }
  */
 router.post('/supporter/upload', upload.single('file'), function (req, res) {
-    // var email = req.body.email;
-    res.json(req.file);
+    var email = req.body.email;
+    var filename = req.file.filename;
+
+    Supporter.findOne({email}, (err, supporter)=>{
+        if(err) res.json({result:0, message:"not found supporter"});
+        supporter.img_path = filename;
+        supporter.save(()=>{
+            res.json({result:1, message: "save successful!"});
+        })
+    })
 })
 module.exports = router;
