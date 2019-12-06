@@ -38,14 +38,14 @@ exports.creation = (req, res) => {
     chatRoom.interest = req.body.interest;
     chatRoom.name = req.body.name;
 
-    User.findOne({email:userEmail}, {email:1, nickname:1, interests:1, chatroom:1}, function(err, user){
+    User.findOne({email:userEmail}, {email:1, nickname:1, interests:1, chatroom:1, img_path:1}, function(err, user){
         if(err) res.send(err);
         if(!user) res.json({result:0, message: "email not found!"});
         else{
             user.chatroom.push({cr_id : chatRoom._id, interest: chatRoom.interest, name: chatRoom.name});
             user.save(); // user가 속해 있는 chatroom_id 저장.
 
-            var participant = {email : user.email, nickname : user.nickname, interests : user.interests};
+            var participant = {email : user.email, nickname : user.nickname, interests : user.interests, img_path: user.img_path};
             chatRoom.participants.push(participant);
             
             chatRoom.save((err)=>{
@@ -81,7 +81,7 @@ exports.entrance = (req, res)=>{
 
     ChatRoom.findOne({_id : cr_id}, function(err, chatroom){
         if(err) res.json(err);
-        User.findOne({email:email},{email:1, nickname: 1, interests: 1, chatroom:1}, function(err, user){
+        User.findOne({email:email},{email:1, nickname: 1, interests: 1, chatroom:1, img_path:1}, function(err, user){
             if(err) res.json(err);
             
             for(var i=0; i<chatroom.participants.length; i++){
@@ -91,7 +91,8 @@ exports.entrance = (req, res)=>{
             chatroom.participants.push({
                 email : user.email,
                 nickname : user.nickname,
-                interests : user.interests
+                interests : user.interests,
+                img_path : user.img_path
             })
 
             chatroom.save(function(){
@@ -163,18 +164,6 @@ exports.recommend = (req, res) => {
     })
 }
 
-
-/*
-    GET /chatroom/log/:cr_id
-*/
-exports.getLog = (req, res) => {
-    var cr_id = req.params.cr_id;
-    
-    ChatRoom.findOne({_id : cr_id}, { chatlog : 1 },function(err, chatroom){ // TODO : 추후에 채팅 기록 소량만 가져올 수 있게끔 수정해야 함.
-        res.json(chatroom.chatlog);
-    })
-}
-
 /*
     chatroom participants 불러오는 api
     GET /chatroom/participants/:cr_id
@@ -227,11 +216,15 @@ exports.exit = (req, res) => {
 }
 
 /*
-    GET /chatroom/log?cr_id=a&last_message=b
+    POST /chatroom/log
+    {
+        cr_id,
+        last_message
+    }
 */
 exports.getLog = (req, res) => {
-    var cr_id = req.query.cr_id;
-    var last_message = req.query.last_message;
+    var cr_id = req.body.cr_id;
+    var last_message = req.body.last_message;
 
     ChatRoom.findOne({_id : cr_id})
         .select('chatlog')

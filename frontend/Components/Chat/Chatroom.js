@@ -134,6 +134,7 @@ export default class Chatroom extends Component {
         favorite: undefined,
         chatLog:[], // 채팅로그
         userlist:[], // 유저 목록
+        user_image: [],
         token: '',
         key: 0,
         lastTime :'', // (정상현) 뿌잉뿌잉
@@ -154,11 +155,11 @@ export default class Chatroom extends Component {
         this.state.favorite = navigation.getParam('favorite', undefined);
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
         this.socket.emit('JOIN_ROOM', {cr_id:this.state.cr_id, myEmail:this.state.myEmail})
-        this.db_readChatLog();
+        this._getParticipants();
     }
 
     componentDidMount() {
-        this._getParticipants();
+        this.db_readChatLog();
     }
 
     componentWillUnmount() {
@@ -227,10 +228,20 @@ export default class Chatroom extends Component {
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
             this.setState({userlist: responseJson}),
+            this.setImages(this.state.userlist);
             this.db_cr_memNumUpdate(responseJson.length)
         })
     }
-
+    setImages(userlist){
+        for(var i=0; i<userlist.length; i++){
+            var email = userlist[i].email;
+            var img_path = userlist[i].img_path;
+            
+            this.setState({
+                user_image: [...this.state.user_image, {email, img_path}],
+            })
+        }
+    }
     db_cr_memNumUpdate = (new_memNum) => {      // DB에 바뀐 인원 수 저장 
         db.transaction(tx => {
             tx.executeSql(  
@@ -252,6 +263,9 @@ export default class Chatroom extends Component {
                                         *  방 들어감 -> 바로 나감(방에 입장된 상태) -> 다른 사람들이 채팅을 침 -> 로컬에는 저장 안된 상태기 때문에
                                         *  이프문을 통과할 수 없음 -> 서버에서 최근 채팅 기록을 받아올 수 없음
                                         */
+                        _array.map((chat) => {
+                            chat.thumbnailURL = this.findImage(chat.user_email);
+                        })
                         this.setState({ chatLog: _array })
                         this.state.lastTime = _array[_array.length - 1].Time; // (정상현) 가장 최근에 있는 채팅 메세지의 시간을 저장함
                         this.getRecentChatList(); // (정상현) 가장 최근 시간 이후에 채팅 온 메세지들을 불러옴
@@ -316,6 +330,8 @@ export default class Chatroom extends Component {
 
     chatLogAdd = (newChat) => {
         if (this.state.chatLog[this.state.chatLog.length-1] == newChat) return  // 중복된 메시지가 서버에서 전송될 때
+        var img_path = this.findImage(newChat.user_email);
+        newChat.thumbnailURL = img_path;
         this.setState({
             chatLog: [...this.state.chatLog, newChat],
         })
@@ -325,6 +341,15 @@ export default class Chatroom extends Component {
         this.socket.emit('LEAVE_ROOM');
         this.props.navigation.state.params.onNavigateBack(this.state.cr_id)
         this.props.navigation.goBack()
+    }
+    findImage(email){
+        var images = this.state.user_image;
+
+        for(var i=0; i<images.length; i++){
+            if(images[i].email == email){
+                return images[i].img_path;
+            }  
+        }
     }
 
     render() {

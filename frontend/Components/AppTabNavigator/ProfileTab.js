@@ -128,18 +128,21 @@ export default class ProfileTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error(error))
         .then(responseJson => {
-          this.setState({myThumbnailURL: responseJson.filename}),
-          db.transaction(tx => {
-            tx.executeSql(
-              "UPDATE userInfo SET thumbnailURL = ?",
-              [responseJson.filename],
-              null,
-              (_, error) => console.error(error)
-            );
-          });
+          this.setState({myThumbnailURL: responseJson.filename});
+          this.db_saveImage(responseJson.filename);
         })
     }
-
+  db_saveImage(filename){
+    db.transaction(tx => {
+        tx.executeSql(
+          // DB에 바뀐 닉네임 저장
+          "UPDATE userInfo SET thumbnailURL = ?",
+          [filename],
+          null,
+          (_, error) => console.error(error)
+        );
+    });
+  }
     _displayAddr = (display) => {
         this.setState({editAddrDisplay: display})
     }

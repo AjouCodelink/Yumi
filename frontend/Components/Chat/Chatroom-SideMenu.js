@@ -125,7 +125,7 @@ export default class Chatroom_SideMenu extends Component {
     }
 
     render() {
-        this.userlist = this.props.userlist
+        this.userlist = this.props.userlist;
         return (
             <View style={style.container}>
                 <View style={style.content}>
@@ -168,7 +168,7 @@ export default class Chatroom_SideMenu extends Component {
                     </View>
                     <View style={style.userList}>
                         <ScrollView>
-                            {this.userlist.map( user => (user.thumbnailURL == null || user.thumbnailURL == ''
+                            {this.userlist.map( user => (user.img_path == null || user.img_path == ''
                                 ? (<View style={style.user} key={this.state.key++}>
                                     <Thumbnail backgroundColor="#fff" style={style.user_thumbnail}
                                         source={require('../../assets/default_thumbnail.png')}/>
@@ -176,7 +176,7 @@ export default class Chatroom_SideMenu extends Component {
                                     </View>
                                 ) : (<View style={style.user} key={this.state.key++}>
                                     <Thumbnail backgroundColor="#fff" style={style.user_thumbnail}
-                                        source={{ uri: this.state.thumbnailURL }}/>
+                                        source={{ uri: 'http://101.101.160.185:3000/images/' + user.img_path}}/>
                                     <Text style={style.user_name}>{user.nickname}</Text>
                                     </View>
                                 )
