@@ -68,7 +68,6 @@ function saveImage(user){
     }
 */
 router.post('/upload', upload.single('file'), function (req, res) {
-    var email = req.decoded.email;
     res.json(req.file);
 })
 module.exports = router;
