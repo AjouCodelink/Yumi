@@ -23,13 +23,7 @@ exports.assign = (req, res) => {
         else res.json({result:false});
     });
 }
-exports.isloggedin = (req,res) => {
-        var email = "admin"
-        User.findOne({email:email}, function(err, user){
-        if(err) res.json({result: false, message: "not found supporters"})
-        res.json(user);
-    })
-}
+
 exports.accept = (req,res) =>{
     var email = req.body.email;
     Supporter.findOne({email:email}, function(err, supporter){
@@ -120,9 +114,7 @@ exports.login = (req, res) => {
     const respond = (token) => {
         User.findOne({email:email},{email:1, nickname:1}, function(err, user){
             if(err) res.json(err);
-            user.isloggedin = true;
-            console.log("is로그드인 값")
-            console.log(user.isloggedin);
+          
             user.save()
             res.json({
                 result:1,
