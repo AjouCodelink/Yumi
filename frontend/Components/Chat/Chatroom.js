@@ -189,8 +189,8 @@ export default class Chatroom extends Component {
                 Time: Date(),
                 message: this.state.message,
             }
-            db_chatLogAdd(newChat)
             this.socket.emit('SEND_MESSAGE', newChat);
+            db_chatLogAdd(newChat)
         }
     }
 
@@ -202,8 +202,8 @@ export default class Chatroom extends Component {
             message: url,
             answer: '#image'
         }
-        db_chatLogAdd(newChat)
         this.socket.emit('SEND_MESSAGE', newChat);
+        db_chatLogAdd(newChat)
     }
 
     _sendPopQuizWon = (answer) => { // TODO : 임시로 만든 함수입니다. 이후 팝퀴즈 연동이 완성되면 반드시 삭제해주세요.
