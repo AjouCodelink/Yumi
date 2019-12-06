@@ -60,4 +60,15 @@ function saveImage(user){
         })
     })
 }
+
+/*
+*   POST /images/upload
+    {
+        file
+    }
+*/
+router.post('/upload', upload.single('file'), function (req, res) {
+    var email = req.decoded.email;
+    res.json(req.file);
+})
 module.exports = router;
