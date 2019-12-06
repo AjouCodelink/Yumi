@@ -30,7 +30,7 @@ router.get('/upload', function(req, res){
 */
 router.post('/profile', upload.single('file'), function (req, res) {
     var email = req.decoded.email;
-    
+
     User.findOne({email: email}, function(err, user){ // User를 찾아서 새로 받은 사진 정보를 DB에 저장
         if(err) res.json({result:0, message : "not found user"})
         user.img_path = req.file.filename;
@@ -39,10 +39,25 @@ router.post('/profile', upload.single('file'), function (req, res) {
             if(err) res.json({result:0, message: "not save image"});
 
             var chatrooms = user.chatroom;
-            console.log(chatrooms);
+            saveImage(user);
             res.json(req.file);
         })
     })
 })
 
+function saveImages(user){
+    var chatrooms = user.chatroom;
+
+    chatrooms.map((chatroom) => {
+        ChatRoom.findOne({_id: chatroom.cr_id}, {participants: 1}, (err, room) => {
+            room.participant.map((participant) => {
+                if(participant.email == user.email){
+                    participant.img_path = user.img_path;
+                    room.save();
+                    return;
+                }
+            })
+        })
+    })
+}
 module.exports = router;
