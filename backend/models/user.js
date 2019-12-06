@@ -27,7 +27,7 @@ const UserSchema = new Schema({
 
 // create new User document
 UserSchema.statics.create = function(user_info) {
-    const {email, password, nickname, interests, language, img_path, address} = user_info;
+    const {email, password, nickname, interests, language, address} = user_info;
     const encrypted = crypto.createHmac('sha1', config.secret)
                     .update(password)
                     .digest('base64');
@@ -37,7 +37,7 @@ UserSchema.statics.create = function(user_info) {
         nickname,
         interests,
         language,
-        img_path,
+        img_path: 'default_thumbnail.png',
         address
     })
     // return the Promise

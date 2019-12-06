@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { ToastAndroid, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { ToastAndroid, View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { Thumbnail } from 'native-base';
+
+const { height, width } = Dimensions.get('window');
 
 export default class otherchat extends Component {
     constructor() {
@@ -21,7 +23,7 @@ export default class otherchat extends Component {
             })
         }
     }
-
+    
     render() {
         const data = this.props.data;
         return (
@@ -32,7 +34,7 @@ export default class otherchat extends Component {
                         ? (
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
-                                source={require('../../../assets/default_thumbnail.png')}/>
+                                source={{uri:'http://101.101.160.185:3000/images/'+data.thumbnailURL}}/>
                             <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#9f9'}]} onPress={() => this._LongPress(data.transMessage)}>
                                 <Text style={style.text_message}>{data.transMessage} </Text>
                             </TouchableOpacity>
@@ -44,10 +46,18 @@ export default class otherchat extends Component {
                         : (
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
-                                source={require('../../../assets/default_thumbnail.png')}/>
-                            <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#ccc'}]} onPress={() => this._LongPress(data.transMessage)}>
-                                <Text style={style.text_message}>{data.message} </Text>
-                            </TouchableOpacity>
+                                source={{uri:'http://101.101.160.185:3000/images/'+data.thumbnailURL}}/>
+                            {data.answer == '#image'
+                                ? (
+                                    <View style={[style.imageBox,{backgroundColor: '#ccc'}]}>
+                                        <Image style={{width:width*0.60, height: width*0.60, resizeMode:'contain'}} source={{ uri: 'http://101.101.160.185:3000/images/'+data.message }}/>
+                                    </View>)
+                                : (
+                                    <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#ccc'}]} onPress={() => this._LongPress(data.transMessage)}>
+                                        <Text style={style.text_message}>{data.message} </Text>
+                                    </TouchableOpacity>
+                                )
+                            }
                             <View>
                                 <Text style={style.text_time}>  {data.Time.toString().substr(16, 5)}</Text>
                             </View>
@@ -81,6 +91,11 @@ const style = StyleSheet.create({
         paddingBottom: 8,
         padding: 5,
         borderRadius: 6
+    },
+    imageBox: {
+        marginTop: 25,
+        padding: 10,
+        borderRadius: 6,
     },
     text_name: {
         position : 'absolute',
