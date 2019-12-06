@@ -50,7 +50,7 @@ function saveImage(user){
 
     chatrooms.map((chatroom) => {
         ChatRoom.findOne({_id: chatroom.cr_id}, {participants: 1}, (err, room) => {
-            room.participant.map((participant) => {
+            room.participants.map((participant) => {
                 if(participant.email == user.email){
                     participant.img_path = user.img_path;
                     room.save();
