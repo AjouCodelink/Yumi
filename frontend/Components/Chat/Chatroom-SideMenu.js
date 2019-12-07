@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Icon, Thumbnail } from 'native-base';
 
@@ -120,10 +120,6 @@ export default class Chatroom_SideMenu extends Component {
         })
     }
 
-    _onPressRecom() {
-        alert("You pressed Recom.")
-    }
-
     render() {
         this.userlist = this.props.userlist;
         return (
@@ -157,12 +153,6 @@ export default class Chatroom_SideMenu extends Component {
                             <View style={style.tool}>
                                 <Icon name='md-images' style={style.tool_icon}/>
                                 <Text style={style.tool_text}>  Pictures</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this._onPressRecom()}>
-                            <View style={style.tool}>
-                                <Icon name='md-locate' style={style.tool_icon}/>
-                                <Text style={style.tool_text}>  Place Recommend</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
