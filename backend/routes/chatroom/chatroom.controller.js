@@ -245,3 +245,72 @@ exports.getLog = (req, res) => {
         });
 }
 
+/**
+    POST /chatroom/exchange-language/creation
+    {
+        language,
+        name
+    }
+*/
+exports.exchangeLanCreation = (req, res) => {
+    var dest = req.body.language;
+    var email = req.decoded.email;
+    var room_name = req.body.name;
+
+    User.findOne({email}, (err, user)=>{
+        var origin = user.language;
+        var chatroom = new ChatRoom();
+
+        var group = origin + " <> " + dest;
+        chatroom.interest = {section: "Exchanging Language", group};
+        chatroom.name = room_name;
+        chatroom.language = {origin, dest};
+        chatroom.participants.push({
+            email,
+            nickname: user.nickname,
+            interests: user.interests,
+            img_path: user.img_path
+        })
+        chatroom.save((err)=>{
+            if(err) res.json({result: false, "message": "don't save chatroom"});
+        });
+
+        user.chatroom.push({
+            cr_id: chatroom._id,
+            interest: chatroom.interest,
+            name: chatroom.name
+        })
+        
+        user.save((err) => {
+            if(err) res.json({result: false, "message": "don't save user"});
+            res.json({result:true, cr_name : chatroom.name, cr_id : chatroom._id, interest : chatroom.interest});
+        })
+    })
+}
+
+/**
+    GET /chatroom/exchange-language/:language
+ */
+ exports.exchangeLanSearch = (req, res) => {
+    var email = req.decoded.email;
+    var dest = req.params.language;
+
+    User.findOne({email}, (err, user)=>{
+        var origin = user.language;
+        console.log(origin, dest);
+        ChatRoom.find()
+            .and([
+                {"interest.section": "Exchanging Language"},
+                {"language.origin": dest},
+                {"language.dest": origin}
+            ]).
+            exec((err, chatroom) => {
+                if(err) res.json({result: false, message:"fail"});
+                else if(chatroom.length){
+                    res.json(chatroom);
+                }
+                else res.json({result: true, message: "no found chatroom"});
+            })
+
+     })
+ }
