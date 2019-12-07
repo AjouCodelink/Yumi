@@ -5,7 +5,7 @@ var User = require('../../models/user');
 /*
     GET /chatroom/search/:keyword
 */
-exports.searchWord = (req, res) =>{
+exports.searchWord = async (req, res) =>{
     var keyword = req.params.keyword;
 
     ChatRoom.find().
@@ -18,7 +18,10 @@ exports.searchWord = (req, res) =>{
         sort('name').
         exec((err, chatroom)=>{
             if(err) res.json(err);
-            else if(chatroom.length) res.json(chatroom);
+            else if(chatroom.length) {
+                var filterChatroom = chatroom.filter((room)=>(room.interest.section != 'Exchanging Language'))
+                res.json(filterChatroom);
+            }
             else res.json(({result : true, message : "no search chatroom"}));
         })
 }
