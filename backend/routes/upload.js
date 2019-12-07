@@ -46,6 +46,7 @@ router.post('/profile', upload.single('file'), function (req, res) {
     })
 })
 
+
 function saveImage(user){
     var chatrooms = user.chatroom;
 
@@ -91,4 +92,5 @@ router.post('/supporter/upload', upload.single('file'), function (req, res) {
         })
     })
 })
+
 module.exports = router;

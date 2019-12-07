@@ -29,8 +29,8 @@ const UserSchema = new Schema({
 UserSchema.statics.create = function(user_info) {
     const {email, password, nickname, interests, language, address} = user_info;
     const encrypted = crypto.createHmac('sha1', config.secret)
-                      .update(password)
-                      .digest('base64');
+                    .update(password)
+                    .digest('base64');
     const user = new this({
         email,
         password: encrypted,
