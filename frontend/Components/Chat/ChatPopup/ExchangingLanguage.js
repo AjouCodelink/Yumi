@@ -30,18 +30,18 @@ export default class ExchangingLanguage extends Component {
         if (this.state.selectedLanguage == 'noValue') {
             ToastAndroid.show('Please select target language.', ToastAndroid.SHORT)
             return
+        } else if (this.state.selectedLanguage == this.props.myLanguage) {
+            ToastAndroid.show('Origin language is same with target language.', ToastAndroid.SHORT)
+            return
         } else if (this.state.new_cr_name ==  '') {
             ToastAndroid.show('Please input Room name.', ToastAndroid.SHORT)
             return
         }
         const new_room = {
             name: this.state.new_cr_name,
-            language: {
-                origin: this.props.myLanguage,
-                dest: this.state.selectedLanguage,
-            }
+            language: this.state.selectedLanguage,
         }
-        var url = 'http://101.101.160.185:3000/chatroom/exchanging-language/creation';
+        var url = 'http://101.101.160.185:3000/chatroom/exchange-language';
         fetch(url, {
             method: 'POST',
             headers: new Headers({
@@ -107,10 +107,10 @@ export default class ExchangingLanguage extends Component {
                                 <Switch value={this.state.search_create} onChange={() => this._onPressSwitch()}/>
                                 <Text style={style.font_default}> Create</Text>
                             </View>
-                            <View style={{height: 45, width: 250, margin:10}}>
+                            <View style={{height: 45, width: 250}}>
                                 <LanguagePicker valueChange={this.languageChange}/>
                             </View>
-                            <Text style={style.font_default}>Target Language</Text>
+                            <Text style={[style.font_default, {width: 234, marginTop: 5, marginBottom: 10}]}>Target Language</Text>
                             <Item style={{height: 48, width: 250, marginTop: 15}} floatingLabel>
                                 <Label style={{color: '#aaa'}}> Room name</Label>
                                 <Input style={{fontSize: 16, color: '#ddd', paddingLeft: 8}} onChangeText={(new_cr_name) => this.setState({new_cr_name})}/>

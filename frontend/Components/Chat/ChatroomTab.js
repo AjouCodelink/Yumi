@@ -29,7 +29,6 @@ export default class ChatroomTab extends Component {
             favoriteHolder: [],
             arrayHolder: [],
             searcharrayHolder: [],
-            exLangarrayHolder: [],
             suggestedRoom: [],
             searchBarDisplay: 'none',
             createCRDisplay: 'none',
@@ -328,19 +327,24 @@ export default class ChatroomTab extends Component {
         if (targetLang == 'noValue') {
             ToastAndroid.show('Please select target language.', ToastAndroid.SHORT)
             return
+        } else if (targetLang == this.state.myLanguage) {
+            ToastAndroid.show('origin language is same with target language.', ToastAndroid.SHORT)
+            return
         }
         this.state.searcharrayHolder.splice(0,100)
         this.setState({spinnerDisplay: 'flex'});
-        var url = 'http://101.101.160.185:3000/chatroom/search/'+targetLang;
+        var url = 'http://101.101.160.185:3389/chatroom/exchange-language/'+targetLang;
         fetch(url, {
             method: 'GET',
             headers: new Headers({
             'Content-Type' : 'application/json',
             'token': 'token',
+            'x-access-token': this.token
             })
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
+            console.log(responseJson)
             if (responseJson.message == "no search chatroom") {
                 ToastAndroid.show('No rooms searched by this target language.', ToastAndroid.SHORT);
             } else {
@@ -357,7 +361,7 @@ export default class ChatroomTab extends Component {
                 }
                 this.setState({
                     searchCRDisplay: 'flex',
-                    searchBarDisplay: 'none',
+                    langExDisplay: 'none',
                 })
             }
             this.setState({spinnerDisplay: 'none'})
@@ -411,7 +415,9 @@ export default class ChatroomTab extends Component {
                                         ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/games.jpg')}/>)
                                         : item.interest.section == 'Sports'
                                             ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/sports.jpg')}/>)
-                                            : (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/study.png')}/>)}
+                                            : item.interest.section == 'Study'
+                                                ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/study.png')}/>)
+                                                : (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/exLang.png')}/>)}
                                 {item.favorite==1
                                     ?(<Icon name="md-star" style={{width: 34, position : 'absolute', top: 2, left: -9, fontSize: 26, color: '#eec600'}}/>)
                                     :(null)}
@@ -489,7 +495,7 @@ export default class ChatroomTab extends Component {
                     display={this.state.searchCRDisplay}/>
                 <ExchangingLanguage token={this.token}
                     myLanguage={this.state.myLanguage}
-                    array={this.state.exLangarrayHolder}
+                    array={this.state.searcharrayHolder}
                     pushNewRoom={this.insertArrayHolder}
                     _onPressChatroom={this._joinCR}
                     exLangSearch={this._exLangSearch}
