@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Dimensions, YellowBox, BackHandler} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, StatusBar, ScrollView, Dimensions, YellowBox, BackHandler} from 'react-native';
 import {Icon, Input, Left, Right} from 'native-base';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 
@@ -440,7 +440,7 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 30,
+        paddingTop: StatusBar.currentHeight+5,
         paddingLeft: 15,
         paddingRight: 15,
         paddingBottom: 8,

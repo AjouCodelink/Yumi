@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, ToastAndroid } from 'react-native';
+import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, ToastAndroid, StatusBar } from 'react-native';
 import { ListItem, Left, Body, Right, Thumbnail,Icon, Spinner} from 'native-base';
 
 import Fabs from './ChatPopup/Fabs'
 import SearchBar from './ChatPopup/SearchBar'
 import CreateChatroom from './ChatPopup/CreateChatroom'
 import SearchedChatrooms from './ChatPopup/SearchedChatrooms'
+import ExchangingLanguage from './ChatPopup/ExchangingLanguage'
 
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.db');
@@ -28,10 +29,12 @@ export default class ChatroomTab extends Component {
             favoriteHolder: [],
             arrayHolder: [],
             searcharrayHolder: [],
+            exLangarrayHolder: [],
             suggestedRoom: [],
             searchBarDisplay: 'none',
             createCRDisplay: 'none',
             searchCRDisplay: 'none',
+            langExDisplay: 'none',
             spinnerDisplay: 'flex',
         }
     }
@@ -321,6 +324,46 @@ export default class ChatroomTab extends Component {
         })
     }
 
+    _exLangSearch = (targetLang) => {
+        if (targetLang == 'noValue') {
+            ToastAndroid.show('Please select target language.', ToastAndroid.SHORT)
+            return
+        }
+        this.state.searcharrayHolder.splice(0,100)
+        this.setState({spinnerDisplay: 'flex'});
+        var url = 'http://101.101.160.185:3000/chatroom/search/'+targetLang;
+        fetch(url, {
+            method: 'GET',
+            headers: new Headers({
+            'Content-Type' : 'application/json',
+            'token': 'token',
+            })
+        }).then(response => response.json())
+        .catch(error => console.error('Error: ', error))
+        .then(responseJson => {
+            if (responseJson.message == "no search chatroom") {
+                ToastAndroid.show('No rooms searched by this target language.', ToastAndroid.SHORT);
+            } else {
+                for(var i=0;i<responseJson.length;i++)
+                {
+                    newItem = {
+                        cr_name: responseJson[i].name,
+                        cr_id: responseJson[i]._id,
+                        interest: responseJson[i].interest,
+                        participants: responseJson[i].participants,
+                        memNum: responseJson[i].participants.length
+                    }
+                    this.setState({searcharrayHolder: [...this.state.searcharrayHolder, newItem]})
+                }
+                this.setState({
+                    searchCRDisplay: 'flex',
+                    searchBarDisplay: 'none',
+                })
+            }
+            this.setState({spinnerDisplay: 'none'})
+        })
+    }
+
     _onPressFabs = () => {
         this.setState({fabActive: !this.state.fabActive})
     }
@@ -335,6 +378,10 @@ export default class ChatroomTab extends Component {
 
     _onPressCreateCRFab = (display) => {
         this.setState({createCRDisplay: display, fabActive: false})
+    }
+
+    _onPressLangExFab = (display) => {
+        this.setState({langExDisplay: display, fabActive: false})
     }
 
     render() {
@@ -432,6 +479,7 @@ export default class ChatroomTab extends Component {
                     onPressCreate={this._onPressCreateCRFab}
                     onPressSearch={this._onPressSearchBarFab}
                     onPressSuggest={this._onPressSuggestCRFab}
+                    onPressLangEx={this._onPressLangExFab}
                     onPressFabs={this._onPressFabs}/>
                 <SearchedChatrooms token={this.token}
                     array={this.state.searcharrayHolder}
@@ -439,6 +487,14 @@ export default class ChatroomTab extends Component {
                     _onPressChatroom={this._joinCR}
                     displayChange={this._switchSearchCR}
                     display={this.state.searchCRDisplay}/>
+                <ExchangingLanguage token={this.token}
+                    myLanguage={this.state.myLanguage}
+                    array={this.state.exLangarrayHolder}
+                    pushNewRoom={this.insertArrayHolder}
+                    _onPressChatroom={this._joinCR}
+                    exLangSearch={this._exLangSearch}
+                    displayChange={this._onPressLangExFab}
+                    display={this.state.langExDisplay}/>
                 <CreateChatroom token={this.token}
                     pushNewRoom={this.insertArrayHolder}
                     displayChange={this._onPressCreateCRFab}
@@ -460,7 +516,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection : "row",
         width:'100%',
-        height: 24,
+        height: StatusBar.currentHeight,
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
     },
