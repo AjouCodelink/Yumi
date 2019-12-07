@@ -19,8 +19,8 @@ exports.searchWord = async (req, res) =>{
         exec((err, chatroom)=>{
             if(err) res.json(err);
             else if(chatroom.length) {
-                var filterChatroom = chatroom.filter((room)=>(room.interest.section != 'Exchanging Language'))
-                res.json(filterChatroom);
+                var filteredChatroom = chatroom.filter((room)=>(room.interest.section != 'Exchanging Language'))
+                res.json(filteredChatroom);
             }
             else res.json(({result : true, message : "no search chatroom"}));
         })
@@ -133,7 +133,8 @@ exports.recommend = (req, res) => {
                 var random = Math.floor(Math.random() * 5);
                 ChatRoom.find().skip(random).limit(5).exec((err, chatroom) => {
                     //array말고 단일 object로 보내기
-                    var selected = chatroom[0];
+                    var filteredChatroom = chatroom.filter((room)=>(room.interest.section != 'Exchanging Language'));
+                    var selected = filteredChatroom[0];
                     res.json(selected);
                 })      
             }
@@ -152,13 +153,15 @@ exports.recommend = (req, res) => {
                         var random = Math.floor(Math.random() * 5);
                         ChatRoom.find().skip(random).limit(5).exec((err, chatroom) => {
                             //array말고 단일 object로 보내기
-                            var selected = chatroom[0];
+                            var filteredChatroom = chatroom.filter((room)=>(room.interest.section != 'Exchanging Language'));
+                            var selected = filteredChatroom[0];
                             res.json(selected);
                         })     
                     }
                     else{
-                        var random = Math.floor(Math.random() * chatroom.length);
-                        var selected = chatroom[random];
+                        var filteredChatroom = chatroom.filter((room)=>(room.interest.section != 'Exchanging Language'));
+                        var random = Math.floor(Math.random() * filteredChatroom.length);
+                        var selected = filteredChatroom[random];
                         res.json(selected);
                     }
                 })
