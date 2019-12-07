@@ -362,7 +362,9 @@ export default class ChatroomTab extends Component {
                                     ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/foods.jpg')}/>)
                                     : item.interest.section == 'Games'
                                         ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/games.jpg')}/>)
-                                        : (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/sports.jpg')}/>)}
+                                        : item.interest.section == 'Sports'
+                                            ? (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/sports.jpg')}/>)
+                                            : (<Thumbnail style={{width: 50, height: 50, borderRadius: 15}} source={require('../../assets/cr_thumbnail/study.png')}/>)}
                                 {item.favorite==1
                                     ?(<Icon name="md-star" style={{width: 34, position : 'absolute', top: 2, left: -9, fontSize: 26, color: '#eec600'}}/>)
                                     :(null)}
