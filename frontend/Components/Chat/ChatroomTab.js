@@ -271,6 +271,7 @@ export default class ChatroomTab extends Component {
             myEmail: this.email,
             myNickname: this.state.myNickname,
             myLanguage: this.state.myLanguage,
+            section: item.interest.section,
             favorite: item.favorite,
             onNavigateBack: this.cr_reload,
             exitChatRoom: this.exitChatRoom,
@@ -333,7 +334,7 @@ export default class ChatroomTab extends Component {
         }
         this.state.searcharrayHolder.splice(0,100)
         this.setState({spinnerDisplay: 'flex'});
-        var url = 'http://101.101.160.185:3389/chatroom/exchange-language/'+targetLang;
+        var url = 'http://101.101.160.185:3000/chatroom/exchange-language/'+targetLang;
         fetch(url, {
             method: 'GET',
             headers: new Headers({

@@ -136,6 +136,7 @@ export default class Chatroom extends Component {
         userlist:[], // 유저 목록
         user_image: [],
         token: '',
+        autoTrans: true,
         key: 0,
         lastTime :'', // (정상현) 뿌잉뿌잉
     }
@@ -401,7 +402,7 @@ export default class Chatroom extends Component {
                                 </View>)
                                 : ( chat.user_email != 'PopQuizBot' 
                                     ? (<View key={this.state.key++} style={style.other_chat}>
-                                        <Chatbox_other data={chat}/>
+                                        <Chatbox_other data={chat} section={this.props.section}/>
                                     </View>)
                                     : (<View key={this.state.key++} style={style.other_chat}>
                                         <Chatbox_quizbot data={chat} _sendPopQuizWon={this._sendPopQuizWon}/>
