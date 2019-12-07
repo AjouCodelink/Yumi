@@ -307,9 +307,10 @@ exports.exchangeLanCreation = (req, res) => {
             exec((err, chatroom) => {
                 if(err) res.json({result: false, message:"fail"});
                 else if(chatroom.length){
-                    res.json(chatroom);
+                    var filteredChatroom = chatroom.filter((room) => (room.participants.length==1));
+                    res.json(filteredChatroom);
                 }
-                else res.json({result: true, message: "no found chatroom"});
+                else res.json({result: true, message: "no search chatroom"});
             })
 
      })
