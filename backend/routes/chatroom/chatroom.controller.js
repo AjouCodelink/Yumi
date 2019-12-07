@@ -5,7 +5,7 @@ var User = require('../../models/user');
 /*
     GET /chatroom/search/:keyword
 */
-exports.searchWord = async (req, res) =>{
+exports.searchWord = (req, res) =>{
     var keyword = req.params.keyword;
 
     ChatRoom.find().
