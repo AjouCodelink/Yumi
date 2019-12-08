@@ -12,7 +12,7 @@ router.get('/search/:keyword', controller.searchWord);
 router.post('/creation', controller.creation);
 router.get('/list', controller.getList);
 router.post('/exit/:cr_id', controller.exit);
-router.get('/log/:cr_id', controller.getLog);
+router.post('/log', controller.getLog);
 router.get('/participants/:cr_id', controller.getParticipants);
 router.get('/recommend', controller.recommend);
 router.post('/entrance/:cr_id', controller.entrance);

@@ -21,22 +21,23 @@ const UserSchema = new Schema({
             group : { type : String }
         }
     }],
-    address:{ type: String }
+    address:{ type: String },
+    admin: { type: Boolean}
 });
 
 // create new User document
 UserSchema.statics.create = function(user_info) {
-    const {email, password, nickname, interests, language, img_path, address} = user_info;
+    const {email, password, nickname, interests, language, address} = user_info;
     const encrypted = crypto.createHmac('sha1', config.secret)
-                      .update(password)
-                      .digest('base64');
+                    .update(password)
+                    .digest('base64');
     const user = new this({
         email,
         password: encrypted,
         nickname,
         interests,
         language,
-        img_path,
+        img_path: 'default_thumbnail.png',
         address
     })
     // return the Promise
@@ -58,6 +59,12 @@ UserSchema.methods.verify = function(password) {
     console.log(this.password === encrypted)
 
     return this.password === encrypted
+}
+
+// verify the admin of the User documment
+UserSchema.methods.verify_admin = function(admin) {
+    if(admin == true) return true;
+    return false;
 }
 
 UserSchema.methods.assignAdmin = function() {
