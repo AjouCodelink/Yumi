@@ -32,6 +32,7 @@ export default class TitleScreen extends Component {
         userInfo = responseJson.userInfo
         crList = responseJson.userInfo.chatroom
         crUserList = responseJson.save_chatroom
+        console.log(crUserList)
         db.transaction( tx => {
             tx.executeSql(          // token 저장
                 'INSERT INTO token (access_token, user_email) values (?,?);',
@@ -49,7 +50,8 @@ export default class TitleScreen extends Component {
         for(var i=0; i<crList.length; i++){
             const cr = crList[i]
             let memNum 
-            for (var j=0; j<crList.length; j++){
+            for (var j=0; j<crUserList.length; j++){
+                if (crUserList[j] == null) continue;
                 if (crUserList[j]._id == cr.cr_id) {
                     memNum = crUserList[j].participants.length
                     break;

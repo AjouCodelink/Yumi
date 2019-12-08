@@ -28,12 +28,11 @@ export default class Welcome extends Component {
                 <View style={style.title}>
                     <Text style={style.font_title}>Welcome!</Text>
                 </View>
-                <View style={style.content}>
-                    <View style={[style.content, {justifyContent: 'space-around'}]}>
-                        <Text style={style.font_main}>Yumi is an open chatting application for students studying abroad.</Text>
-                        <Text style={style.font_main}>(대충 그럴싸한 설명 하는 글1)</Text>
-                        <Text style={style.font_main}>(대충 지 잘난거 자랑 하는 글2)</Text>
-                    </View>
+                <View style={[style.content, {justifyContent: 'space-between'}]}>
+                    <Text style={style.font_main}>Yumi is a chat and information service application for exchange students.</Text>
+                    <Text style={style.font_main}>Create an open chat room with topics that interest you.</Text>
+                    <Text style={style.font_main}>or perform one-on-one language exchanges with your preferred language.</Text>
+                    <Text style={style.font_main}>In addition, information for exchange students can be provided at a glance.</Text>
                     <Text style={style.font_main}>Now, press the next button.</Text>
                 </View>
                 <View style={style.footer}>
@@ -66,12 +65,6 @@ const style = StyleSheet.create({
         paddingBottom: '5%',
         backgroundColor: '#333',
     },
-    header: {
-        width:'100%',
-        height:'5%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     title: {
         width:'100%',
         height:'15%',
@@ -81,11 +74,13 @@ const style = StyleSheet.create({
     },
     content: {
         flex: 1,
+        width:'80%',
         alignItems: 'center',
     },
     footer: {
         width:'100%',
         height:'8%',
+        padding: 5,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -109,7 +104,7 @@ const style = StyleSheet.create({
         fontSize: 40,
     },
     font_main: {
-        color: '#aaa',
+        color: '#ccc',
         fontSize: 20,
         textAlign: 'center',
     },

@@ -77,6 +77,7 @@ export default class ExchangingLanguage extends Component {
                     { this.state.search_create == false
                         ? (<View style={[style.content, {height: 350}]}>
                             <Text style={style.font_Title}>Language Exchange</Text>
+                            <Text style={style.font_detail}>Auto translation disabled in this room.</Text>
                             <View style={{flexDirection: 'row', justifyContent:'center', margin:10}}>
                                 <Text style={style.font_default}>Search </Text>
                                 <Switch value={this.state.search_create} onChange={() => this._onPressSwitch()}/>
@@ -85,7 +86,7 @@ export default class ExchangingLanguage extends Component {
                             <View style={{height: 45, width: 250}}>
                                 <LanguagePicker valueChange={this.languageChange}/>
                             </View>
-                            <Text style={[style.font_default, {width: 234, marginTop: 5, marginBottom: 10}]}>Target Language</Text>
+                            <Text style={[style.font_detail, {width: 234, marginTop: 5, marginBottom: 10}]}>Target Language</Text>
                             <View style={style.pickerContainer}>
                                 <TouchableOpacity>
                                     <Button onPress={() => this._onPressCancel()} style={{backgroundColor: '#bbb', width: 80, justifyContent: 'center', marginRight:20}}>
@@ -102,6 +103,7 @@ export default class ExchangingLanguage extends Component {
                         )
                         : (<View style={[style.content, {height: 400}]}>
                             <Text style={style.font_Title}>Language Exchange</Text>
+                            <Text style={style.font_detail}>Auto translation disabled in this room.</Text>
                             <View style={{flexDirection: 'row', justifyContent:'center', margin:10}}>
                                 <Text style={style.font_default}>Search </Text>
                                 <Switch value={this.state.search_create} onChange={() => this._onPressSwitch()}/>
@@ -110,7 +112,7 @@ export default class ExchangingLanguage extends Component {
                             <View style={{height: 45, width: 250}}>
                                 <LanguagePicker valueChange={this.languageChange}/>
                             </View>
-                            <Text style={[style.font_default, {width: 234, marginTop: 5, marginBottom: 10}]}>Target Language</Text>
+                            <Text style={[style.font_detail, {width: 234, marginTop: 5, marginBottom: 10}]}>Target Language</Text>
                             <Item style={{height: 48, width: 250, marginTop: 15}} floatingLabel>
                                 <Label style={{color: '#aaa'}}> Room name</Label>
                                 <Input style={{fontSize: 16, color: '#ddd', paddingLeft: 8}} onChangeText={(new_cr_name) => this.setState({new_cr_name})}/>
@@ -161,7 +163,12 @@ const style = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         color: '#ddd',
-        margin: 15,
+        marginTop: 5,
+    },
+    font_detail: {
+        fontSize: 14,
+        color: '#aaa',
+        marginBottom: 12,
     },
     font_default: {
         fontSize: 16,
