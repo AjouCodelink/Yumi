@@ -23,7 +23,7 @@ export default class Fabs extends Component {
                     <Icon name='chatbubbles' style={{fontSize: 22, color: '#FFF'}}/>
                 </Button>
                 <Button  
-                    onPress={()=> this.props.onPressLangEx()} 
+                    onPress={()=> this.props.onPressLangEx('flex')} 
                     activeOpacity={0.5} 
                     style={styles.button_langEx}>
                     <Icon name='md-globe' style={{fontSize: 22, color: '#FFF'}}/>
@@ -57,10 +57,10 @@ const styles = StyleSheet.create({
         bottom: 72,
     },
     big_fab: {
-        backgroundColor: '#5067FF',
         width: 65,
         height: 65,
-        borderRadius: 70
+        borderRadius: 70,
+        backgroundColor: '#5067FF',
     },
     button_search:{
         width: 45,
