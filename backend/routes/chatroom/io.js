@@ -54,6 +54,8 @@ module.exports = function (server) {
     });
 
     setInterval(() => { // 일정 주기로 팝퀴즈를 반환함
+        console.log('pop quiz !!!');
+        
         ChatRoom.find({}, {interest: 1}, function(err, chatrooms){
             chatrooms.map((room) => {
                 var category = room.interest.section;
