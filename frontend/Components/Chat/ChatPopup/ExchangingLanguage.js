@@ -41,7 +41,7 @@ export default class ExchangingLanguage extends Component {
             name: this.state.new_cr_name,
             language: this.state.selectedLanguage,
         }
-        var url = 'http://101.101.160.185:3000/chatroom/exchange-language';
+        var url = 'http://101.101.160.185:3000/chatroom/exchange-language/creation';
         fetch(url, {
             method: 'POST',
             headers: new Headers({

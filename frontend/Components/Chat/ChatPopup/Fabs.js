@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { StyleSheet, Dimensions } from "react-native"
+import { StyleSheet } from "react-native"
 import { Fab, Icon, Button } from 'native-base'
 
 export default class Fabs extends Component {

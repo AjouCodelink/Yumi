@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, Text, View, Alert, TouchableOpacity, TextInput, ToastAndroid, StatusBar } from 'react-native';
+import { StyleSheet, FlatList, Text, View, Alert, ToastAndroid, StatusBar } from 'react-native';
 import { ListItem, Left, Body, Right, Thumbnail,Icon, Spinner} from 'native-base';
 
 import Fabs from './ChatPopup/Fabs'

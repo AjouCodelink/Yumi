@@ -5,17 +5,20 @@ import { Thumbnail } from 'native-base';
 const { height, width } = Dimensions.get('window');
 
 export default class otherchat extends Component {
-    constructor() {
-        super();
-    }
-
-    state = {
-        translateEnable: true
+    constructor(props) {
+        super(props);
+        this.state={
+            translated: true
+        }
+        if (this.props.section == 'Exchanging Language') {
+            this.state.translated= false
+        }
     }
 
     ComponentWillMount() {
+        console.log(this.props.section)
         if (this.props.section == 'Exchanging Language') {
-            this.setState({translateEnable: false})
+            this.setState({translated: false})
         }
     }
 
@@ -25,7 +28,7 @@ export default class otherchat extends Component {
             return
         } else{
             this.setState({
-                translateEnable: !this.state.translateEnable
+                translated: !this.state.translated
             })
         }
     }
@@ -36,7 +39,7 @@ export default class otherchat extends Component {
             <View>
                 <Text style={style.text_name}>{data.user_email}</Text>
                     {
-                        (this.state.translateEnable == true && data.transMessage != null)
+                        (this.state.translated == true && data.transMessage != null)
                         ? (
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}

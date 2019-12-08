@@ -131,6 +131,7 @@ export default class Chatroom extends Component {
         message: '',
         myEmail: '',
         myLanguage: '',
+        CRsection: '',
         favorite: undefined,
         chatLog:[], // 채팅로그
         userlist:[], // 유저 목록
@@ -153,6 +154,7 @@ export default class Chatroom extends Component {
         this.state.myEmail = navigation.getParam('myEmail', '');
         this.state.myNickname = navigation.getParam('myNickname', '');
         this.state.myLanguage = navigation.getParam('myLanguage', 'en');
+        this.state.CRsection = navigation.getParam('section', 'No section');
         this.state.favorite = navigation.getParam('favorite', undefined);
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
         this.socket.emit('JOIN_ROOM', {cr_id:this.state.cr_id, myEmail:this.state.myEmail})
@@ -402,7 +404,7 @@ export default class Chatroom extends Component {
                                 </View>)
                                 : ( chat.user_email != 'PopQuizBot' 
                                     ? (<View key={this.state.key++} style={style.other_chat}>
-                                        <Chatbox_other data={chat} section={this.props.section}/>
+                                        <Chatbox_other data={chat} section={this.state.CRsection}/>
                                     </View>)
                                     : (<View key={this.state.key++} style={style.other_chat}>
                                         <Chatbox_quizbot data={chat} _sendPopQuizWon={this._sendPopQuizWon}/>
