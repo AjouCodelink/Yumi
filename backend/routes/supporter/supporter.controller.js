@@ -150,3 +150,14 @@ exports.info = function(req, res){
     })
 }
 
+/**
+    GET /supporter/list
+ */
+ exports.getSupporter = (req, res) => {
+     Supporter.find({}, function(err, supporters){
+         if(err) res.json({result: false, message: err});
+         
+         var filteredSupporters = supporters.filter((supporter) => (supporter.isAccepted == true));
+         res.json(filteredSupporters);
+     })
+ }
