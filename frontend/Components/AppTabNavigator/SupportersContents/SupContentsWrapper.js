@@ -15,17 +15,14 @@ export default class AjouSup extends Component {
     };
     }
     
-    Moreinfo(item) {
-        Linking.openURL(item.HomepageURL);
-        
+    Moreinfo(homepage) {
+        Linking.openURL(homepage);
     }
     ShowPoster(img_path){
         Linking.openURL('http://101.101.160.185:3000/images/'+img_path);
     }
-    Apply(item){
-        var title = item.title.replace(/ /gi,"+")
-        var url = 'http://101.101.160.185:3000'
-        Linking.openURL(url);
+    Apply(email){
+        Linking.openURL('mailto:'+email);
     }
     render() {
         return (
@@ -42,7 +39,7 @@ export default class AjouSup extends Component {
                                         <Thumbnail source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Ajou_Univ_Ui.png'}} />
                                         <Body>
                                             <Text style={styles.font_title}>{item.name}</Text>
-                                            <Text style={styles.font_date}>{item.time}</Text> {/*날짜로 짜르기*/}
+                                            <Text style={styles.font_date}>{item.time.toString().substr(0, 15)}</Text>
                                         </Body>
                                     </Left>
                                     </CardItem>
@@ -53,17 +50,16 @@ export default class AjouSup extends Component {
                                             source={{uri: 'http://101.101.160.185:3000/images/'+item.img_path}} style={{ width: "100%", height: null, flex: 1,resizeMode: 'contain',alignItems: 'center'}}/>
                                         </TouchableOpacity>
                                         <Text style = {{marginTop: 15}}>{item.text}</Text>
-                                        {/* <Text># {item.text}</Text> */}
                                     </Body>
                                     </CardItem>
                                     <CardItem>
                                         <Left>
-                                            <Button transparent onPress={() => {this.Moreinfo(item)}}>
+                                            <Button transparent onPress={() => {this.Moreinfo(item.homepage)}}>
                                                 <Text style ={styles.font_button}>  More info...  </Text>
                                             </Button>
                                         </Left>
                                         <Right>
-                                            <Button transparent onPress={() => {this.Apply(item)}}>
+                                            <Button transparent onPress={() => {this.Apply(item.email)}}>
                                                 <Text style ={styles.font_button}>  Apply  </Text>
                                             </Button>
                                             
