@@ -31,6 +31,9 @@ SupportersSchema.statics.create = function(supporter_info) {
         contact,
         text,
         img_path,
+        homepage,
+        host,
+        time : Date.now(),
         isAccepted : false
     })
     // return the Promise
