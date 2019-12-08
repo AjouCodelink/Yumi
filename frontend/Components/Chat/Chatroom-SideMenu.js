@@ -105,7 +105,7 @@ export default class Chatroom_SideMenu extends Component {
     }
 
     _uploadImage = (file) => {
-        var url = 'http://101.101.160.185:3000/images/profile'; // 이후 다른 api로 수정해야함.
+        var url = 'http://101.101.160.185:3000/images/upload';
         fetch(url, {
             method: 'POST',
             headers: new Headers({
