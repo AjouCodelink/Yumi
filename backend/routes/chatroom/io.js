@@ -54,17 +54,17 @@ module.exports = function (server) {
     });
 
     setInterval(() => { // 일정 주기로 팝퀴즈를 반환함
-        var data = {};
+        ChatRoom.find({}, {interest: 1}, function(err, chatrooms){
+            chatrooms.map((room) => {
+                var category = room.interest.section;
 
-        PopQuiz.find({}, function(err, datas){ 
-            if(err) return err;
-            var randomQuizNumber = Math.floor(Math.random() * datas.length); // 팝퀴즈 중 하나 랜덤으로 찾음
-
-            data.question = datas[randomQuizNumber].question; // TODO : 이거 나중에 프론트엔드에 RECEIVE_QUIZ 작성 되면 author -> question으로 수정
-            data.answer = datas[randomQuizNumber].answer;
-                
-            console.log(data);
-            io.emit('RECEIVE_QUIZ', data); // TODO : RECEIVE_QUIZ로 나중에 수정 예정
+                PopQuiz.find({category}, function(err, quizzes){
+                    var random_num = Math.floor(Math.random() * quizzes.length);
+                    var quiz = quizzes[random_num];
+                    
+                    io.sockets.in(room._id).emit('RECEIVE_QUIZ', quiz);
+                })
+            })
         })
     }, 2000000); // 시간 주기 설정 (2000 -> 2초)
 
