@@ -8,17 +8,29 @@ export default class otherchat extends Component {
     constructor(props) {
         super(props);
         this.state={
-            translated: true
+            translated: true,
+            nickname: '',
+            email: this.props.data.user_email,
         }
         if (this.props.section == 'Exchanging Language') {
             this.state.translated= false
         }
+        for (var i=0; i<this.props.userList.length; i++) {
+            if (this.state.email == this.props.userList[i].email) {
+                this.state.nickname = this.props.userList[i].nickname
+                break
+            }
+        }
     }
 
     ComponentWillMount() {
-        console.log(this.props.section)
         if (this.props.section == 'Exchanging Language') {
             this.setState({translated: false})
+        }
+        for (var i=0; i<this.props.userList.length; i++) {
+            if (this.state.email == this.props.userList[i].email) {
+                this.setState({nickname : this.props.userList[i].nickname})
+            }
         }
     }
 
@@ -37,7 +49,7 @@ export default class otherchat extends Component {
         const data = this.props.data;
         return (
             <View>
-                <Text style={style.text_name}>{data.user_email}</Text>
+                <Text style={style.text_name}>{this.state.nickname}</Text>
                     {
                         (this.state.translated == true && data.transMessage != null)
                         ? (

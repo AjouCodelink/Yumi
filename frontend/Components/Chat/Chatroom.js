@@ -404,7 +404,7 @@ export default class Chatroom extends Component {
                                 </View>)
                                 : ( chat.user_email != 'PopQuizBot' 
                                     ? (<View key={this.state.key++} style={style.other_chat}>
-                                        <Chatbox_other data={chat} section={this.state.CRsection}/>
+                                        <Chatbox_other data={chat} userList={this.state.userlist} section={this.state.CRsection}/>
                                     </View>)
                                     : (<View key={this.state.key++} style={style.other_chat}>
                                         <Chatbox_quizbot data={chat} _sendPopQuizWon={this._sendPopQuizWon}/>
