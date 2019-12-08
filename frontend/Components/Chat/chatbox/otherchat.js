@@ -10,6 +10,7 @@ export default class otherchat extends Component {
         this.state={
             translated: true,
             nickname: '',
+            thumbnailURL: '',
             email: this.props.data.user_email,
         }
         if (this.props.section == 'Exchanging Language') {
@@ -18,6 +19,7 @@ export default class otherchat extends Component {
         for (var i=0; i<this.props.userList.length; i++) {
             if (this.state.email == this.props.userList[i].email) {
                 this.state.nickname = this.props.userList[i].nickname
+                this.state.thumbnailURL = this.props.userList[i].img_path
                 break
             }
         }
@@ -55,7 +57,7 @@ export default class otherchat extends Component {
                         ? (
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
-                                source={{uri:'http://101.101.160.185:3000/images/'+data.thumbnailURL}}/>
+                                source={{uri:'http://101.101.160.185:3000/images/'+this.state.thumbnailURL}}/>
                             <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#9f9'}]} onPress={() => this._onPress(data.transMessage)}>
                                 <Text style={style.text_message}>{data.transMessage} </Text>
                             </TouchableOpacity>
@@ -67,7 +69,7 @@ export default class otherchat extends Component {
                         : (
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
-                                source={{uri:'http://101.101.160.185:3000/images/'+data.thumbnailURL}}/>
+                                source={{uri:'http://101.101.160.185:3000/images/'+this.state.thumbnailURL}}/>
                             {data.answer == '#image'
                                 ? (
                                     <View style={[style.imageBox,{backgroundColor: '#ccc'}]}>
@@ -125,7 +127,7 @@ const style = StyleSheet.create({
         fontSize : 16,
         color: '#000',
         top: 5,
-        left: 70,
+        left: 66,
     },
     text_message: {
         fontSize: 15,
