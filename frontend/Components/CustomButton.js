@@ -7,6 +7,8 @@ export default class CustomButton extends Component{
     titleColor: '#fff',
     buttonColor: '#000',
     onPress: () => alert(),
+
+    
   }
 
   constructor(props){
