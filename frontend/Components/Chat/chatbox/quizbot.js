@@ -51,7 +51,7 @@ export default class quizbot extends Component {
                     hintInput ={"Answer"}
                     submitInput={ (inputText) => {this.submit(inputText,data.answer, this.setState({isAlertVisible:false}))}}
                     closeDialog={ () => {this.setState({isAlertVisible:false})} }/>
-                <Text style={style.text_name}>PopQuizBot</Text>
+                <Text style={style.text_name}>Pop Quiz Bot</Text>
                 <View style={style.content}>
                     <Thumbnail backgroundColor="#fff" style={style.thumbnail}
                         source={require('../../../assets/chatbot.jpg')}/>
