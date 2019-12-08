@@ -21,7 +21,11 @@ const ChatRoomSchema = mongoose.Schema({
         user_email:{type: String},
         time: { type: String },
         message: { type: String}
-    }]
+    }],
+    language:{
+        origin:{type:String},
+        dest:{type:String}
+    }
 });
 
 module.exports = mongoose.model('chatroom', ChatRoomSchema);

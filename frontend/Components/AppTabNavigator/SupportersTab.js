@@ -23,7 +23,24 @@ export default class SupportersTab extends Component {
   };
   constructor(props) {
     super(props);
+    this.state = {
+      supporter_info:[]
+    }
   }
+
+  componentWillMount() { // 서포터즈 정보 싹 다 가져옴
+    var url = "http://101.101.160.185:3000/supporter/list";
+    fetch(url, {
+        method: "GET",
+        headers: new Headers({"Content-Type": "application/json"})
+    })  
+        .then(response => response.json())
+        .catch(error => console.error("Error: ", error))
+        .then(responseJson => {
+            this.setState({supporter_info: responseJson});
+        });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -40,7 +57,7 @@ export default class SupportersTab extends Component {
             Supporters
           </Text>
         </View>
-        <SupContentsWrapper />
+        <SupContentsWrapper supporter_info={this.state.supporter_info}/>
       </View>
     );
   }
