@@ -16,7 +16,7 @@ export default class SettingTab extends Component {
         super(props);
         this.state = {
             contect: [
-                {icon :"md-text", name: "Contect Us", key: "contect"},
+                {icon :"md-text", name: "Contact Us", key: "contect"},
             ], config: [
                 {icon :"md-document", name: "Clear Chating Logs", key: "deleteChatLog"},
                 {icon :"md-exit", name: "Log Out", key: "logout"},
