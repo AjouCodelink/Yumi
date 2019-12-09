@@ -167,8 +167,7 @@ export default class ChatroomTab extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => {
-            //console.log(responseJson)
-            if(responseJson._id == undefined) {
+            if(responseJson == undefined) {
                 ToastAndroid.show("No chat room found to suit your interests.", ToastAndroid.SHORT)
             } else {
                 newItem = {

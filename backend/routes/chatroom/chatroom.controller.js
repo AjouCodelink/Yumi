@@ -130,13 +130,17 @@ exports.recommend = (req, res) => {
 
             if(user.interests.length == 0)
             {
-                var random = Math.floor(Math.random() * 5);
-                ChatRoom.find().skip(random).limit(5).exec((err, chatroom) => {
-                    //array말고 단일 object로 보내기
-                    var filteredChatroom = chatroom.filter((room)=>(room.interest.section != 'Exchanging Language'));
-                    var selected = filteredChatroom[0];
-                    res.json(selected);
-                })      
+                ChatRoom.find().exec((err,chatroom) => {
+                    var count = chatroom.length
+                    var random = Math.floor(Math.random() * count);
+                    ChatRoom.find().skip(random).limit(5).exec((err, chatroom) => {
+                        //array말고 단일 object로 보내기
+                        var filteredChatroom = chatroom.filter((room)=>(room.interest.section != 'Exchanging Language'));
+                        var selected = filteredChatroom[0];
+                        res.json(selected);
+                    })      
+                })
+                
             }
             else{
                 ChatRoom.find().
@@ -150,7 +154,8 @@ exports.recommend = (req, res) => {
                 exec((err, chatroom)=>{ // TODO : 소분류순으로 먼저 나오게 하기
                     if(chatroom.length == 0)
                     {
-                        var random = Math.floor(Math.random() * 5);
+                        var count = chatroom.length;
+                        var random = Math.floor(Math.random() * count);
                         ChatRoom.find().skip(random).limit(5).exec((err, chatroom) => {
                             //array말고 단일 object로 보내기
                             var filteredChatroom = chatroom.filter((room)=>(room.interest.section != 'Exchanging Language'));

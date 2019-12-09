@@ -164,7 +164,7 @@ export default class Chatroom extends Component {
     componentDidMount() {
         this.db_readChatLog();
     }
-
+   
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     }
@@ -280,9 +280,9 @@ export default class Chatroom extends Component {
         )
     };
     
-    getRecentChatList(){ // (정상현) 가장 최근 시간 이후에 채팅 온 메세지들을 불러옴
+    async getRecentChatList(){
         var url = 'http://101.101.160.185:3000/chatroom/log';
-        fetch(url, {
+        var chatlogs = await fetch(url, {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json',
@@ -295,40 +295,31 @@ export default class Chatroom extends Component {
         }).then(response => response.json())
         .catch(error => console.error('Error: ', error))
         .then(responseJson => { 
-            if(responseJson.chatlog.length) this.db_recentChatLogAdd(responseJson._id, responseJson.chatlog);
+            return responseJson;
         })
+        this.db_recentChatLogAdd(chatlogs._id, chatlogs.chatlog);
     }
-
+    
     db_recentChatLogAdd(cr_id, chatlog){ // (정상현) 최근 채팅 디비에 저장하기
-        for(var i=0; i<chatlog.length; i++){
-            var chat = chatlog[i];
-            chat.Time = chat.time;
-            this.db_add(cr_id, chat, chatlog.length, i);
-        }
-    }
-
-    db_add(cr_id, chat, length, i){ /* (정상현) 포문 안에서 디비에 저장 안되서 함수로 따로 빼버림. db_chatLogAdd와 비슷함.
-                                    *         TODO : 하나 하나 저장하고 렌더 해주는 방식이기 때문에 새로운 채팅 올라오는 부분이 굉장히 느림. 개선할 필요가 있음
-                                    */
-        db.transaction( tx => {
-            tx.executeSql(
-                'INSERT INTO chatLog (user_email, cr_id, Time, message, transMessage, answer) values (?, ?, ?, ?, ?, ?);',
-                [chat.user_email, cr_id, chat.time, chat.message, chat.message, chat.answer], // TODO : transMessage 넣기 (정상현)
-                () => {this.chatLogAdd(chat)},
-                null,   // sql문 실패 에러
-            )
-        },null)
-
-        if(i == length-1){
-            db.transaction(tx => {
+        chatlog.map((log) => {
+            db.transaction( tx => {
+                tx.executeSql(
+                    'INSERT INTO chatLog (user_email, cr_id, Time, message, transMessage, answer) values (?, ?, ?, ?, ?, ?);',
+                    [log.user_email, cr_id, log.time, log.message, log.message, log.answer], // TODO : transMessage 넣기 (정상현)
+                    () => {
+                        log.Time = log.time;    
+                        this.chatLogAdd(log)
+                    },
+                    null,   // sql문 실패 에러
+                ),
                 tx.executeSql(  
                 'UPDATE crList SET lastMessage = ?, lastTime = ? WHERE cr_id = ?',
-                    [chat.message, chat.time, this.state.cr_id],
+                    [log.message, log.time, cr_id],
                     null,
                     (_,error) => console.error(error)
                 )
-            }, null)
-        }  
+            },null)
+        })
     }
 
     chatLogAdd = (newChat) => {
