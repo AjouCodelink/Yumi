@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, StatusBar, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Icon, Thumbnail } from 'native-base';
 
@@ -120,10 +120,6 @@ export default class Chatroom_SideMenu extends Component {
         })
     }
 
-    _onPressRecom() {
-        alert("You pressed Recom.")
-    }
-
     render() {
         this.userlist = this.props.userlist;
         return (
@@ -159,12 +155,6 @@ export default class Chatroom_SideMenu extends Component {
                                 <Text style={style.tool_text}>  Pictures</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this._onPressRecom()}>
-                            <View style={style.tool}>
-                                <Icon name='md-locate' style={style.tool_icon}/>
-                                <Text style={style.tool_text}>  Place Recommend</Text>
-                            </View>
-                        </TouchableOpacity>
                     </View>
                     <View style={style.userList}>
                         <ScrollView>
@@ -197,7 +187,7 @@ const style = StyleSheet.create({
     },
     content: {
         width: '100%',
-        marginTop: 40,
+        marginTop: StatusBar.currentHeight+15,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -217,8 +207,8 @@ const style = StyleSheet.create({
     },
     toolBox: {
         width: '100%',
-        height: 240,
-        paddingLeft: 15,
+        height: 160,
+        paddingLeft: 20,
         paddingTop: 12,
         paddingBottom: 12,
         justifyContent: 'center',
@@ -243,7 +233,7 @@ const style = StyleSheet.create({
     },
     userList: {
         width: '100%',
-        height: screenHeight-80-240-90, //iconbox height - toolbox height - 105
+        height: screenHeight-StatusBar.currentHeight-80-24-160-20-5, //statusbar - iconbox height - toolbox height - 90
         paddingTop: 5,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',

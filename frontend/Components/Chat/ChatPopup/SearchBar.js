@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native"
+import { View, StyleSheet, TextInput, TouchableOpacity, StatusBar } from "react-native"
 import { Icon } from 'native-base'
 
 export default class SearchBar extends Component {
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width:'100%',
         justifyContent: 'center',
-        marginTop: 30,
+        marginTop: StatusBar.currentHeight+6,
     },
     searchBar:{
         width: "75%",

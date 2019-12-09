@@ -9,7 +9,8 @@ const SupportersSchema = mongoose.Schema({
     img_path: { type: String}, //TODO: 프론트에서 서포터리스트에서 accept 하면 DB에 넣는 Flag 변수인 Boolean type 을 추가
     isAccepted: {type: Boolean},
     homepage : {type : String},
-    host : {type : String}
+    host : {type : String},
+    time:{type: String}
 });
 
 // create new User document
@@ -31,6 +32,9 @@ SupportersSchema.statics.create = function(supporter_info) {
         contact,
         text,
         img_path,
+        homepage,
+        host,
+        time : Date(),
         isAccepted : false
     })
     // return the Promise

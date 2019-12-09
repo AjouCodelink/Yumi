@@ -14,57 +14,52 @@ export default class AjouSup extends Component {
         ]
     };
     }
-    Moreinfo(item) {
-        Linking.openURL(item.HomepageURL);
-        
+    
+    Moreinfo(homepage) {
+        Linking.openURL(homepage);
     }
-    ShowPoster(item){
-        Linking.openURL(item.PosterImage);
+    ShowPoster(img_path){
+        Linking.openURL('http://101.101.160.185:3000/images/'+img_path);
     }
-    Apply(item){
-        var title = item.title.replace(/ /gi,"+")
-        var url = "https://docs.google.com/forms/d/e/1FAIpQLSfYdRODBOXUfTrRLSI7tchXDRHI0g75dMYVcSAf23QZ0qvh5A/viewform?usp=pp_url&entry.865868214="+this.name+"&entry.607859849="+title
-        Linking.openURL(url);
-        
+    Apply(email){
+        Linking.openURL('mailto:'+email);
     }
     render() {
         return (
             <Container>
                 <Content>
                     <FlatList
-                        data = {this.state.data.concat(AjouData,SeoulData)}
+                        data = {this.props.supporter_info}
                         keyExtractor = {(item,index)=>String(index)}
                         renderItem = {({item}) => {
                             return(
                                 <Card style={{flex: 0, width: '99%',justifyContent: 'center'}}>
                                     <CardItem>
                                     <Left>
-                                        <Thumbnail source={{uri: item.HeaderImage}} />
+                                        <Thumbnail source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Ajou_Univ_Ui.png'}} />
                                         <Body>
-                                            <Text style={styles.font_title}>{item.title}</Text>
-                                            <Text style={styles.font_date}>{item.Date}</Text>
+                                            <Text style={styles.font_title}>{item.name}</Text>
+                                            <Text style={styles.font_date}>{item.time.toString().substr(0, 15)}</Text>
                                         </Body>
                                     </Left>
                                     </CardItem>
                                     <CardItem>
                                     <Body>
-                                        <TouchableOpacity style = {{width: '100%', height:350}} onPress={() => {this.ShowPoster(item)}}>
+                                        <TouchableOpacity style = {{width: '100%', height:350}} onPress={() => {this.ShowPoster(item.img_path)}}>
                                             <Image
-                                            source={{uri: item.PosterImage}} style={{ width: "100%", height: null, flex: 1,resizeMode: 'contain',alignItems: 'center'}}/>
+                                            source={{uri: 'http://101.101.160.185:3000/images/'+item.img_path}} style={{ width: "100%", height: null, flex: 1,resizeMode: 'contain',alignItems: 'center'}}/>
                                         </TouchableOpacity>
-                                        <Text style = {{marginTop: 15}}>{item.description}</Text>
-                                        <Text># {item.DueDay}</Text>
-                                        <Text># {item.fee}</Text>
+                                        <Text style = {{marginTop: 15}}>{item.text}</Text>
                                     </Body>
                                     </CardItem>
                                     <CardItem>
                                         <Left>
-                                            <Button transparent onPress={() => {this.Moreinfo(item)}}>
+                                            <Button transparent onPress={() => {this.Moreinfo(item.homepage)}}>
                                                 <Text style ={styles.font_button}>  More info...  </Text>
                                             </Button>
                                         </Left>
                                         <Right>
-                                            <Button transparent onPress={() => {this.Apply(item)}}>
+                                            <Button transparent onPress={() => {this.Apply(item.email)}}>
                                                 <Text style ={styles.font_button}>  Apply  </Text>
                                             </Button>
                                             
