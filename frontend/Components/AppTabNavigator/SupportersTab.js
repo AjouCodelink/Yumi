@@ -8,7 +8,8 @@ import {
   ScrollView,
   FlatList,
   Alert,
-  Linking
+  Linking,
+  StatusBar
 } from "react-native";
 import { Icon } from "native-base";
 import SupContentsWrapper from "./SupportersContents/SupContentsWrapper";
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   header: {
-    marginTop: 24,
+    marginTop: StatusBar.currentHeight,
     width: "100%"
   }
 

@@ -5,21 +5,44 @@ import { Thumbnail } from 'native-base';
 const { height, width } = Dimensions.get('window');
 
 export default class otherchat extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        this.state={
+            translated: true,
+            nickname: '',
+            thumbnailURL: '',
+            email: this.props.data.user_email,
+        }
+        if (this.props.section == 'Exchanging Language') {
+            this.state.translated= false
+        }
+        for (var i=0; i<this.props.userList.length; i++) {
+            if (this.state.email == this.props.userList[i].email) {
+                this.state.nickname = this.props.userList[i].nickname
+                this.state.thumbnailURL = this.props.userList[i].img_path
+                break
+            }
+        }
     }
 
-    state = {
-        translateEnable: true
+    ComponentWillMount() {
+        if (this.props.section == 'Exchanging Language') {
+            this.setState({translated: false})
+        }
+        for (var i=0; i<this.props.userList.length; i++) {
+            if (this.state.email == this.props.userList[i].email) {
+                this.setState({nickname : this.props.userList[i].nickname})
+            }
+        }
     }
 
-    _LongPress = (transMessage) => {
+    _onPress = (transMessage) => {
         if (transMessage == null) {
             ToastAndroid.show("This message cannot be translated.", ToastAndroid.SHORT)
             return
         } else{
             this.setState({
-                translateEnable: !this.state.translateEnable
+                translated: !this.state.translated
             })
         }
     }
@@ -28,14 +51,14 @@ export default class otherchat extends Component {
         const data = this.props.data;
         return (
             <View>
-                <Text style={style.text_name}>{data.user_email}</Text>
+                <Text style={style.text_name}>{this.state.nickname}</Text>
                     {
-                        (this.state.translateEnable == true && data.transMessage != null)
+                        (this.state.translated == true && data.transMessage != null)
                         ? (
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
-                                source={{uri:'http://101.101.160.185:3000/images/'+data.thumbnailURL}}/>
-                            <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#9f9'}]} onPress={() => this._LongPress(data.transMessage)}>
+                                source={{uri:'http://101.101.160.185:3000/images/'+this.state.thumbnailURL}}/>
+                            <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#9f9'}]} onPress={() => this._onPress(data.transMessage)}>
                                 <Text style={style.text_message}>{data.transMessage} </Text>
                             </TouchableOpacity>
                             <View style={style.time_container}>
@@ -46,14 +69,14 @@ export default class otherchat extends Component {
                         : (
                         <View style={style.content}>
                             <Thumbnail backgroundColor="#fff" style={style.thumbnail}
-                                source={{uri:'http://101.101.160.185:3000/images/'+data.thumbnailURL}}/>
+                                source={{uri:'http://101.101.160.185:3000/images/'+this.state.thumbnailURL}}/>
                             {data.answer == '#image'
                                 ? (
                                     <View style={[style.imageBox,{backgroundColor: '#ccc'}]}>
                                         <Image style={{width:width*0.60, height: width*0.60, resizeMode:'contain'}} source={{ uri: 'http://101.101.160.185:3000/images/'+data.message }}/>
                                     </View>)
                                 : (
-                                    <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#ccc'}]} onPress={() => this._LongPress(data.transMessage)}>
+                                    <TouchableOpacity activeOpacity={0.5} style={[style.messageBox,{backgroundColor: '#ccc'}]} onPress={() => this._onPress(data.transMessage)}>
                                         <Text style={style.text_message}>{data.message} </Text>
                                     </TouchableOpacity>
                                 )
@@ -104,7 +127,7 @@ const style = StyleSheet.create({
         fontSize : 16,
         color: '#000',
         top: 5,
-        left: 70,
+        left: 66,
     },
     text_message: {
         fontSize: 15,

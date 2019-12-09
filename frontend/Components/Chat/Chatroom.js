@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, ScrollView, Dimensions, YellowBox, BackHandler} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, StatusBar, ScrollView, Dimensions, YellowBox, BackHandler} from 'react-native';
 import {Icon, Input, Left, Right} from 'native-base';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 
@@ -131,11 +131,13 @@ export default class Chatroom extends Component {
         message: '',
         myEmail: '',
         myLanguage: '',
+        CRsection: '',
         favorite: undefined,
         chatLog:[], // 채팅로그
         userlist:[], // 유저 목록
         user_image: [],
         token: '',
+        autoTrans: true,
         key: 0,
         lastTime :'', // (정상현) 뿌잉뿌잉
     }
@@ -152,6 +154,7 @@ export default class Chatroom extends Component {
         this.state.myEmail = navigation.getParam('myEmail', '');
         this.state.myNickname = navigation.getParam('myNickname', '');
         this.state.myLanguage = navigation.getParam('myLanguage', 'en');
+        this.state.CRsection = navigation.getParam('section', 'No section');
         this.state.favorite = navigation.getParam('favorite', undefined);
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
         this.socket.emit('JOIN_ROOM', {cr_id:this.state.cr_id, myEmail:this.state.myEmail})
@@ -401,7 +404,7 @@ export default class Chatroom extends Component {
                                 </View>)
                                 : ( chat.user_email != 'PopQuizBot' 
                                     ? (<View key={this.state.key++} style={style.other_chat}>
-                                        <Chatbox_other data={chat}/>
+                                        <Chatbox_other data={chat} userList={this.state.userlist} section={this.state.CRsection}/>
                                     </View>)
                                     : (<View key={this.state.key++} style={style.other_chat}>
                                         <Chatbox_quizbot data={chat} _sendPopQuizWon={this._sendPopQuizWon}/>
@@ -440,7 +443,7 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 30,
+        paddingTop: StatusBar.currentHeight+5,
         paddingLeft: 15,
         paddingRight: 15,
         paddingBottom: 8,
