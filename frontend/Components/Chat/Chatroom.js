@@ -297,38 +297,9 @@ export default class Chatroom extends Component {
         .then(responseJson => { 
             return responseJson;
         })
-        
         this.db_recentChatLogAdd(chatlogs._id, chatlogs.chatlog);
     }
-    async abc(data){
-        var url = 'https://openapi.naver.com/v1/papago/detectLangs';
-            var result = await fetch(url, {
-                method: 'POST',
-                headers: new Headers({
-                    'Content-Type': 'application/json',
-                    'token': 'token',
-                    'X-Naver-Client-Id': 'IuGRSsZ3UK4K5zUzgFfl',
-                    'X-Naver-Client-Secret': 'GnNTiflknE'
-                }),
-                body: JSON.stringify({
-                    "query":data.message
-                })
-            })
-            .then(response => response.json())
-            .catch(error => console.error('Error: ', error))
-            .then(responseJson => {
-                //console.log(responseJson)
-                if (data.user_email == this.state.myEmail) { // 내 메시지면 스킵
-                    return
-                } else if (data.user_email == 'PopQuizBot' || data.user_email == 'notice' || data.answer=='#image') {  // 팝퀴즈봇, 공지, 이미지면 디비에 추가
-                    return;
-                }  else {    // 아니면 번역
-                    console.log(responseJson.langCode);
-                    return responseJson.langCode;
-                }
-            })
-        return result;
-    }
+    
     db_recentChatLogAdd(cr_id, chatlog){ // (정상현) 최근 채팅 디비에 저장하기
         chatlog.map((log) => {
             db.transaction( tx => {
