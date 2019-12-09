@@ -15,9 +15,7 @@ export default class SettingTab extends Component {
     constructor(props){
         super(props);
         this.state = {
-            contect: [
-                {icon :"md-text", name: "Contact Us", key: "contect"},
-            ], config: [
+            config: [
                 {icon :"md-document", name: "Clear Chating Logs", key: "deleteChatLog"},
                 {icon :"md-exit", name: "Log Out", key: "logout"},
                 {icon :"md-log-out", name: "Close my account", key: "leave"},
@@ -28,8 +26,6 @@ export default class SettingTab extends Component {
     _onPress(key) {
         if (key == "logout") {
             this.onPressLogout()
-        } else if (key == "contect") {
-            this.onPressContect()
         } else if (key == "leave") {
             this.onPressLeave()
         } else if (key == "deleteChatLog") {
@@ -104,10 +100,6 @@ export default class SettingTab extends Component {
         );
     }
     
-    onPressContect() {
-        Linking.openURL('http://google.com');
-        // todo: 이후 연락 가능한 페이지로 연동
-    }
 
     onPressLeave() {
         alert("you press Leave");
@@ -160,10 +152,6 @@ export default class SettingTab extends Component {
                 <View style={style.content}>
                     <ScrollView style={{width: '100%'}}>
                         <List>
-                            <ListItem itemDivider style={style.first_divider} key={'A'}>
-                                <Text style={style.font_divider}>Contact</Text>
-                            </ListItem>       
-                            {this.state.contect.map( item => this._renderItem(item))}
                             <ListItem itemDivider style={style.divider} key={'B'}>
                                 <Text style={style.font_divider}>Account Management</Text>
                             </ListItem>
@@ -180,7 +168,6 @@ export default class SettingTab extends Component {
 const style = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 25,
         backgroundColor: '#fff',
     },
     font_header: {
@@ -193,15 +180,6 @@ const style = StyleSheet.create({
         width: '100%',
         justifyContent: 'center',
         alignItems: 'flex-start',
-    },
-    first_divider: {
-        width: '100%',
-        flexDirection: 'row',
-        borderBottomWidth: 3,
-        borderColor: "#bbb",
-        backgroundColor: '#eeeeee',
-        paddingLeft: 15,
-        alignItems: 'center',
     },
     divider: {
         width: '100%',
