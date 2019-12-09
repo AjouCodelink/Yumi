@@ -2,7 +2,7 @@ var router = require('express').Router();
 const jwt = require('jsonwebtoken');
 var User = require('../../models/user');
 var Supporter = require('../../models/supporters');
-var Question = require('../../models/question');
+
 
 /*
     /api/supporter
@@ -43,32 +43,8 @@ exports.decline = (req,res) => {
         res.status(204).end();
     })
 }
-exports.getQuestion = (req,res) =>{
-        Question.find({}, function(err, questions){
-        if(err) res.json({result: false, message: "not found questions"})
-        res.json(questions);
-    });
 
-}
-exports.appendQuestion = (req,res) =>{
-
-    const Question_info = req.body;
-    Question.create(Question_info)
-    .then(result => {
-        if(result) res.json({result:true});
-        else res.json({result:1});
-    });
-}
-exports.finish = (req,res) =>{
-
-    const Question_info = req.body.content;
-    Question.remove({ content:Question_info }, function(err, output){
-        if(err) return res.status(500).json({ error: "Deletion Failed"});
-        res.status(204).end();
-    });
-
-}
-    /*
+/*
     POST /api/supporter/login/check
     {
         email,
