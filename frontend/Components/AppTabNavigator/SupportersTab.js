@@ -37,6 +37,10 @@ export default class SupportersTab extends Component {
         .then(response => response.json())
         .catch(error => console.error("Error: ", error))
         .then(responseJson => {
+            responseJson.sort((a, b) => {
+              var dateA = new Date(a.time), dateB = new Date(b.time);
+              return dateB - dateA;
+            });
             this.setState({supporter_info: responseJson});
         });
   }

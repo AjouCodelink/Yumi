@@ -191,33 +191,22 @@ exports.getParticipants = (req, res) => {
 exports.exit = (req, res) => {
     var cr_id = req.params.cr_id;
     var email = req.decoded.email;
-
-    ChatRoom.findOne({_id : cr_id}, function(err, chatroom){
-        if(err) res.json({result : 0, message : err});
+    
+    ChatRoom.findOne({_id: cr_id}, function(err, chatroom){
+        if(err) res.json({result: false, message: err});
 
         var participants = chatroom.participants;
-        for(var i=0; i < participants.length; i++){
-            if(participants[i].email == email){
-                chatroom.participants.splice(chatroom.participants.indexOf(i), 1);
+        chatroom.participants = participants.filter((room) => (room.email != email));
+        
+        if(chatroom.participants.length == 0) chatroom.remove({_id: cr_id});
+        else chatroom.save();
 
-                if(chatroom.participants.length==0) chatroom.remove({_id:cr_id});
-                else chatroom.save();
-                
-                User.findOne({email:email}, function(err, user){
-                    if(err) res.json({result:0, message:err});
-
-                    for(var j=0; j<user.chatroom.length; j++){
-                        if(user.chatroom[j].cr_id == cr_id){
-                            user.chatroom.splice(user.chatroom.indexOf(i), 1);
-                            user.save();
-
-                            res.json({result : 1, message : "user left the room"});
-                        }
-                    }
-                })
-                
-            }
-        }
+        User.findOne({email}, {chatroom: 1}, function(err, user){
+            var chatrooms = user.chatroom;
+            user.chatroom = chatrooms.filter((room) => (room.cr_id != cr_id));
+            user.save();
+            res.json({result: true, message: "user left the room"});
+        })
     })
 }
 
@@ -313,7 +302,7 @@ exports.exchangeLanCreation = (req, res) => {
                     }
                     else res.json({message: "no search chatroom"});
                 }
-                
+                else res.json({message:"no search chatroom"});
             })
 
      })
