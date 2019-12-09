@@ -1,6 +1,7 @@
 var User = require('../../models/user')
 var ChatRoom = require('../../models/chatRoom')
 const jwt = require('jsonwebtoken')
+var Question = require('../../models/question');
 
 /*
     GET /user/info
@@ -221,4 +222,41 @@ exports.check = (req, res) => {
         success: true,
         info: req.decoded
     })
+}
+
+/**
+    GET /user/question/list
+ */
+exports.getQuestion = (req,res) =>{
+        Question.find({}, function(err, questions){
+        if(err) res.json({result: false, message: "not found questions"})
+        res.json(questions);
+    });
+
+}
+
+/**
+    POST /user/question
+ */
+exports.appendQuestion = (req,res) =>{
+    var email = req.decoded.email;
+    var content = req.body.content;
+
+    const question_info = {email, content};
+    Question.create(question_info)
+    .then(result => {
+        res.json({result});
+    });
+}
+
+/**
+    DELETE /user/question/:id
+ */
+exports.finish = (req,res) =>{
+    var _id = req.params.id
+    Question.remove({_id}, function(err, output){
+        if(err) return res.status(500).json({ error: "Deletion Failed"});
+        res.json({result: true, message:"delete"});
+    });
+
 }
