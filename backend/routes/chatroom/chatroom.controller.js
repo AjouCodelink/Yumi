@@ -313,7 +313,7 @@ exports.exchangeLanCreation = (req, res) => {
                     }
                     else res.json({message: "no search chatroom"});
                 }
-                
+                else res.json({message:"no search chatroom"});
             })
 
      })
