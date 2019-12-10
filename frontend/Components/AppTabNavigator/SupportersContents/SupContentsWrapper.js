@@ -24,6 +24,20 @@ export default class AjouSup extends Component {
     Apply(email){
         Linking.openURL('mailto:'+email);
     }
+    headerurl(item)
+    {
+        if(item.host == 'Seoul'){
+            return 'https://yeyak.seoul.go.kr/pluginfree/seoul_symbol.jpg'
+        }
+        else if(item.host =='Nubi Ajou'){
+            return 'https://scontent-icn1-1.xx.fbcdn.net/v/t1.0-9/41328230_844681932322803_709278544303226880_n.png?_nc_cat=102&_nc_ohc=mRDUG3P6y8gAQmfBVFmLYMFeysIgBqZi4y39NlXR9fHuQB8MboTsiKA_A&_nc_ht=scontent-icn1-1.xx&oh=97ac9c2ca1dfb8034a1d9104b60c13c5&oe=5E7C951D'
+        }
+        else{
+            return 'https://upload.wikimedia.org/wikipedia/commons/4/44/Ajou_Univ_Ui.png';
+        }
+        
+        
+    }
     render() {
         return (
             <Container>
@@ -36,7 +50,7 @@ export default class AjouSup extends Component {
                                 <Card style={{flex: 0, width: '99%',justifyContent: 'center'}}>
                                     <CardItem>
                                     <Left>
-                                        <Thumbnail source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Ajou_Univ_Ui.png'}} />
+                                        <Thumbnail source={{uri: this.headerurl(item)}} />
                                         <Body>
                                             <Text style={styles.font_title}>{item.name}</Text>
                                             <Text style={styles.font_date}>{item.time.toString().substr(0, 15)}</Text>
